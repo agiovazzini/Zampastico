@@ -7,17 +7,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/admin-product")
+public class AdminProductServlet extends HttpServlet {
     
 	private static final long serialVersionUID = 1L;
 
-	public HomeServlet() {
+	public AdminProductServlet() {
         super();
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    request.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(request, response);
+	    request.getRequestDispatcher("/WEB-INF/view/admin-product.jsp").forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
