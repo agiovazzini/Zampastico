@@ -1,4 +1,4 @@
-package it.unisa.zampastico.dao;
+package it.unisa.zampastico.model.dao;
 
 public class UtenteDAO {
 
