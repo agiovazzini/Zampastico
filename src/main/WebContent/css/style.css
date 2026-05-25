@@ -1,0 +1,31 @@
+:root {
+    --color-primary: #f37925;
+    --color-primary-hover: #d9681b;
+    
+    --color-text-main: #333333;
+    --color-text-light: #777777;
+    
+    --color-bg-body: #ffffff;
+    --color-bg-section: #fdfbf7;
+    --color-bg-footer: #f4f4f4;
+    
+    --color-accent-green: #8eb38e; 
+    
+    --font-main: 'Nunito', sans-serif;
+    
+    --border-radius-card: 16px;
+    --border-radius-button: 30px;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--color-text-main);
+    background-color: var(--color-bg-body);
+    line-height: 1.6;
+}
