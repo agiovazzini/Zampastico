@@ -1,0 +1,203 @@
+-- 1.1 GESTIONE CATALOGO: INSERIMENTO (CREATE)
+INSERT INTO Categoria (nome, id_supercategoria) VALUES (?, ?);
+INSERT INTO Sconto (nome_promozione, percentuale_sconto) VALUES (?, ?);
+INSERT INTO Prodotto (id_categoria, nome, brand, descrizione) VALUES (?, ?, ?, ?);
+INSERT INTO VarianteProdotto (id_prodotto, id_sconto, formato, prezzo_listino) VALUES (?, ?, ?, ?);
+INSERT INTO InventarioStock (id_varianteProdotto, quantita) VALUES (?, ?);
+INSERT INTO ImmagineProdotto (id_prodotto, url_immagine, testo_alt, ordine_visualizzazione, immagine_copertina) VALUES (?, ?, ?, ?, ?);
+
+-- 1.2 GESTIONE CATALOGO: MODIFICA (UPDATE)
+UPDATE Categoria SET nome = ?, id_supercategoria = ? WHERE id_categoria = ?;
+UPDATE Sconto SET nome_promozione = ?, percentuale_sconto = ? WHERE id_sconto = ?;
+UPDATE Prodotto SET id_categoria = ?, nome = ?, brand = ?, descrizione = ? WHERE id_prodotto = ?;
+UPDATE VarianteProdotto SET id_sconto = ?, formato = ?, prezzo_listino = ? WHERE id_varianteProdotto = ?;
+UPDATE InventarioStock SET quantita = ? WHERE id_varianteProdotto = ?;
+UPDATE ImmagineProdotto SET url_immagine = ?, testo_alt = ?, ordine_visualizzazione = ?, immagine_copertina = ? WHERE id_immagine = ?;
+
+-- 1.3 GESTIONE CATALOGO: ELIMINAZIONE (DELETE) 
+DELETE FROM Categoria WHERE id_categoria = ?;
+DELETE FROM Sconto WHERE id_sconto = ?;
+DELETE FROM Prodotto WHERE id_prodotto = ?;
+
+-- 1.4 GESTIONE ORDINI (VISUALIZZAZIONE E MODIFICA) 
+CREATE OR REPLACE VIEW VistaOrdiniAdmin AS
+SELECT o.id_ordine, o.data_ordine, u.id_utente, CONCAT(u.nome, ' ', u.cognome) AS cliente, u.email, o.stato AS stato_ordine,
+    o.totale, s.corriere, s.codice_tracking, s.stato AS stato_spedizione FROM Ordine o
+JOIN Utente u ON o.id_utente = u.id_utente LEFT JOIN Spedizione s ON o.id_ordine = s.id_ordine
+ORDER BY o.data_ordine DESC;
+SELECT * FROM VistaOrdiniAdmin WHERE DATE(data_ordine) = ? ORDER BY data_ordine DESC;
+SELECT * FROM VistaOrdiniAdmin WHERE email = ? ORDER BY data_ordine DESC;
+SELECT * FROM VistaOrdiniAdmin WHERE DATE(data_ordine) = ? AND id_utente = ? AND stato_ordine = ?;
+
+-- 4.1 PROFILO UTENTE E STORICO
+UPDATE Utente SET nome = ?, cognome = ?, pass = ? WHERE id_utente = ?;
+UPDATE Indirizzo SET citta = ?, provincia = ?, via = ?, cap = ?, predefinito = ? WHERE id_indirizzo = ? AND id_utente = ?;
+SELECT id_ordine, data_ordine, totale, stato, spedizione_via, spedizione_citta FROM Ordine WHERE id_utente = ? ORDER BY data_ordine DESC;
+
+-- 2.1 RICERCA PRODOTTI CON FILTRI 
+SELECT 
+    p.nome, p.brand, vp.formato, vp.prezzo_listino,
+    COALESCE(ROUND(vp.prezzo_listino * (1 - s.percentuale_sconto), 2), vp.prezzo_listino) AS prezzo_effettivo,
+    ip.url_immagine
+FROM Prodotto p
+JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
+JOIN Categoria c ON p.id_categoria = c.id_categoria
+LEFT JOIN Sconto s ON vp.id_sconto = s.id_sconto
+LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+WHERE c.nome = ? AND p.brand = ?;
+
+-- 2.2 FEED CONSIGLIATI (STORED PROCEDURE) 
+DELIMITER //
+CREATE PROCEDURE GeneraFeedConsigliati(IN p_id_utente INT)
+BEGIN
+    DECLARE v_conteggio_ordini INT DEFAULT 0;
+    IF p_id_utente IS NOT NULL THEN
+        SELECT COUNT(*) INTO v_conteggio_ordini FROM Ordine WHERE id_utente = p_id_utente;
+    END IF;
+    IF v_conteggio_ordini > 0 THEN
+        -- PROFILAZIONE: Utente con storico ordini
+        SELECT DISTINCT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
+        FROM Prodotto p
+        JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
+        LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+        WHERE p.id_categoria IN (
+            SELECT p2.id_categoria
+            FROM VoceOrdine vo
+            JOIN Ordine o ON vo.id_ordine = o.id_ordine
+            JOIN VarianteProdotto vp2 ON vo.id_varianteProdotto = vp2.id_varianteProdotto
+            JOIN Prodotto p2 ON vp2.id_prodotto = p2.id_prodotto
+            WHERE o.id_utente = p_id_utente
+        ) LIMIT 10;
+    ELSE
+        -- FALLBACK: Guest o nuovo utente (Bestseller assoluti)
+        SELECT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, SUM(vo.quantita) as unita_vendute, ip.url_immagine
+        FROM Prodotto p
+        JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
+        JOIN VoceOrdine vo ON vp.id_varianteProdotto = vo.id_varianteProdotto
+        LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+        GROUP BY p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
+        ORDER BY unita_vendute DESC LIMIT 10;
+    END IF;
+END //
+DELIMITER ;
+
+-- CALL GeneraFeedConsigliati(NULL); -- Per un Guest
+-- CALL GeneraFeedConsigliati(15);   -- Per l'utente ID 15
+
+-- 4.2 LA PROCEDURA DI CHECKOUT SICURA
+DELIMITER //
+CREATE PROCEDURE FinalizzaAcquisto(
+    IN p_id_utente INT, 
+    IN p_id_indirizzo INT, 
+    IN p_id_coupon INT,
+    IN p_metodo_pagamento VARCHAR(50)
+)
+BEGIN
+    DECLARE v_id_ordine INT;
+    DECLARE v_totale DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_sconto_coupon DECIMAL(3,2) DEFAULT 0.00;
+    DECLARE v_id_carrello INT DEFAULT NULL;
+    DECLARE v_qta_carrello INT DEFAULT 0;
+    START TRANSACTION;
+    -- 1. IDENTIFICAZIONE CARRELLO
+    SELECT id_carrello INTO v_id_carrello FROM Carrello WHERE id_utente = p_id_utente;
+    -- 2. CONTROLLO (Carrello vuoto o non esistente)
+    IF v_id_carrello IS NOT NULL THEN
+        SELECT SUM(quantita) INTO v_qta_carrello FROM VoceCarrello WHERE id_carrello = v_id_carrello;
+    END IF;
+    IF v_qta_carrello = 0 OR v_qta_carrello IS NULL THEN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Impossibile finalizzare: Il carrello è vuoto o non esiste.';
+    END IF;
+    -- 3. RECUPERO COUPON
+    IF p_id_coupon IS NOT NULL THEN
+        SELECT percentuale_sconto INTO v_sconto_coupon FROM Coupon WHERE id_coupon = p_id_coupon;
+    END IF;
+    -- 4. CREAZIONE ORDINE
+    INSERT INTO Ordine (id_utente, id_coupon, totale, spedizione_citta, spedizione_provincia, spedizione_via, spedizione_cap)
+    SELECT p_id_utente, p_id_coupon, 0, citta, provincia, via, cap
+    FROM Indirizzo 
+    WHERE id_indirizzo = p_id_indirizzo AND id_utente = p_id_utente;
+    IF ROW_COUNT() = 0 THEN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Indirizzo non valido o non autorizzato.';
+    END IF;
+    SET v_id_ordine = LAST_INSERT_ID();
+    -- 5. CONGELAMENTO PREZZI 
+    INSERT INTO VoceOrdine (id_ordine, id_varianteProdotto, quantita, prezzo_acquisto)
+    SELECT 
+        v_id_ordine, vc.id_varianteProdotto, vc.quantita,
+        COALESCE(ROUND(vp.prezzo_listino * (1 - s.percentuale_sconto), 2), vp.prezzo_listino)
+    FROM VoceCarrello vc
+    JOIN VarianteProdotto vp ON vc.id_varianteProdotto = vp.id_varianteProdotto
+    LEFT JOIN Sconto s ON vp.id_sconto = s.id_sconto
+    WHERE vc.id_carrello = v_id_carrello;
+    -- 6. SCARICO MAGAZZINO (Triggera errore se < 0 bloccando la transazione)
+    UPDATE InventarioStock is_stock
+    JOIN VoceCarrello vc ON is_stock.id_varianteProdotto = vc.id_varianteProdotto
+    SET is_stock.quantita = is_stock.quantita - vc.quantita
+    WHERE vc.id_carrello = v_id_carrello;
+    -- 7. CALCOLO TOTALE FINALE E AGGIORNAMENTO
+    SELECT SUM(quantita * prezzo_acquisto) INTO v_totale FROM VoceOrdine WHERE id_ordine = v_id_ordine;
+    SET v_totale = ROUND(v_totale * (1 - v_sconto_coupon), 2);
+    UPDATE Ordine SET totale = v_totale WHERE id_ordine = v_id_ordine;
+    -- 8. PULIZIA E PAGAMENTO
+    DELETE FROM VoceCarrello WHERE id_carrello = v_id_carrello;
+    INSERT INTO Pagamento (id_ordine, totale, metodo, stato, fattura)
+    VALUES (v_id_ordine, v_totale, p_metodo_pagamento, 'completato', CONCAT('FATT-', v_id_ordine));
+    COMMIT;
+END //
+DELIMITER ;
+-- CALL FinalizzaAcquisto(UtenteID, IndirizzoID, CouponID_oppure_NULL, 'carta_credito');
+
+-- 2.5 LISTA ORDINI EFFETTUATI 
+SELECT id_ordine, data_ordine, totale, stato FROM Ordine WHERE id_utente = ? ORDER BY data_ordine DESC;
+
+-- 3.1 CARRELLO LATO GUEST NON LOGGATO (Basato su id_sessione)
+INSERT IGNORE INTO Carrello (id_sessione) VALUES (?);
+-- Aggiunge o incrementa
+INSERT INTO VoceCarrello (id_carrello, id_varianteProdotto, quantita)
+SELECT id_carrello, ?, ? FROM Carrello WHERE id_sessione = ?
+ON DUPLICATE KEY UPDATE quantita = quantita + VALUES(quantita);
+-- Rimuove elemento specifico
+DELETE vc FROM VoceCarrello vc
+JOIN Carrello c ON vc.id_carrello = c.id_carrello
+WHERE c.id_sessione = ? AND vc.id_varianteProdotto = ?;
+
+-- 3.2 CARRELLO LATO UTENTE LOGGATO (Basato su id_utente)
+INSERT IGNORE INTO Carrello (id_utente) VALUES (?);
+-- Aggiunge o incrementa
+INSERT INTO VoceCarrello (id_carrello, id_varianteProdotto, quantita)
+SELECT id_carrello, ?, ? FROM Carrello WHERE id_utente = ?
+ON DUPLICATE KEY UPDATE quantita = quantita + VALUES(quantita);
+-- Aggiorna la quantità esatta (es. selezione da un menu a tendina)
+UPDATE VoceCarrello vc
+JOIN Carrello c ON vc.id_carrello = c.id_carrello
+SET vc.quantita = ?
+WHERE c.id_utente = ? AND vc.id_varianteProdotto = ?;
+-- Rimuove elemento specifico
+DELETE vc FROM VoceCarrello vc
+JOIN Carrello c ON vc.id_carrello = c.id_carrello
+WHERE c.id_utente = ? AND vc.id_varianteProdotto = ?;
+-- Svuota intero carrello
+DELETE vc FROM VoceCarrello vc
+JOIN Carrello c ON vc.id_carrello = c.id_carrello
+WHERE c.id_utente = ?;
+
+-- 3.3 REGISTRAZIONE / LOGIN (MERGE DEL CARRELLO)
+-- A) Registrazione nuovo utente (La conversione è diretta)
+INSERT INTO Utente (nome, cognome, email, pass) VALUES (?, ?, ?, ?);
+UPDATE Carrello SET id_sessione = NULL, id_utente = LAST_INSERT_ID() WHERE id_sessione = ?;
+-- B) Login utente esistente (Merge dei prodotti dalla sessione guest al carrello utente)
+INSERT IGNORE INTO Carrello (id_utente) VALUES (?); 
+INSERT INTO VoceCarrello (id_carrello, id_varianteProdotto, quantita)
+SELECT 
+    (SELECT id_carrello FROM Carrello WHERE id_utente = ?), 
+    vc_guest.id_varianteProdotto, 
+    vc_guest.quantita
+FROM VoceCarrello vc_guest
+JOIN Carrello c_guest ON vc_guest.id_carrello = c_guest.id_carrello
+WHERE c_guest.id_sessione = ?
+ON DUPLICATE KEY UPDATE quantita = VoceCarrello.quantita + VALUES(quantita);
+-- Pulizia della vecchia sessione guest
+DELETE FROM Carrello WHERE id_sessione = ?;
