@@ -11,13 +11,14 @@ UPDATE Categoria SET nome = ?, id_supercategoria = ? WHERE id_categoria = ?;
 UPDATE Sconto SET nome_promozione = ?, percentuale_sconto = ? WHERE id_sconto = ?;
 UPDATE Prodotto SET id_categoria = ?, nome = ?, brand = ?, descrizione = ? WHERE id_prodotto = ?;
 UPDATE VarianteProdotto SET id_sconto = ?, formato = ?, prezzo_listino = ? WHERE id_varianteProdotto = ?;
-UPDATE InventarioStock SET quantita = ? WHERE id_varianteProdotto = ?;
+UPDATE InventarioStock SET quantita_disponibile = ? WHERE id_varianteProdotto = ?;
 UPDATE ImmagineProdotto SET url_immagine = ?, testo_alt = ?, ordine_visualizzazione = ?, immagine_copertina = ? WHERE id_immagine = ?;
 
 -- 1.3 GESTIONE CATALOGO: ELIMINAZIONE (DELETE) 
 DELETE FROM Categoria WHERE id_categoria = ?;
 DELETE FROM Sconto WHERE id_sconto = ?;
 DELETE FROM Prodotto WHERE id_prodotto = ?;
+DELETE FROM Coupon WHERE id_coupon = ?;
 
 -- 1.4 GESTIONE ORDINI (VISUALIZZAZIONE E MODIFICA) 
 CREATE OR REPLACE VIEW VistaOrdiniAdmin AS
@@ -47,19 +48,19 @@ LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_
 WHERE c.nome = ? AND p.brand = ?;
 
 -- 2.2 FEED CONSIGLIATI (STORED PROCEDURE) 
-DELIMITER //
-CREATE PROCEDURE GeneraFeedConsigliati(IN p_id_utente INT)
+CREATE OR REPLACE PROCEDURE GeneraFeedConsigliati(IN p_id_utente INT)
 BEGIN
     DECLARE v_conteggio_ordini INT DEFAULT 0;
     IF p_id_utente IS NOT NULL THEN
         SELECT COUNT(*) INTO v_conteggio_ordini FROM Ordine WHERE id_utente = p_id_utente;
     END IF;
+    
     IF v_conteggio_ordini > 0 THEN
         -- PROFILAZIONE: Utente con storico ordini
         SELECT DISTINCT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
         FROM Prodotto p
         JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
-        LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+        LEFT JOIN ImmagineProdotto ip ON vp.id_varianteProdotto = ip.id_varianteProdotto AND ip.immagine_copertina = TRUE
         WHERE p.id_categoria IN (
             SELECT p2.id_categoria
             FROM VoceOrdine vo
@@ -74,21 +75,25 @@ BEGIN
         FROM Prodotto p
         JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
         JOIN VoceOrdine vo ON vp.id_varianteProdotto = vo.id_varianteProdotto
-        LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+        LEFT JOIN ImmagineProdotto ip ON vp.id_varianteProdotto = ip.id_varianteProdotto AND ip.immagine_copertina = TRUE
         GROUP BY p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
         ORDER BY unita_vendute DESC LIMIT 10;
     END IF;
 END //
 DELIMITER ;
-
 -- CALL GeneraFeedConsigliati(NULL); -- Per un Guest
 -- CALL GeneraFeedConsigliati(15);   -- Per l'utente ID 15
 
 -- 4.2 LA PROCEDURA DI CHECKOUT SICURA
 DELIMITER //
-CREATE PROCEDURE FinalizzaAcquisto(
+CREATE OR REPLACE PROCEDURE FinalizzaAcquisto(
     IN p_id_utente INT, 
-    IN p_id_indirizzo INT, 
+    IN p_id_indirizzo INT,          -- NULL se compilato a mano
+    IN p_citta VARCHAR(255),        -- NULL se usa id_indirizzo
+    IN p_provincia VARCHAR(255),
+    IN p_via VARCHAR(255),
+    IN p_cap VARCHAR(20),
+    IN p_salva_nuovo_indirizzo BOOLEAN,
     IN p_id_coupon INT,
     IN p_metodo_pagamento VARCHAR(50)
 )
@@ -98,53 +103,77 @@ BEGIN
     DECLARE v_sconto_coupon DECIMAL(3,2) DEFAULT 0.00;
     DECLARE v_id_carrello INT DEFAULT NULL;
     DECLARE v_qta_carrello INT DEFAULT 0;
+    
+    DECLARE v_citta_finale VARCHAR(255);
+    DECLARE v_provincia_finale VARCHAR(255);
+    DECLARE v_via_finale VARCHAR(255);
+    DECLARE v_cap_finale VARCHAR(20);
+    
     START TRANSACTION;
-    -- 1. IDENTIFICAZIONE CARRELLO
+    
+    -- 1. CONTROLLO CARRELLO
     SELECT id_carrello INTO v_id_carrello FROM Carrello WHERE id_utente = p_id_utente;
-    -- 2. CONTROLLO (Carrello vuoto o non esistente)
     IF v_id_carrello IS NOT NULL THEN
         SELECT SUM(quantita) INTO v_qta_carrello FROM VoceCarrello WHERE id_carrello = v_id_carrello;
     END IF;
+    
     IF v_qta_carrello = 0 OR v_qta_carrello IS NULL THEN
         ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Impossibile finalizzare: Il carrello è vuoto o non esiste.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Il carrello è vuoto o non esiste.';
     END IF;
-    -- 3. RECUPERO COUPON
+    
+    -- 2. SCELTA E SALVATAGGIO INDIRIZZO
+    IF p_id_indirizzo IS NOT NULL THEN
+        SELECT citta, provincia, via, cap INTO v_citta_finale, v_provincia_finale, v_via_finale, v_cap_finale
+        FROM Indirizzo WHERE id_indirizzo = p_id_indirizzo AND id_utente = p_id_utente;
+        
+        IF v_citta_finale IS NULL THEN
+            ROLLBACK;
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Indirizzo non valido.';
+        END IF;
+    ELSE
+        SET v_citta_finale = p_citta; SET v_provincia_finale = p_provincia; SET v_via_finale = p_via; SET v_cap_finale = p_cap;
+        IF p_salva_nuovo_indirizzo = TRUE THEN
+            INSERT INTO Indirizzo (id_utente, citta, provincia, via, cap)
+            VALUES (p_id_utente, v_citta_finale, v_provincia_finale, v_via_finale, v_cap_finale);
+        END IF;
+    END IF;
+    
+    -- 3. RECUPERO COUPON E CREAZIONE ORDINE
     IF p_id_coupon IS NOT NULL THEN
         SELECT percentuale_sconto INTO v_sconto_coupon FROM Coupon WHERE id_coupon = p_id_coupon;
     END IF;
-    -- 4. CREAZIONE ORDINE
+    
     INSERT INTO Ordine (id_utente, id_coupon, totale, spedizione_citta, spedizione_provincia, spedizione_via, spedizione_cap)
-    SELECT p_id_utente, p_id_coupon, 0, citta, provincia, via, cap
-    FROM Indirizzo 
-    WHERE id_indirizzo = p_id_indirizzo AND id_utente = p_id_utente;
-    IF ROW_COUNT() = 0 THEN
-        ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Indirizzo non valido o non autorizzato.';
-    END IF;
+    VALUES (p_id_utente, p_id_coupon, 0, v_citta_finale, v_provincia_finale, v_via_finale, v_cap_finale);
     SET v_id_ordine = LAST_INSERT_ID();
-    -- 5. CONGELAMENTO PREZZI 
+    
+    -- 4. CONGELAMENTO PREZZI STORICI
     INSERT INTO VoceOrdine (id_ordine, id_varianteProdotto, quantita, prezzo_acquisto)
-    SELECT 
-        v_id_ordine, vc.id_varianteProdotto, vc.quantita,
-        COALESCE(ROUND(vp.prezzo_listino * (1 - s.percentuale_sconto), 2), vp.prezzo_listino)
+    SELECT v_id_ordine, vc.id_varianteProdotto, vc.quantita,
+           COALESCE(ROUND(vp.prezzo_listino * (1 - s.percentuale_sconto), 2), vp.prezzo_listino)
     FROM VoceCarrello vc
     JOIN VarianteProdotto vp ON vc.id_varianteProdotto = vp.id_varianteProdotto
     LEFT JOIN Sconto s ON vp.id_sconto = s.id_sconto
     WHERE vc.id_carrello = v_id_carrello;
-    -- 6. SCARICO MAGAZZINO (Triggera errore se < 0 bloccando la transazione)
+    
+    -- 5. BLOCCO OVERSELLING E GESTIONE STOCK PRENOTATO
     UPDATE InventarioStock is_stock
     JOIN VoceCarrello vc ON is_stock.id_varianteProdotto = vc.id_varianteProdotto
-    SET is_stock.quantita = is_stock.quantita - vc.quantita
+    SET is_stock.quantita_disponibile = is_stock.quantita_disponibile - vc.quantita,
+        is_stock.quantita_prenotata = is_stock.quantita_prenotata + vc.quantita
     WHERE vc.id_carrello = v_id_carrello;
-    -- 7. CALCOLO TOTALE FINALE E AGGIORNAMENTO
+    
+    -- 6. TOTALE, PULIZIA E ATTESA PAGAMENTO
     SELECT SUM(quantita * prezzo_acquisto) INTO v_totale FROM VoceOrdine WHERE id_ordine = v_id_ordine;
     SET v_totale = ROUND(v_totale * (1 - v_sconto_coupon), 2);
     UPDATE Ordine SET totale = v_totale WHERE id_ordine = v_id_ordine;
-    -- 8. PULIZIA E PAGAMENTO
+    
     DELETE FROM VoceCarrello WHERE id_carrello = v_id_carrello;
+    
     INSERT INTO Pagamento (id_ordine, totale, metodo, stato, fattura)
-    VALUES (v_id_ordine, v_totale, p_metodo_pagamento, 'completato', CONCAT('FATT-', v_id_ordine));
+    VALUES (v_id_ordine, v_totale, p_metodo_pagamento, 'in_elaborazione', CONCAT('FATT-', v_id_ordine));
+    
     COMMIT;
 END //
 DELIMITER ;
