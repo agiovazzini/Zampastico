@@ -4,7 +4,7 @@ INSERT INTO Sconto (nome_promozione, percentuale_sconto) VALUES (?, ?);
 INSERT INTO Prodotto (id_categoria, nome, brand, descrizione) VALUES (?, ?, ?, ?);
 INSERT INTO VarianteProdotto (id_prodotto, id_sconto, formato, prezzo_listino) VALUES (?, ?, ?, ?);
 INSERT INTO InventarioStock (id_varianteProdotto, quantita) VALUES (?, ?);
-INSERT INTO ImmagineProdotto (id_prodotto, url_immagine, testo_alt, ordine_visualizzazione, immagine_copertina) VALUES (?, ?, ?, ?, ?);
+INSERT INTO ImmagineVariante (id_prodotto, url_immagine, testo_alt, ordine_visualizzazione, immagine_copertina) VALUES (?, ?, ?, ?, ?);
 
 -- 1.2 GESTIONE CATALOGO: MODIFICA (UPDATE)
 UPDATE Categoria SET nome = ?, id_supercategoria = ? WHERE id_categoria = ?;
@@ -12,7 +12,7 @@ UPDATE Sconto SET nome_promozione = ?, percentuale_sconto = ? WHERE id_sconto = 
 UPDATE Prodotto SET id_categoria = ?, nome = ?, brand = ?, descrizione = ? WHERE id_prodotto = ?;
 UPDATE VarianteProdotto SET id_sconto = ?, formato = ?, prezzo_listino = ? WHERE id_varianteProdotto = ?;
 UPDATE InventarioStock SET quantita_disponibile = ? WHERE id_varianteProdotto = ?;
-UPDATE ImmagineProdotto SET url_immagine = ?, testo_alt = ?, ordine_visualizzazione = ?, immagine_copertina = ? WHERE id_immagine = ?;
+UPDATE ImmagineVariante SET url_immagine = ?, testo_alt = ?, ordine_visualizzazione = ?, immagine_copertina = ? WHERE id_immagine = ?;
 
 -- 1.3 GESTIONE CATALOGO: ELIMINAZIONE (DELETE) 
 DELETE FROM Categoria WHERE id_categoria = ?;
@@ -39,16 +39,19 @@ SELECT id_ordine, data_ordine, totale, stato, spedizione_via, spedizione_citta F
 SELECT 
     p.nome, p.brand, vp.formato, vp.prezzo_listino,
     COALESCE(ROUND(vp.prezzo_listino * (1 - s.percentuale_sconto), 2), vp.prezzo_listino) AS prezzo_effettivo,
-    ip.url_immagine
+    iv.url_immagine
 FROM Prodotto p
 JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
 JOIN Categoria c ON p.id_categoria = c.id_categoria
 LEFT JOIN Sconto s ON vp.id_sconto = s.id_sconto
-LEFT JOIN ImmagineProdotto ip ON p.id_prodotto = ip.id_prodotto AND ip.immagine_copertina = TRUE
+LEFT JOIN ImmagineVariante iv ON p.id_prodotto = iv.id_prodotto AND iv.immagine_copertina = TRUE
 WHERE c.nome = ? AND p.brand = ?;
 
 -- 2.2 FEED CONSIGLIATI (STORED PROCEDURE) 
-CREATE OR REPLACE PROCEDURE GeneraFeedConsigliati(IN p_id_utente INT)
+DELIMITER //
+DROP PROCEDURE IF EXISTS GeneraFeedConsigliati //
+DELIMITER //
+CREATE PROCEDURE GeneraFeedConsigliati(IN p_id_utente INT)
 BEGIN
     DECLARE v_conteggio_ordini INT DEFAULT 0;
     IF p_id_utente IS NOT NULL THEN
@@ -57,10 +60,10 @@ BEGIN
     
     IF v_conteggio_ordini > 0 THEN
         -- PROFILAZIONE: Utente con storico ordini
-        SELECT DISTINCT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
+        SELECT DISTINCT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, iv.url_immagine
         FROM Prodotto p
         JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
-        LEFT JOIN ImmagineProdotto ip ON vp.id_varianteProdotto = ip.id_varianteProdotto AND ip.immagine_copertina = TRUE
+        LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE
         WHERE p.id_categoria IN (
             SELECT p2.id_categoria
             FROM VoceOrdine vo
@@ -71,12 +74,12 @@ BEGIN
         ) LIMIT 10;
     ELSE
         -- FALLBACK: Guest o nuovo utente (Bestseller assoluti)
-        SELECT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, SUM(vo.quantita) as unita_vendute, ip.url_immagine
+        SELECT p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, SUM(vo.quantita) as unita_vendute, iv.url_immagine
         FROM Prodotto p
         JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto
         JOIN VoceOrdine vo ON vp.id_varianteProdotto = vo.id_varianteProdotto
-        LEFT JOIN ImmagineProdotto ip ON vp.id_varianteProdotto = ip.id_varianteProdotto AND ip.immagine_copertina = TRUE
-        GROUP BY p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, ip.url_immagine
+        LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE
+        GROUP BY p.id_prodotto, p.nome, p.brand, vp.prezzo_listino, iv.url_immagine
         ORDER BY unita_vendute DESC LIMIT 10;
     END IF;
 END //
@@ -85,8 +88,13 @@ DELIMITER ;
 -- CALL GeneraFeedConsigliati(15);   -- Per l'utente ID 15
 
 -- 4.2 LA PROCEDURA DI CHECKOUT SICURA
+-- Cambiamo il delimitatore standard da ; a //
 DELIMITER //
-CREATE OR REPLACE PROCEDURE FinalizzaAcquisto(
+
+-- Rimuoviamo la procedura se esiste già
+DROP PROCEDURE IF EXISTS FinalizzaAcquisto //
+
+CREATE PROCEDURE FinalizzaAcquisto(
     IN p_id_utente INT, 
     IN p_id_indirizzo INT,          -- NULL se compilato a mano
     IN p_citta VARCHAR(255),        -- NULL se usa id_indirizzo
@@ -228,5 +236,6 @@ FROM VoceCarrello vc_guest
 JOIN Carrello c_guest ON vc_guest.id_carrello = c_guest.id_carrello
 WHERE c_guest.id_sessione = ?
 ON DUPLICATE KEY UPDATE quantita = VoceCarrello.quantita + VALUES(quantita);
+
 -- Pulizia della vecchia sessione guest
 DELETE FROM Carrello WHERE id_sessione = ?;
