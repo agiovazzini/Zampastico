@@ -31,6 +31,7 @@ SELECT * FROM VistaOrdiniAdmin WHERE email = ? ORDER BY data_ordine DESC;
 SELECT * FROM VistaOrdiniAdmin WHERE DATE(data_ordine) = ? AND id_utente = ? AND stato_ordine = ?;
 
 -- Gestione profilo utente
+-- INSERT INTO Utente (nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 -- UPDATE Utente SET nome = ?, cognome = ?, pass = ?, data_anonimizzazione = ?,  attivo = ? WHERE id_utente = ?;
 -- UPDATE Utente SET attivo = false, data_anonimizzazione = CURRENT_TIMESTAMP WHERE id_utente = ?;
 -- SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo FROM Utente WHERE email = ?;
@@ -229,7 +230,6 @@ WHERE c.id_utente = ?;
 
 -- 3.3 REGISTRAZIONE / LOGIN (MERGE DEL CARRELLO)
 -- A) Registrazione nuovo utente (La conversione è diretta)
-INSERT INTO Utente (nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?) -- FATTO
 UPDATE Carrello SET id_sessione = NULL, id_utente = LAST_INSERT_ID() WHERE id_sessione = ?;
 -- B) Login utente esistente (Merge dei prodotti dalla sessione guest al carrello utente)
 INSERT IGNORE INTO Carrello (id_utente) VALUES (?); 

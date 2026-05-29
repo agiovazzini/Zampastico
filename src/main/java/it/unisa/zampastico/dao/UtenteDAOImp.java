@@ -153,7 +153,22 @@ public class UtenteDAOImp {
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
                            "FROM " + TABLE_NAME;
         if (order != null && !order.isEmpty()) {
-        	selectSQL += " ORDER BY " + order;
+        	switch (order) {
+            case "id_utente":
+            case "nome":
+            case "cognome":
+            case "email":
+            case "ruolo":
+            case "data_creazione":
+            case "attivo":
+                selectSQL += " ORDER BY " + order;
+                break;
+            default:
+                selectSQL += " ORDER BY id_utente";
+                break;
+        	}
+        } else {
+        selectSQL += " ORDER BY id_utente";
         }
                            
         try (Connection connection = ds.getConnection();
