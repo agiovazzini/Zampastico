@@ -44,7 +44,7 @@ public class UtenteDAOImp {
     
     // RESTITUZIONE UTENTE
     public UtenteBEAN doRetrieveById(int idUtente) throws SQLException {
-    	UtenteBEAN bean = new UtenteBEAN();
+    	UtenteBEAN bean = null;
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
                        "FROM " + TABLE_NAME + " WHERE id_utente = ?";
         try (Connection connection = ds.getConnection();
@@ -52,6 +52,7 @@ public class UtenteDAOImp {
             preparedStatement.setInt(1, idUtente);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
+                	bean = new UtenteBEAN();
                     bean.setIdUtente(resultSet.getInt("id_utente"));
                     bean.setNome(resultSet.getString("nome"));
                     bean.setCognome(resultSet.getString("cognome"));
@@ -110,7 +111,7 @@ public class UtenteDAOImp {
     
     // RESTITUZIONE UTENTE BY EMAIL// RESTITUZIONE UTENTE TRAMITE EMAIL (Autenticazione e Check Registrazione)
     public UtenteBEAN doRetrieveByEmail(String email) throws SQLException {
-        UtenteBEAN bean = new UtenteBEAN();
+        UtenteBEAN bean = null;
         
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
                            "FROM " + TABLE_NAME + " WHERE email = ?";
@@ -121,7 +122,8 @@ public class UtenteDAOImp {
             preparedStatement.setString(1, email);
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) { 
+                while (resultSet.next()) { 
+                	bean = new UtenteBEAN();
                     bean.setIdUtente(resultSet.getInt("id_utente"));
                     bean.setNome(resultSet.getString("nome"));
                     bean.setCognome(resultSet.getString("cognome"));
