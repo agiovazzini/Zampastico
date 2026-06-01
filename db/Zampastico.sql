@@ -179,7 +179,6 @@ CREATE TABLE IF NOT EXISTS Pagamento(
 CREATE TABLE IF NOT EXISTS Spedizione(
     id_spedizione INT  AUTO_INCREMENT PRIMARY KEY,
     id_ordine INT  NOT NULL, 
-    codice_tracking VARCHAR(255),
     corriere VARCHAR(255),
     stato ENUM('preparazione', 'in_transito', 'consegnato') DEFAULT 'preparazione' NOT NULL,
     FOREIGN KEY (id_ordine) REFERENCES Ordine(id_ordine) ON DELETE CASCADE
