@@ -11,5 +11,5 @@ public interface UtenteDAO {
 	 public UtenteBEAN doRetrieveByEmail(String email) throws SQLException;
 	 public boolean doUpdate(UtenteBEAN utente) throws SQLException;
 	 public boolean doDelete(int code) throws SQLException;
-	 public List<UtenteBEAN> doRetrieveAll() throws SQLException;
+	 public List<UtenteBEAN> doRetrieveAll(String order) throws SQLException;
 }
