@@ -11,7 +11,7 @@
     <input type="email" id="username" name="username" required><br>
     <label for="password">Password:</label><br>
     <input type="password" id="password" required><br><br>
-    <input type="submit" value="accedi">
+    <input type="submit" value="Accedi">
 </form>
 </body>
 </html>
