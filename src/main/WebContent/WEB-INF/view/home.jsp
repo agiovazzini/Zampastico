@@ -13,10 +13,16 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/style.css">
 </head>
 <body>
+	<% if (request.getAttribute("statoAccesso") != null) { %>
+    	<div>
+        	<%= request.getAttribute("statoAccesso") %>
+    	</div>
+	<% } %>
     <% if (utente != null) { %>
         <div>
             <p>Ciao, <%= utente.getNome() %> <%= utente.getCognome() %>!</p>
             <p>La tua email: <%= utente.getEmail() %></p>
+            <a href="${pageContext.request.contextPath}/logout">Esci dall'account</a>
             <br>
         </div>
     <% } else { %>
