@@ -2,7 +2,7 @@
 <%@ page import="it.unisa.zampastico.model.UtenteBEAN" %>
 <% UtenteBEAN utente = (UtenteBEAN) session.getAttribute("utenteLoggato"); %>
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
