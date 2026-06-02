@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="it.unisa.zampastico.model.UtenteBEAN" %>
+<% UtenteBEAN utente = (UtenteBEAN) session.getAttribute("utenteLoggato"); %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -11,6 +13,21 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/style.css">
 </head>
 <body>
+    <% if (utente != null) { %>
+        <div>
+            <p>Ciao, <%= utente.getNome() %> <%= utente.getCognome() %>!</p>
+            <p>La tua email: <%= utente.getEmail() %></p>
+            <br>
+        </div>
+    <% } else { %>
+        
+        <div>
+            <h2>Non sei autenticato</h2>
+            <br>
+            <a href="${pageContext.request.contextPath}/login">Vai alla pagina di Login</a>
+        </div>
+        
+    <% } %>
     <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
 </body>
 </html>
