@@ -18,8 +18,8 @@ public class HomeServlet extends HttpServlet {
         if (info != null) {
         	request.setAttribute("statoAccesso", info);
         	session.removeAttribute("info");
-        	request.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
