@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+	<%@ include file="common-head.jsp" %>
 <title>Gestione ordini</title>
 </head>
 <body>
