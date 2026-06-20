@@ -1,0 +1,99 @@
+.top-section{
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 40px;
+	padding: 20px 40px;
+	background-color: var(--color-bg-section);
+    border-bottom: 3px solid var(--color-primary);
+}
+
+.div-search{
+	display: grid;
+	justify-content: center;
+	position: relative;
+}
+
+.form-search{
+	display: grid;
+	grid-template-columns: 1fr auto;
+	width: 300px;
+}
+
+.form-search input {
+    padding: 12px 18px;
+    border: 1px solid var(--color-text-light); 
+    border-right: none;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: var(--border-radius-button) 0 0 var(--border-radius-button);
+    outline: none;
+}
+
+.form-search input:focus {
+    border-color: var(--color-primary);
+}
+
+.form-search button {
+    padding: 12px 24px;
+    background-color: var(--color-primary);
+    color: var(--color-bg-body);
+    border: 1px solid var(--color-primary);
+    cursor: pointer;
+    text-transform: uppercase; 
+    font-weight: bold;
+    border-radius: 0 var(--border-radius-button) var(--border-radius-button) 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.form-search button:hover {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+}
+
+.div-actions {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 30px;
+}
+
+.action-element {
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-text-main);
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.action-element:hover {
+    color: var(--color-primary);
+}
+
+.action-picture {
+    width: 45px;
+    height: 45px;
+    background-color: var(--color-bg-footer); 
+    border: 1px solid var(--color-text-light);
+    border-radius: 50%;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    display: grid;
+    place-items: center; 
+}
+
+.action-picture img {
+    max-width: 22px; 
+    max-height: 22px; 
+    object-fit: contain;
+}
+
+.action-element:hover .action-picture {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}

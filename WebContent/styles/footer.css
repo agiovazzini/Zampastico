@@ -1,0 +1,132 @@
+.bottom-section {
+    background-color: var(--color-bg-footer);
+    color: var(--color-text-main);
+    font-family: var(--font-main);
+    padding: 60px 40px 30px 40px;
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    gap: 15vw;
+}
+
+.footer-brand h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+}
+
+.brand-description {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-top: 12px;
+    line-height: 1.4;
+    max-width: 260px;
+    text-align: left;
+}
+
+.footer-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+
+.footer-col h4 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 2px;
+}
+
+.footer-col a {
+    text-decoration: none;
+    color: var(--color-text-light);
+    font-size: 0.80rem;
+    transition: color 0.3s ease;
+}
+
+.footer-col a:hover {
+    color: var(--color-primary);
+}
+
+.payment-methods {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-divider {
+    border: none;
+    border-top: 1px solid #dcdcdc;
+    margin: 40px 0 25px 0;
+}
+
+.footer-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 20px;
+}
+
+.copyright {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    justify-self: start;
+}
+
+.footer-socials {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: center; 
+    gap: 25px;
+}
+
+.footer-socials a {
+    color: var(--color-text-main);
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-socials a:hover {
+    color: var(--color-primary);
+}
+
+.back-to-top {
+    display: grid;
+    justify-content: end; 
+}
+
+.back-to-top a {
+    display: grid;
+    place-items: center; 
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-text-main);
+    border-radius: 50%;
+    color: var(--color-text-main);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.back-to-top a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: transparent;
+}
+
