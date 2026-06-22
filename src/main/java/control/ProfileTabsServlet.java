@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/profile")
-public class ProfileServlet extends HttpServlet {
+public class ProfileTabsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public ProfileServlet() {
+    public ProfileTabsServlet() {
         super();
     }
 
