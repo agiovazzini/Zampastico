@@ -29,8 +29,7 @@ public class ProfileTabsServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-        UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
+		String feedback = null;
         String pathInfo = request.getPathInfo();
         String contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
         String activeTab = "personal-data";
@@ -48,15 +47,20 @@ public class ProfileTabsServlet extends HttpServlet {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-reviews.jsp";
         		activeTab = "reviews";
         	} else {
-        		response.sendError(404);
-        		return;
+        		feedback = "La sezione richiesta non esiste. Ti abbiamo reindirizzato ai dati personali.";
+                contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
+                activeTab = "personal-data";
         	}
         } catch (Exception e) {
-        	response.sendError(500);
-        	return;
+        	feedback = "Si è verificato un errore durante il caricamento della pagina profilo.";
+            contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
+            activeTab = "personal-data";
         }
         request.setAttribute("contentPage", contentPage);
         request.setAttribute("activeTab", activeTab);
+        if (feedback != null) {
+            request.setAttribute("feedback", feedback);
+        }
         request.getRequestDispatcher("/WEB-INF/view/common/profile.jsp").forward(request, response);
 	}
 
