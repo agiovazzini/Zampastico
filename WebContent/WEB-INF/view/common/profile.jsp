@@ -16,11 +16,11 @@
 					<h3>Il mio account</h3>
 				</div>
 				<ul class="tabs-item">
-					<li><a href="">Dati personali</a></li>
-					<li><a href="">Indirizzi di spedizione</a></li>
-					<li><a href="">I miei ordini</a></li>
-					<li><a href="">Le mie recensioni</a></li>
-					<li class="logout-item"><a href="">Esci dall'account</a></li>
+					<li><a href="${pageContext.request.contextPath}/profile/personal-data">Dati personali</a></li>
+					<li><a href="${pageContext.request.contextPath}/profile/addresses">Indirizzi di spedizione</a></li>
+					<li><a href="${pageContext.request.contextPath}/profile/orders-history">I miei ordini</a></li>
+					<li><a href="${pageContext.request.contextPath}/profile/reviews">Le mie recensioni</a></li>
+					<li class="logout-item"><a href="logout">Esci dall'account</a></li>
 				</ul>
 			</div>
 		</section>
@@ -28,9 +28,9 @@
 		<% if (feedback != null) { %>
         	<div class="feedback-div"><%= feedback %></div>
     	<% } %>
- 		<!-- CONTENUTO DEL TAB -->
+ 		<jsp:include page="${contentPage}"/>
 		</section>
 	<%@ include file="footer.jsp" %>
-	<script src="${pageContext.request.contextPath}/scripts/profile/profile.js"></script>
+	<script src="${pageContext.request.contextPath}/scripts/profile/profile-tabs.js"></script>
 </body>
 </html>
