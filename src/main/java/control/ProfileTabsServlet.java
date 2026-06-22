@@ -33,15 +33,20 @@ public class ProfileTabsServlet extends HttpServlet {
         UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
         String pathInfo = request.getPathInfo();
         String contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
+        String activeTab = "personal-data";
         try {
         	if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("/personal-data")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
+        		activeTab = "personal-data";
         	} else if (pathInfo.equals("/orders-history")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-orders.jsp";
+        		activeTab = "orders-history";
         	} else if (pathInfo.equals("/addresses")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-address.jsp";
+        		activeTab = "addresses";
         	} else if (pathInfo.equals("/reviews")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-reviews.jsp";
+        		activeTab = "reviews";
         	} else {
         		response.sendError(404);
         		return;
@@ -51,6 +56,7 @@ public class ProfileTabsServlet extends HttpServlet {
         	return;
         }
         request.setAttribute("contentPage", contentPage);
+        request.setAttribute("activeTab", activeTab);
         request.getRequestDispatcher("/WEB-INF/view/common/profile.jsp").forward(request, response);
 	}
 
