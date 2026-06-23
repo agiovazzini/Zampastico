@@ -51,7 +51,7 @@
     		</a>
     	</div>
     	<div class="hero-image">
-    		<img src="${pageContext.request.contextPath}/images/assets/hero-pets.png" alt="Cane e Gatto felici" onerror="this.src='https://via.placeholder.com/600x400?text=Cane+e+Gatto'">
+    		<img src="${pageContext.request.contextPath}/images/assets/cane_e_gatto_new.png" alt="Cane e Gatto felici" onerror="this.src='https://via.placeholder.com/600x400?text=Cane+e+Gatto'">
     	</div>
     </section>
     
@@ -96,7 +96,7 @@
     	<div class="categories-grid">
     		<a href="#" class="category-card">
     			<div class="category-img-wrap bg-light-green">
-    				<img src="https://via.placeholder.com/150?text=Cane" alt="Cani">
+    				<img src="${pageContext.request.contextPath}/images/assets/cane_new.png" alt="Cani">
     				<div class="cat-icon text-green"><i class="fa-solid fa-dog"></i></div>
     			</div>
     			<span class="category-name text-green">Cani</span>
@@ -104,7 +104,7 @@
     		
     		<a href="#" class="category-card">
     			<div class="category-img-wrap bg-light-orange">
-    				<img src="https://via.placeholder.com/150?text=Gatto" alt="Gatti">
+    				<img src="${pageContext.request.contextPath}/images/assets/gattino_new.png" alt="Gatti">
     				<div class="cat-icon text-green"><i class="fa-solid fa-cat"></i></div>
     			</div>
     			<span class="category-name text-green">Gatti</span>
@@ -112,7 +112,7 @@
  
 			<a href="#" class="category-card">
                 <div class="category-img-wrap bg-light-purple">
-                    <img src="https://via.placeholder.com/150?text=Coniglio" alt="Altri Animali">
+                    <img src="${pageContext.request.contextPath}/images/assets/altro.png" alt="Altri Animali">
                     <div class="cat-icon text-purple"><i class="fa-solid fa-paw"></i></div>
                 </div>
                 <span class="category-name text-purple">Altri Animali</span>
@@ -120,7 +120,7 @@
             
             <a href="#" class="category-card">
             	<div class="category-img-wrap bg-light-orange">
-            		<img src="https://via.placeholder.com/150?text=Cibo" alt="Cibo">
+            		<img src="${pageContext.request.contextPath}/images/assets/cibo_new.png" alt="Cibo">
             		<div class="cat-icon text-orange"><i class="fa-solid fa-bowl-food"></i></div>
             	</div>
             	<span class="category-name text-orange">Cibo</span>
@@ -128,7 +128,7 @@
             
             <a href="#" class="category-card">
             	<div class="category-img-wrap bg-light-green">
-            		<img src="https://via.placeholder.com/150?text=Collare" alt="Accessori">
+            		<img src="${pageContext.request.contextPath}/images/assets/accessori_new.png" alt="Accessori">
             		<div class="cat-icon text-green"><i class="fa-solid fa-ring"></i></div>
             	</div>
             	<span class="category-name text-green">Accessori</span>
@@ -136,7 +136,7 @@
             
             <a href="#" class="category-card">
             	<div class="category-img-wrap bg-light-orange">
-            		<img src="https://via.placeholder.com/150?text=Gioco" alt="Giochi">
+            		<img src="${pageContext.request.contextPath}/images/assets/giochi.png" alt="Giochi">
             		<div class="cat-icon text-orange"><i class="fa-solid fa-bone"></i></div>
             	</div>
             	<span class="category-name text-orange">Giochi</span>
@@ -155,7 +155,7 @@
     	<div class="products-grid">
     		<div class="product-card">
     			<div class="product-image">
-    				<img src="${pageContext.request.contextPath}/images/assets/monge-salmone.jpg" alt="Crocchette Monge Salmone per cani" onerror="this.src='https://via.placeholder.com/200x200?text=Monge+Salmone'">
+    				<img src="${pageContext.request.contextPath}/images/assets/monge_salmone.png" alt="Crocchette Monge Salmone per cani" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=Monge+Salmone'">
     			</div>
     			<div class="product-info">
     				<h3 class="prod-title">Monge Natural Superpremium</h3>
@@ -173,7 +173,7 @@
     		<div class="product-card">
     			<span class="badge badge-new">Novità</span>
     			<div class="product-image">
-    				<img src="https://via.placeholder.com/200x200?text=Cuccia" alt="Cuccia">
+    				<img src="${pageContext.request.contextPath}/images/assets/cuccia.jpg" alt="Cuccia">
     			</div>
     			<div class="product-info">
     				<h3 class="prod-title">Cuccia Morbiba Deluxe</h3>
@@ -190,7 +190,7 @@
     		<div class="product-card">
     			<span class="badge badge-sale">-15%</span>
     			<div class="product-image">
-    				<img src="https://via.placeholder.com/200x200?text=Gioco" alt="Palla">
+    				<img src="${pageContext.request.contextPath}/images/assets/palla_a_corda.jpg" alt="Palla">
     			</div>
     			<div class="product-info">
     				<h3 class="prod-title">Palla in corda</h3>
@@ -206,7 +206,7 @@
     		</div>
     		<div class="product-card">
     			<div class="product-image">
-    				<img src="https://via.placeholder.com/200x200?text=Frontline" alt="Frontline">
+    				<img src="${pageContext.request.contextPath}/images/assets/antiparassitario_gatto.jpg" alt="Frontline">
     			</div>
     			<div class="product-info">
     				<h3 class="prod-title">Frontline Combo Gatto</h3>
@@ -216,6 +216,22 @@
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price">23,90 €</span>
+    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    				</div>
+    			</div>
+    		</div>
+    		<div class="product-card">
+    			<div class="product-image">
+    				<img src="${pageContext.request.contextPath}/images/assets/altalena_pappagalli.jpg" alt="Altalena">
+    			</div>
+    			<div class="product-info">
+    				<h3 class="prod-title">Altalena Per Pappagallini</h3>
+    				<p class="prod-desc">Giochi per pappagalli</p>
+    				<div class="prod-rating">
+    					<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> <span>(115)</span>
+    				</div>
+    				<div class="prod-bottom">
+    					<span class="prod-price">13,00 €</span>
     					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
