@@ -21,7 +21,7 @@
 					<li class="${activeTab == 'addresses' ? 'active' : 'inactive'}" data-tab="addresses"><a href="${pageContext.request.contextPath}/profile/addresses">Indirizzi di spedizione</a></li>
 					<li class="${activeTab == 'orders-history' ? 'active' : 'inactive'}" data-tab="orders-history"><a href="${pageContext.request.contextPath}/profile/orders-history">I miei ordini</a></li>
 					<li class="${activeTab == 'reviews' ? 'active' : 'inactive'}" data-tab="reviews"><a href="${pageContext.request.contextPath}/profile/reviews">Le mie recensioni</a></li>
-					<li class="logout-item"><a href="../logout">Esci dall'account</a></li>
+					<li class="logout-item"><a href="${pageContext.request.contextPath}/logout">Esci dall'account</a></li>
 				</ul>
 			</div>
 		</section>
