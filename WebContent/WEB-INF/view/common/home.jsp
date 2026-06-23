@@ -223,5 +223,28 @@
     	</div>
     </section>
     
+    <!-- NEWSLETTER -->
+    <section class="newsletter-section">
+    	<div class="news-icon-bg"><i class="fa-solid fa-paw"></i></div>
+    	<div class="news-text">
+    		<h2>Iscriviti anche tu alla ZampaCommunity!🐾</h2>
+    		<p>Ricevi offerte esclusive, consigli utili e tante coccole per i tuoi amici a quattro zampe!</p>
+    	</div>
+    	<div class="news-action">
+    		<a href="#" class="btn-primary">Iscriviti ora</a>
+    	</div>
+    	<div class="news-image">
+    		<img src="${pageContext.request.contextPath}/images/assets/newsletter-pets.png" alt="Pets" onerror="this.style.display='none'">
+    	</div>
+    </section>
+    
+ </main>
+ 
+ <!-- Aggiunta del footer -->
+ <jsp:include page="footer.jsp" />
+ 
+ <!-- Script JavaScript -->
+ <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
+ 
 </body>
 </html>
