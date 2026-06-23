@@ -17,27 +17,29 @@
 		</form>
 	</div>
 	<div class="password-container">
-		<form class="data-form" id="password-settings" action="" method="POST">
+		<form class="data-form" id="password-settings" action="${pageContext.request.contextPath}/updatePassword" method="POST">
 			<div class="form-element">
 				<label for="currentPassword">Password Attuale</label>
-				<input type="text" id="currentPassword" name="passwordForm" value="" required>
+				<input type="password" id="currentPassword" name="passwordForm" value="" required>
 			</div>
 			<div class="form-element">
 				<label for="newPassword">Nuova Password</label>
-				<input type="text" id="newPassword" name="newPasswordForm" value="" required>
+				<input type="password" id="newPassword" name="newPasswordForm" value="" required>
 			</div>
 			<div class="form-element">
 				<label for="confirmPassword">Conferma Password</label>
-				<input type="text" id="confirmPassword" name="confirmPasswordForm" value="" required>
+				<input type="password" id="confirmPassword" name="confirmPasswordForm" value="" required>
 			</div>
-			<button type="button" class="saveButton" onclick="">Aggiorna Password</button>
+			<button type="button" class="saveButton" onclick="submitPassword()">Aggiorna Password</button>
 		</form>
 	</div>
 	<div class="anonym-container">
+		<form id="delete-form" action="${pageContext.request.contextPath}/deleteAccount" method="POST">
 			<div class="form-element">
 				<label>Vuoi applicare il tuo diritto all'oblio?</label>
-				<button type="button" class="saveButton" onclick="">Cancella l'account</button>
+				<button type="button" class="saveButton" onclick="submitDeletion()">Cancella l'account</button>
 			</div>
+		</form>
 	</div>
 	<script src="${pageContext.request.contextPath}/scripts/profile/personal-data.js"></script>
 </body>

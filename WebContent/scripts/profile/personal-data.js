@@ -41,3 +41,33 @@ function submitUpdate() {
     form.submit();
 }
 
+function submitPassword() {
+    hideFeedback();
+	const form = document.getElementById('password-settings');
+	const oldPass = document.getElementById('currentPassword').value.trim();
+	const newPass = document.getElementById('newPassword').value.trim();
+	const confPass = document.getElementById('confirmPassword').value.trim();
+	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.\-_#'])[A-Za-z\d@$!%*?&.\-_#']{8,}$/;
+	if (oldPass === "" || newPass === "" || confPass === "") {
+		showFeedback("Compila tutti i campi della password.");
+		return;
+	}
+	if (oldPass === newPass) {
+		showFeedback("La nuova password non può essere uguale a quella attuale inserita.");
+		return;
+	}
+	if (!passwordRegex.test(newPass)) {
+		showFeedback("La password deve avere almeno 8 caratteri, includendo una maiuscola, una minuscola, un numero e un simbolo speciale.");
+		return;
+	}
+	if (newPass !== confPass) {
+		showFeedback("La nuova password e la conferma non coincidono.");
+		return;
+	}
+    form.submit();
+}
+
+function submitDeletion(){
+	const form = document.getElementById('delete-form');
+	form.submit();
+}
