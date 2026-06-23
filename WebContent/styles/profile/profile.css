@@ -89,7 +89,8 @@
 
 .data-container, 
 .password-container, 
-.anonym-container { 
+.anonym-container,
+.address-container { 
     border: 1px solid #eaeaea;
     border-radius: 8px;
     padding: 25px;
@@ -165,4 +166,15 @@
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.7); }
     50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(139, 0, 0, 0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0); }
+}
+
+#defaultForm {
+    display: grid;
+    grid-template-columns: auto auto; 
+    gap: 10px;
+}
+
+#defaultForm label {
+    margin-bottom: 0;
+    cursor: pointer;
 }
