@@ -29,3 +29,28 @@ body {
     background-color: var(--color-bg-body);
     line-height: 1.6;
 }
+
+
+/*BOTTONI GLOBALI*/
+.btn-primary {
+	background-color: var(--color-primary);
+	color: white;
+	border: none;
+	padding: 12px 25px;
+	border-radius: var(--border-radius-button);
+	font-size: 1.1rem;
+	font-weight: 700;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover{
+	background-color: var(--color-primary-hover);
+	color: white;
+}
