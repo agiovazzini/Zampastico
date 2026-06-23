@@ -18,7 +18,7 @@
 	<!-- AREA, LOGO E SOTTOTITOLO -->
 	<div class="div-logo">
 		<a href="${pageContext.request.contextPath}/index.jsp">
-			<img src="${pageContext.request.contextPath}/images/assets/logo.png" alt="Zampastico">
+			<img src="${pageContext.request.contextPath}/images/assets/logo_nuovo.png" alt="Zampastico">
 		</a>
 		<span class="logo-subtitle">Tutto ciò che rende felice il tuo amico a 4 zampe!</span>
 	</div>
