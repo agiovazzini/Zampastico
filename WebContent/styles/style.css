@@ -116,3 +116,38 @@ body {
     object-fit: contain;
 }
 
+/*--- FEATURES BANNER ---*/
+.features-banner {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding: 30px;
+    border-radius: var(--border-radius-card);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    margin-top: -30px; /* Sale sopra la hero section */
+    position: relative;
+    z-index: 5;
+    margin-bottom: 60px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.bg-light-green { background-color: #eaf5eb; color: var(--color-accent-green); }
+.bg-light-orange { background-color: #fcece5; color: var(--color-primary); }
+
+.feature-text h4 { font-weight: 800; color: var(--color-text-main); margin-bottom: 3px; }
+.feature-text p { font-size: 0.85rem; color: var(--color-text-light); line-height: 1.3;}
