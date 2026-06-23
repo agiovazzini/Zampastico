@@ -54,3 +54,12 @@ body {
 	background-color: var(--color-primary-hover);
 	color: white;
 }
+
+/*---- HOMEPAGE LAYOUT ----*/
+
+/*Contenitore principale*/
+.home-container{
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
