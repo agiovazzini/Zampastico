@@ -37,7 +37,7 @@
 		<form id="delete-form" action="${pageContext.request.contextPath}/deleteAccount" method="POST">
 			<div class="form-element">
 				<label>Vuoi applicare il tuo diritto all'oblio?</label>
-				<button type="button" class="saveButton" onclick="submitDeletion()">Cancella l'account</button>
+				<button type="button" class="saveButton" onclick="submitDeletion(this)">Cancella l'account</button>
 			</div>
 		</form>
 	</div>

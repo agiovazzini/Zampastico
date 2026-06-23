@@ -1,3 +1,5 @@
+let confirmTimeout;
+
 function showFeedback(message){
 	let feedbackDiv = document.querySelector('.feedback-div');
 	if (!feedbackDiv){
@@ -67,7 +69,16 @@ function submitPassword() {
     form.submit();
 }
 
-function submitDeletion(){
-	const form = document.getElementById('delete-form');
-	form.submit();
+function submitDeletion(button){
+	if (!button.classList.contains('confirmButton')){
+		button.textContent = "Confermi la cancellazione?";
+		button.classList.add('confirmButton');
+		confirmTimeout = setTimeout(() => {
+			button.textContent = "Cancella l'account";
+			button.classList.remove('confirmButton')
+		}, 5000);
+	} else {
+		clearTimeout(confirmTimeout);
+		document.getElementById('delete-form').submit();
+	}
 }

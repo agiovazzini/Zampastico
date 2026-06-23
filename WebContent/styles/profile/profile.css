@@ -66,12 +66,103 @@
 }
 
 .feedback-div {
-    margin-bottom: 24px;
-    padding: 16px 20px;
-    border-radius: 12px;
-    background-color: var(--color-primary);
-    color: var(--color-bg-body);
+    border-left: 6px solid var(--color-primary, #ff6600); 
+    padding: 10px 20px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    animation: fadeInDown 0.4s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.data-container, 
+.password-container, 
+.anonym-container { 
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.form-element {
+    margin-bottom: 20px;
+    display: grid;
+    max-width: 400px;
+}
+
+.form-element label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-element input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.5;
+    transition: border-color 0.3s ease;
+}
+
+.form-element input:focus {
+    border-color: var(--color-primary, #ff6600);
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 102, 0, 0.2);
+}
+
+.saveButton { 
+    background-color: var(--color-primary); 
+    color: white; 
+    border: none; 
+    padding: 12px 24px; 
+    font-size: 1rem; 
+    font-weight: 700; 
+    border-radius: 25px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    margin-top: 10px;
+}
+
+.saveButton:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3); 
+}
+
+.anonym-container label {
+    font-size: 1.1rem;
+    color: #e74c3c;
+    margin-bottom: 15px;
+}
+
+.anonym-container .saveButton {
+    background-color: #e74c3c; 
+    max-width: 250px;
+}
+
+.anonym-container .saveButton:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); 
+}
+
+.anonym-container .saveButton.confirmButton {
+    background-color: #8b0000;
+    animation: pulseAlert 1.5s infinite;
+}
+
+@keyframes pulseAlert {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.7); }
+    50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(139, 0, 0, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0); }
 }
