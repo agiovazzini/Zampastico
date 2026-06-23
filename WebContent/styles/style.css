@@ -344,3 +344,23 @@ body {
     opacity: 0.8;
 }
 
+/* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
+@media (max-width: 992px) {
+    .hero-section { flex-direction: column; padding: 40px; text-align: center; }
+    .hero-content, .hero-image { max-width: 100%; }
+    .hero-image { margin-top: 30px; }
+    .features-banner { flex-wrap: wrap; margin-top: 20px; }
+    .feature-item { width: 48%; margin-bottom: 20px; }
+    .categories-grid { grid-template-columns: repeat(3, 1fr); }
+    .products-grid { grid-template-columns: repeat(3, 1fr); }
+    .newsletter-section { flex-direction: column; text-align: center; padding: 30px; }
+    .news-icon-bg { margin: 0 auto 20px auto; }
+    .news-action { margin: 20px auto 0 auto; }
+}
+
+@media (max-width: 576px) {
+    .feature-item { width: 100%; }
+    .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    .products-grid { grid-template-columns: repeat(1, 1fr); }
+    .hero-content h1 { font-size: 2.5rem; }
+}    
