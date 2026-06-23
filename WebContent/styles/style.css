@@ -74,8 +74,8 @@ body {
     padding: 60px;
     margin-top: 30px;
     position: relative;
-    overflow: hidden; /* Nasconde ciò che esce dai bordi */
-    min-height: 420px; /* Diamo un'altezza minima fissa */
+    overflow: hidden; 
+    min-height: 450px; /* Diamo respiro alla sezione */
 }
 
 .hero-content {
@@ -107,20 +107,23 @@ body {
 }
 
 .hero-image {
-    position: absolute; 
-    right: 0;          
-    bottom: 0;         
-    width: 55%;        
-    max-width: 550px;
+    position: absolute; /* Sganciamo l'immagine dal testo */
+    right: 0;           /* Incollata al bordo destro */
+    bottom: 0;          /* Incollata al bordo inferiore */
+    top: 0;             /* Prende tutta l'altezza */
+    width: 55%;         /* Occupa poco più di metà schermo */
     z-index: 1;
     display: flex;
-    align-items: flex-end; 
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
 .hero-image img {
-    width: 100%;
-    height: auto;
-    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Scala l'immagine senza tagliare le teste agli animali */
+    object-position: right bottom; /* La fissa saldamente in basso a destra */
+    mix-blend-mode: darken; /* 🪄 LA MAGIA: fa sparire il quadrato di sfondo fondendolo con la pagina! */
 }
 
 /*--- FEATURES BANNER ---*/
