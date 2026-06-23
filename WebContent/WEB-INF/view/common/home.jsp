@@ -113,7 +113,7 @@
 			<a href="#" class="category-card">
                 <div class="category-img-wrap bg-light-purple">
                     <img src="https://via.placeholder.com/150?text=Coniglio" alt="Altri Animali">
-                    <div class="cat-icon text-purple"><i class="fa-solid fa-rabbit"></i></div>
+                    <div class="cat-icon text-purple"><i class="fa-solid fa-paw"></i></div>
                 </div>
                 <span class="category-name text-purple">Altri Animali</span>
             </a>
