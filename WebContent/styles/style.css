@@ -65,16 +65,17 @@ body {
 }
 
 /*HERO SECTION*/
-.hero-section{
-	background-color: var(--color-bg-section);
-	border-radius: var(--border-radius-card);
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 60px;
-	margin-top: 30px;
-	position: relative;
-	overflow: hidden;
+.hero-section {
+    background-color: var(--color-bg-section);
+    border-radius: var(--border-radius-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px;
+    margin-top: 30px;
+    position: relative;
+    overflow: hidden; /* Nasconde ciò che esce dai bordi */
+    min-height: 420px; /* Diamo un'altezza minima fissa */
 }
 
 .hero-content {
@@ -106,14 +107,20 @@ body {
 }
 
 .hero-image {
-    max-width: 45%;
+    position: absolute; 
+    right: 0;          
+    bottom: 0;         
+    width: 55%;        
+    max-width: 550px;
     z-index: 1;
+    display: flex;
+    align-items: flex-end; 
 }
 
 .hero-image img {
     width: 100%;
     height: auto;
-    object-fit: contain;
+    display: block;
 }
 
 /*--- FEATURES BANNER ---*/
