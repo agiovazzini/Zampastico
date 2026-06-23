@@ -1,13 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<% String feedback = (String) request.getAttribute("feedback"); %>
+<% String feedback = (String) session.getAttribute("feedback"); %>
 <!DOCTYPE html>
 <html>
 <head>
 	<%@ include file="common-head.jsp" %>
 	<title>Il mio account</title>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/styles/profile/profile.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/styles/profile/profile-tabs.css">
 </head>
 <body>
 	<%@ include file="header.jsp" %>
@@ -30,6 +29,7 @@
 		<% if (feedback != null) { %>
         	<div class="feedback-div"><%= feedback %></div>
     	<% } %>
+    	<% if (feedback != null) session.removeAttribute("feedback");%>
  		<jsp:include page="${contentPage}"/>
 		</section>
 	</div>
