@@ -505,24 +505,29 @@ body {
 .btn-add-cart:hover { background-color: #71b95b; }
 
 /* Bottone Cuoricino per la Home */
-.btn-wishlist {
-    background-color: #fff1f0;
+.btn-wishlist-top {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #ffffff;
     color: #ff4757;
-    border: 1px solid #f9d9d7;
+    border: 1px solid #f0f0f0;
     width: 35px;
     height: 35px;
-    border-radius: 10px;
+    border-radius: 50%;
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.btn-wishlist:hover {
-    background-color: #ff4757;
-    color: white;
+.btn-wishlist-top:hover {
+    background-color: #fff1f0;
+    transform: scale(1.1); /* Effetto ingrandimento al passaggio del mouse */
 }
 
 /* ZAMPACOMMUNITY */
