@@ -581,8 +581,248 @@ body {
     mix-blend-mode: multiply !important; 
 }
 
+/* --- PAGINA CARRELLO --- */
+.cart-container {
+    margin-top: 40px;
+    margin-bottom: 80px;
+}
+
+.cart-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- STRUTTURA A 2 COLONNE --- */
+.cart-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+/* --- COLONNA SINISTRA (ARTICOLI) --- */
+.cart-items-section {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Singola Card Prodotto */
+.cart-item-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: var(--border-radius-card);
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    gap: 25px;
+    transition: box-shadow 0.2s ease;
+}
+
+.cart-item-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Immagine prodotto */
+.cart-item-image {
+    width: 110px;
+    height: 110px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cart-item-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Dettagli testo */
+.cart-item-details {
+    flex: 1;
+}
+
+.item-category {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.item-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 5px 0;
+}
+
+.item-weight {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin: 0;
+}
+
+/* Bottoni Quantità (- 1 +) */
+.qty-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.qty-btn {
+    background: #f8f8f8;
+    border: none;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--color-text-main);
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-btn:hover { background: #e0e0e0; }
+
+.qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-weight: 800;
+    font-size: 1rem;
+    outline: none;
+    pointer-events: none; 
+    color: var(--color-text-main);
+}
+
+/* Prezzo e Bottone Cestino */
+.cart-item-price-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    min-width: 100px;
+}
+
+.item-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b; /* Rosso per l'azione di eliminazione */
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.remove-btn:hover {
+    transform: scale(1.15);
+    color: #ff4757;
+}
+
+/* --- RIEPILOGO ORDINE COLONNA A DESTRA --- */
+.cart-summary-section {
+    width: 380px; 
+    background-color: var(--color-bg-section); 
+    border-radius: var(--border-radius-card);
+    padding: 30px;
+    position: sticky; 
+    top: 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #eaeaea;
+    flex-shrink: 0;
+}
+
+.summary-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--color-text-main);
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+.free-shipping {
+    color: var(--color-accent-green); 
+    font-weight: 800;
+}
+
+.summary-divider {
+    border: 0;
+    border-top: 1px dashed #ccc;
+    margin: 20px 0;
+}
+
+.summary-row.total-row {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-primary); 
+    margin-top: 5px;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 25px;
+    padding: 18px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(243, 121, 37, 0.3); 
+}
+
+.btn-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 121, 37, 0.4);
+}
+
+.secure-checkout {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.secure-checkout i {
+    color: var(--color-accent-green);
+    font-size: 1.1rem;
+}
+
+
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
 @media (max-width: 992px) {
+	/* --- HOME PAGE --- */
     .hero-section { flex-direction: column; padding: 40px; text-align: center; }
     .hero-content, .hero-image { max-width: 100%; }
     .hero-image { margin-top: 30px; position: relative; height: auto; }
@@ -593,11 +833,23 @@ body {
     .newsletter-section { flex-direction: column; text-align: center; padding: 40px; margin-top: 120px !important; }
     .news-action { margin: 20px auto 0 auto !important; }
     .news-image { height: 120px !important; right: 50% !important; transform: translateX(50%) !important; bottom: 100% !important; }
+	
+	/*--- CARRELLO --- */
+	.cart-layout { flex-direction: column; }
+	.cart-summary-section { width: 100%; position: static; }
+
 }
 
 @media (max-width: 576px) {
+	/* --- HOME PAGE --- */
     .feature-item { width: 100%; }
     .categories-grid { grid-template-columns: repeat(2, 1fr); }
     .products-grid { grid-template-columns: repeat(1, 1fr); }
     .hero-content h1 { font-size: 2.5rem; }
+    
+    /* --- CARRELLO --- */
+    .cart-item-card {flex-direction: column; align-items: flex-start; position: relative; }
+    .cart-item-image {width: 100%; height: 150px; }
+    .cart-item-price-wrap { width: 100%; flex-direction: row; align-items: center; margin-top: 15px; }
+    .remove-btn {position: absolute; top: 20px; right: 20px; }
 }
