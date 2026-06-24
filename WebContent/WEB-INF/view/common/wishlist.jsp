@@ -27,7 +27,7 @@
             <i class="fa-solid fa-heart-crack empty-icon"></i>
             <h2>Nessun preferito!</h2>
             <p>Non hai ancora aggiunto prodotti alla tua Lista dei Desideri.</p>
-            <a href="${pageContext.request.contextPath}/home.jsp" class="btn-primary">Torna allo shopping</a>
+            <a href="${pageContext.request.contextPath}/home" class="btn-primary">Torna allo shopping</a>
         </div>
     </main>
 
