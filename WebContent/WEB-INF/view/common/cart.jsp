@@ -59,74 +59,103 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Il JavaScript del carrello è partito!"); // Premi F12 sul browser per vedere questo messaggio!
+    const cartItemsSection = document.querySelector('.cart-items-section');
+    const btnProcedi = document.querySelector('.btn-block'); // Il bottone "Procedi all'ordine"
+    
+    // Funzione principale che legge la memoria e disegna la pagina
+    function renderizzaCarrello() {
+        let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
 
-    function updateTotals() {
-        let total = 0;
-        let itemCount = 0;
+        // SE IL CARRELLO E' VUOTO: Mostra il bel messaggio grafico
+        if(carrello.length === 0) {
+            cartItemsSection.innerHTML = `
+                <div class="empty-cart-message">
+                    <i class="fa-solid fa-basket-shopping empty-icon"></i>
+                    <h2>Il tuo carrello è vuoto! 🐾</h2>
+                    <p>Non hai ancora scelto nessun prodotto per il tuo amico a 4 zampe.</p>
+                    <a href="${pageContext.request.contextPath}/home" class="btn-primary">Inizia lo shopping</a>
+                </div>
+            `;
+            document.getElementById('summary-count').textContent = 'Subtotale (0 articoli)';
+            document.getElementById('summary-subtotal').textContent = '0,00€';
+            document.getElementById('summary-total').textContent = '0,00€';
+            
+            // Disattiva il tasto "Procedi all'ordine"
+            btnProcedi.style.opacity = '0.5';
+            btnProcedi.style.pointerEvents = 'none';
+            return;
+        }
+
+        // SE CI SONO PRODOTTI: Costruisce l'HTML per ogni prodotto
+        let htmlProdotti = '';
+        let totaleEuro = 0;
+        let totaleArticoli = 0;
+
+        carrello.forEach((prodotto, index) => {
+            const totaleRiga = prodotto.prezzo * prodotto.quantita;
+            totaleEuro += totaleRiga;
+            totaleArticoli += prodotto.quantita;
+
+            htmlProdotti += `
+                <div class="cart-item-card">
+                    <div class="cart-item-image">
+                        <img src="\${prodotto.immagine}" alt="\${prodotto.nome}">
+                    </div>
+                    <div class="cart-item-details">
+                        <h3 class="item-name">\${prodotto.nome}</h3>
+                        <p class="item-weight">Prezzo singolo: \${prodotto.prezzo.toFixed(2).replace('.', ',')}€</p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="cambiaQuantita(\${index}, -1)">-</button>
+                            <input type="number" value="\${prodotto.quantita}" class="qty-input" readonly>
+                            <button class="qty-btn" onclick="cambiaQuantita(\${index}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="cart-item-price-wrap">
+                        <span class="item-price">\${totaleRiga.toFixed(2).replace('.', ',')}€</span>
+                        <button class="remove-btn" onclick="rimuoviProdotto(\${index})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+                `;
+            });
+
+        // Inserisce tutto l'HTML generato nella pagina
+        cartItemsSection.innerHTML = htmlProdotti;
+
+        // Aggiorna la colonna di destra con i totali
+        document.getElementById('summary-count').textContent = 'Subtotale (' + totaleArticoli + ' articoli)';
+        document.getElementById('summary-subtotal').textContent = totaleEuro.toFixed(2).replace('.', ',') + '€';
+        document.getElementById('summary-total').textContent = totaleEuro.toFixed(2).replace('.', ',') + '€';
         
-        const cards = document.querySelectorAll('.cart-item-card');
-        if(cards.length === 0) return; // Se il carrello è vuoto, non fare nulla
+        // Riattiva il bottone "Procedi all'ordine"
+        btnProcedi.style.opacity = '1';
+        btnProcedi.style.pointerEvents = 'auto';
 
-        cards.forEach(card => {
-            // Recupera il prezzo. Se non c'è il data-base-price, usa 0 per non far crashare il sito
-            const priceAttr = card.getAttribute('data-base-price');
-            const price = priceAttr ? parseFloat(priceAttr) : 0;
-            
-            const qtyInput = card.querySelector('.qty-input');
-            const qty = qtyInput ? parseInt(qtyInput.value) : 1;
-            
-            const lineTotal = price * qty;
-            
-            const priceDisplay = card.querySelector('.item-price');
-            if(priceDisplay) priceDisplay.textContent = lineTotal.toFixed(2).replace('.', ',') + '€';
-            
-            total += lineTotal;
-            itemCount += qty;
-        });
-        
-        const countDisplay = document.getElementById('summary-count');
-        const subtotalDisplay = document.getElementById('summary-subtotal');
-        const totalDisplay = document.getElementById('summary-total');
-
-        if(countDisplay) countDisplay.textContent = 'Subtotale (' + itemCount + ' articoli)';
-        if(subtotalDisplay) subtotalDisplay.textContent = total.toFixed(2).replace('.', ',') + '€';
-        if(totalDisplay) totalDisplay.textContent = total.toFixed(2).replace('.', ',') + '€';
+        // Sincronizza anche il pallino dell'header
+        if(typeof aggiornaPallinoCarrello === 'function') aggiornaPallinoCarrello();
     }
 
-    // Aggiungiamo i click ai bottoni
-    document.querySelectorAll('.cart-item-card').forEach(card => {
-        const btnMinus = card.querySelector('.btn-minus');
-        const btnPlus = card.querySelector('.btn-plus');
-        const input = card.querySelector('.qty-input');
-        const btnRemove = card.querySelector('.remove-btn');
-        
-        if(btnPlus && input) {
-            btnPlus.addEventListener('click', function() {
-                input.value = parseInt(input.value) + 1;
-                updateTotals(); 
-            });
+    // --- FUNZIONI PER I BOTTONI (+, -, Cestino) ---
+    window.cambiaQuantita = function(index, delta) {
+        let carrello = JSON.parse(localStorage.getItem('zampastico_cart'));
+        // Evita che la quantità vada a 0 o sotto
+        if (carrello[index].quantita + delta >= 1) {
+            carrello[index].quantita += delta;
+            localStorage.setItem('zampastico_cart', JSON.stringify(carrello));
+            renderizzaCarrello(); // Ridisegna il carrello aggiornato
         }
-        
-        if(btnMinus && input) {
-            btnMinus.addEventListener('click', function() {
-                if (parseInt(input.value) > 1) {
-                    input.value = parseInt(input.value) - 1;
-                    updateTotals(); 
-                }
-            });
-        }
+    };
 
-        if(btnRemove) {
-            btnRemove.addEventListener('click', function() {
-                card.remove(); 
-                updateTotals(); 
-            });
-        }
-    });
-    
-    // Calcolo iniziale
-    updateTotals();
+    window.rimuoviProdotto = function(index) {
+        let carrello = JSON.parse(localStorage.getItem('zampastico_cart'));
+        carrello.splice(index, 1); // Rimuove l'elemento dall'array
+        localStorage.setItem('zampastico_cart', JSON.stringify(carrello));
+        renderizzaCarrello(); // Ridisegna il carrello aggiornato
+    };
+
+    // Avvia la costruzione del carrello appena apri la pagina
+    renderizzaCarrello();
 });
 </script>
 
