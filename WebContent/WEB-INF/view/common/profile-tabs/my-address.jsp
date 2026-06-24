@@ -59,9 +59,9 @@
                             </form>
                             <button type="button" class="editButton" data-id="${address.idIndirizzo}" data-via="${address.via}" data-citta="${address.citta}" data-provincia="${address.provincia}" data-cap="${address.cap}" data-default="${address.predefinito}" onclick="editAddress(this)">Modifica</button>
                             <c:if test="${not address.predefinito}">
-                                <form action="${pageContext.request.contextPath}/SetDefaultAddress" method="POST">
+                                <form action="${pageContext.request.contextPath}/setDefaultAddress" method="POST">
                                     <input type="hidden" name="idAddress" value="${address.idIndirizzo}">
-                                    <button type="submit" class="defaultBtn">Predefinito</button>
+                                    <button type="submit" class="defaultButton">Predefinito</button>
                                 </form>
                             </c:if>
                         </div>
