@@ -23,21 +23,21 @@ public class UtenteDAOImp {
     
     // INSERIMENTO UTENTE
     public synchronized void doSave(UtenteBEAN utente) throws SQLException {
-    	String insertSQL= "INSERT INTO " + TABLE_NAME + " (nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL= "INSERT INTO " + TABLE_NAME + " (nome, cognome, email, pass, data_anonimizzazione, ruolo, attivo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ds.getConnection();
-        		PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
             preparedStatement.setString(1, utente.getNome());
             preparedStatement.setString(2, utente.getCognome());
             preparedStatement.setString(3, utente.getEmail());
             preparedStatement.setString(4, utente.getPass());
-            preparedStatement.setTimestamp(5,  Timestamp.valueOf(utente.getDataCreazione()));
             if (utente.getDataAnonimizzazione() != null) {
-                preparedStatement.setTimestamp(6, Timestamp.valueOf(utente.getDataAnonimizzazione()));
+                preparedStatement.setObject(5, utente.getDataAnonimizzazione());
             } else {
-                preparedStatement.setNull(6, java.sql.Types.TIMESTAMP);
+                preparedStatement.setNull(5, java.sql.Types.TIMESTAMP);
             }
-            preparedStatement.setString(7,  utente.getRuolo().name());
-            preparedStatement.setBoolean(8,  utente.isAttivo());
+            preparedStatement.setString(6, utente.getRuolo().name());
+            preparedStatement.setBoolean(7, utente.isAttivo());
+            
             preparedStatement.executeUpdate();
         }
     }

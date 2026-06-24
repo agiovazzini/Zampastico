@@ -17,8 +17,8 @@ public class UtenteBEAN implements Serializable{
 		amministratore,
 		cliente
 	}
-	private Ruolo ruolo;
-	private boolean attivo;
+	private Ruolo ruolo = Ruolo.cliente;
+	private boolean attivo = true;
 
 	public UtenteBEAN() {
 		super();
