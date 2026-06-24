@@ -504,6 +504,27 @@ body {
 
 .btn-add-cart:hover { background-color: #71b95b; }
 
+/* Bottone Cuoricino per la Home */
+.btn-wishlist {
+    background-color: #fff1f0;
+    color: #ff4757;
+    border: 1px solid #f9d9d7;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-wishlist:hover {
+    background-color: #ff4757;
+    color: white;
+}
+
 /* ZAMPACOMMUNITY */
 
 .newsletter-section {
@@ -952,6 +973,37 @@ body {
     object-position: right center; /* ...MA fissa l'immagine a DESTRA per non tagliare il muso! */
 }
 
+/* --- STILI DEDICATI ALLA WHISHLIST --- */
+.wishlist-container {
+    margin-top: 40px;
+    margin-bottom: 80px;
+    min-height: 50vh;
+}
+
+.wishlist-container .cart-title {
+    margin-bottom: 40px;
+}
+
+/* Bottone per rimuovere dalla wishlist */
+.btn-remove-wishlist {
+    background-color: #fff1f0;
+    color: #ff4757;
+    border: 1px solid #f9d9d7;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-wishlist:hover {
+    background-color: #ff4757;
+    color: white;
+}
 
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
 @media (max-width: 992px) {
