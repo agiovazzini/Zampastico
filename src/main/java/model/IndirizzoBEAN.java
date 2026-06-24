@@ -13,7 +13,9 @@ public class IndirizzoBEAN implements Serializable {
     private String cap;
     private boolean predefinito;
 
-    public IndirizzoBEAN() {}
+    public IndirizzoBEAN() {
+    	super();
+    }
 
     public int getIdIndirizzo() { 
     	return idIndirizzo; 
