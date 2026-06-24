@@ -86,7 +86,7 @@
 			<span>46,70€</span>
 		</div>
 		
-		<a href="${pageContext.request.contextPath}/checkout" class="btn-primary btn-block">Procedi all'ordine</a>
+		<a href="${pageContext.request.contextPath}/checkout.jsp" class="btn-primary btn-block">Procedi all'ordine</a>
 		
 		<div class="secure-checkout">
 			<i class="fa-solid fa-shield-halved"></i> Pagamento Sicuro
