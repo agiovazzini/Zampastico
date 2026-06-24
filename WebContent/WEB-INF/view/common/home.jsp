@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.UtenteBEAN" %>
 <% UtenteBEAN utente = (UtenteBEAN) session.getAttribute("utenteLoggato"); %>
+<% // Controlla la sessione una volta sola all'apertura della pagina
+	boolean isLoggato = (session.getAttribute("utenteLoggato") != null);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,13 +14,11 @@
 </head>
 <body>
 	
-	<!-- Header -->
 	<jsp:include page="header.jsp" />
 	
 	<main class="home-container">
 	
-	<!-- GESTIONE SESSIONE E LOGIN -->
-    <% String infoMsg = (String) request.getAttribute("statoAccesso"); %>
+	<% String infoMsg = (String) request.getAttribute("statoAccesso"); %>
     <% if (infoMsg != null) { %>
         <div style="margin-top: 20px; padding: 15px; background-color: #eaf5eb; color: #518544; border-radius: 16px; text-align: center; font-weight: bold;">
             <%= infoMsg %>
@@ -39,9 +40,7 @@
             <a href="${pageContext.request.contextPath}/login" class="btn-primary" style="padding: 10px 25px; text-decoration: none;">Vai alla pagina di Login</a>
         </div>
     <% } %>
-    <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
     
-    <!-- Hero section -->
     <section class="hero-section">
     	<div class="hero-content">
     		<h1>Il meglio per loro, <br>scelto con <span>amore</span><i class="fa-solid fa-paw paw-icon"></i></h1>
@@ -55,7 +54,6 @@
     	</div>
     </section>
     
-    <!-- Features Banner -->
     <section class="features-banner">
     	<div class="feature-item">
     		<div class="feature-icon bg-light-green"><i class="fa-solid fa-truck"></i></div>
@@ -87,7 +85,6 @@
     	</div>
     </section>
     
-    <!-- CATEGORIE -->
     <section class="categories-section">
     	<div class="section-header">
     		<h2>Esplora le categorie <i class="fa-solid fa-paw" style="color: var(--color-primary);"></i></h2>
@@ -145,15 +142,24 @@
     	</div>
     </section>
     
-    <!-- PRODOTTI -->
     <section class="popular-products-section">
     	<div class="section-header">
     		<h2>I più amati <i class="fa-solid fa-heart" style="color: var(--color-primary);"></i></h2>
     		<a href="${pageContext.request.contextPath}/catalogo" class="link-view-all">Vedi tutti i prodotti <i class="fa-solid fa-arrow-right"></i></a>
     	</div>
-    	
     	<div class="products-grid">
+    	
     		<div class="product-card">
+			<% if (isLoggato) { %>
+    			<button class="btn-wishlist-top" onclick="aggiungiPreferito('Monge Natural Superpremium', 50.99, '${pageContext.request.contextPath}/images/assets/monge_salmone.png')" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } else { %>	
+    			<button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } %>
+
     			<div class="product-image">
     				<img src="${pageContext.request.contextPath}/images/assets/monge_salmone.png" alt="Crocchette Monge Salmone per cani" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=Monge+Salmone'">
     			</div>
@@ -165,30 +171,52 @@
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price">50,99€</span>
-    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    					<button class="btn-add-cart" title="Aggiungi al carrello"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
     		</div>
     		
     		<div class="product-card">
     			<span class="badge badge-new">Novità</span>
+    			<% if (isLoggato) { %>
+    				<button class="btn-wishlist-top" onclick="aggiungiPreferito('Cuccia Morbida Deluxe', 34.90, '${pageContext.request.contextPath}/images/assets/cuccia.jpg')" title="Aggiungi ai preferiti">
+        				<i class="fa-regular fa-heart"></i>
+    				</button>
+				<% } else { %>	
+    				<button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+        				<i class="fa-regular fa-heart"></i>
+    				</button>
+				<% } %>
+
     			<div class="product-image">
     				<img src="${pageContext.request.contextPath}/images/assets/cuccia.jpg" alt="Cuccia">
     			</div>
     			<div class="product-info">
-    				<h3 class="prod-title">Cuccia Morbiba Deluxe</h3>
+    				<h3 class="prod-title">Cuccia Morbida Deluxe</h3>
     				<p class="prod-desc">per cani e per gatti</p>
     				<div class="prod-rating">
     					<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> <span>(86)</span>
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price">34,90 €</span>
-    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    					<button class="btn-add-cart" title="Aggiungi al carrello"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
     		</div>
+    		
     		<div class="product-card">
     			<span class="badge badge-sale">-15%</span>
+    			
+			<% if (isLoggato) { %>
+    			<button class="btn-wishlist-top" onclick="aggiungiPreferito('Palla in corda', 8.40, '${pageContext.request.contextPath}/images/assets/palla_a_corda.jpg')" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } else { %>	
+    			<button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } %>
+
     			<div class="product-image">
     				<img src="${pageContext.request.contextPath}/images/assets/palla_a_corda.jpg" alt="Palla">
     			</div>
@@ -200,11 +228,23 @@
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price text-sale">8,40 € <del>9,90 €</del></span>
-    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    					<button class="btn-add-cart" title="Aggiungi al carrello"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
     		</div>
+    		
     		<div class="product-card">
+    		
+ 			<% if (isLoggato) { %>
+    			<button class="btn-wishlist-top" onclick="aggiungiPreferito('Frontline Combo Gatto', 23.90, '${pageContext.request.contextPath}/images/assets/antiparassitario_gatto.jpg')" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } else { %>	
+    			<button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } %>
+
     			<div class="product-image">
     				<img src="${pageContext.request.contextPath}/images/assets/antiparassitario_gatto.jpg" alt="Frontline">
     			</div>
@@ -216,11 +256,23 @@
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price">23,90 €</span>
-    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    					<button class="btn-add-cart" title="Aggiungi al carrello"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
     		</div>
+    		
     		<div class="product-card">
+    		
+			<% if (isLoggato) { %>
+    			<button class="btn-wishlist-top" onclick="aggiungiPreferito('Altalena Per Pappagallini', 13.00, '${pageContext.request.contextPath}/images/assets/altalena_pappagalli.jpg')" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } else { %>	
+    			<button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+        			<i class="fa-regular fa-heart"></i>
+    			</button>
+			<% } %>
+
     			<div class="product-image">
     				<img src="${pageContext.request.contextPath}/images/assets/altalena_pappagalli.jpg" alt="Altalena">
     			</div>
@@ -232,14 +284,14 @@
     				</div>
     				<div class="prod-bottom">
     					<span class="prod-price">13,00 €</span>
-    					<button class="btn-add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+    					<button class="btn-add-cart" title="Aggiungi al carrello"><i class="fa-solid fa-cart-shopping"></i></button>
     				</div>
     			</div>
     		</div>
+    		
     	</div>
     </section>
     
-    <!-- NEWSLETTER -->
     <section class="newsletter-section">
     	<div class="news-icon-bg"><i class="fa-solid fa-paw"></i></div>
     	<div class="news-text">
@@ -256,11 +308,9 @@
     
  </main>
  
- <!-- Aggiunta del footer -->
  <jsp:include page="footer.jsp" />
  
- <!-- Script JavaScript -->
- <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
+ <script src="${pageContext.request.contextPath}/scripts/main.js?v=2"></script>
  
 </body>
 </html>
