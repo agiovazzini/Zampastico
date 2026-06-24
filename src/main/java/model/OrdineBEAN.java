@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class OrdineBEAN implements Serializable {
@@ -9,7 +10,7 @@ public class OrdineBEAN implements Serializable {
     private int idOrdine;
     private int idUtente;
     private Integer idCoupon; 
-    private double totale;    
+    private BigDecimal totale;    
     private String spedizioneCitta;
     private String spedizioneProvincia;
     private String spedizioneVia;
@@ -22,7 +23,7 @@ public class OrdineBEAN implements Serializable {
     	consegnato,
     	annullato
 	}
-	private StatoOrdine stato;
+    private StatoOrdine stato = StatoOrdine.in_attesa;
     private LocalDateTime dataOrdine;
 
     public OrdineBEAN() {
@@ -53,11 +54,11 @@ public class OrdineBEAN implements Serializable {
         this.idCoupon = idCoupon;
     }
 
-    public double getTotale() {
+    public BigDecimal getTotale() {
         return totale;
     }
 
-    public void setTotale(double totale) {
+    public void setTotale(BigDecimal totale) {
         this.totale = totale;
     }
 
