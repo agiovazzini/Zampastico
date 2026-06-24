@@ -87,21 +87,7 @@ window.caricaWishlist = function() {
     const contenitore = document.getElementById('wishlist-content');
     const messaggioVuoto = document.getElementById('empty-wishlist');
     
-    if (!contenitore) return; // Esce se non siamo nella pagina wishlist
-
-    const oggi = new Date().getTime();
-    const trentaGiorniInMs = 30 * 24 * 60 * 60 * 1000;
-
-    // FILTRO AUTOMATICO: Mantiene solo i prodotti aggiunti da meno di 30 giorni
-    let wishlistValida = wishlist.filter(prodotto => {
-        if (!prodotto.dataAggiunta) prodotto.dataAggiunta = oggi; 
-        return (oggi - prodotto.dataAggiunta) <= trentaGiorniInMs;
-    });
-
-    if(wishlist.length !== wishlistValida.length) {
-        localStorage.setItem('zampastico_wishlist', JSON.stringify(wishlistValida));
-    }
-    wishlist = wishlistValida; 
+    if (!contenitore) return;
 
     if (wishlist.length === 0) {
         contenitore.style.display = 'none';
@@ -114,30 +100,15 @@ window.caricaWishlist = function() {
     
     let html = '';
     wishlist.forEach((prodotto, index) => {
-        const giorniPassati = Math.floor((oggi - prodotto.dataAggiunta) / (1000 * 60 * 60 * 24));
-        const giorniRimanenti = 30 - giorniPassati;
-
-        // Versione pulita senza sbarrette (il JS puro funziona perfettamente col $)
         html += `
         <div class="product-card">
-            <div class="product-image">
-                <img src="${prodotto.immagine}" alt="${prodotto.nome}">
-            </div>
+            <div class="product-image"><img src="${prodotto.immagine}" alt="${prodotto.nome}"></div>
             <h3 class="prod-title">${prodotto.nome}</h3>
-            
-            <p style="color: #f37925; font-size: 0.85rem; font-weight: 800; margin-bottom: 10px;">
-                <i class="fa-regular fa-clock"></i> Scade tra ${giorniRimanenti} giorni
-            </p>
-
             <div class="prod-bottom">
                 <span class="prod-price">${parseFloat(prodotto.prezzo).toFixed(2).replace('.', ',')}€</span>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn-remove-wishlist" onclick="rimuoviDaWishlist(${index})" title="Rimuovi dalla lista">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                    <button class="btn-add-cart" onclick="spostaNelCarrello(${index})" title="Sposta nel carrello">
-                        <i class="fa-solid fa-cart-plus"></i>
-                    </button>
+                    <button class="btn-remove-wishlist" onclick="rimuoviDaWishlist(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="btn-add-cart" onclick="spostaNelCarrello(${index})"><i class="fa-solid fa-cart-plus"></i></button>
                 </div>
             </div>
         </div>
