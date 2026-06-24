@@ -249,9 +249,9 @@
     	<div class="news-action">
     		<a href="#" class="btn-primary">Iscriviti ora</a>
     	</div>
-    	<div class="news-image">
-    		<img src="${pageContext.request.contextPath}/images/assets/newsletter-pets.png" alt="Pets" onerror="this.style.display='none'">
-    	</div>
+		<div class="news-image">
+    		<img src="${pageContext.request.contextPath}/images/assets/besties_new.png" alt="Pets" onerror="this.style.display='none'">
+		</div>
     </section>
     
  </main>

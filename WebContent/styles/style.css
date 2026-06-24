@@ -30,6 +30,23 @@ body {
     line-height: 1.6;
 }
 
+/* ==============================================================
+   FORZATURA SPAZI LATERALI GLOBALI (EFFETTO LOCANDINA)
+   ============================================================== */
+.container,
+.top-section,
+.main-nav,
+.hero-section,
+.features-banner,
+.section-header,
+.categories-section,
+.popular-products-section,
+.newsletter-section {
+    max-width: 1200px !important; 
+    width: 90% !important; 
+    margin-left: auto !important; 
+    margin-right: auto !important; 
+}
 
 /*BOTTONI GLOBALI*/
 .btn-primary {
@@ -57,19 +74,12 @@ body {
 
 /*---- HOMEPAGE LAYOUT ----*/
 
-/*Contenitore principale*/
-.home-container{
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 0 20px;
-}
-
 /*BANNER ARANCIONE IN ALTO*/
 .top-banner {
     background-color: var(--color-primary);
     color: white;
     text-align: center;
-    padding: 8px 0;
+    padding: 10px 0;
     font-size: 0.9rem;
     font-weight: 600;
 }
@@ -79,7 +89,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 30px 0;
 }
 
 /* LOGO E SOTTOTITOLO */
@@ -90,44 +100,63 @@ body {
 }
 
 .div-logo img {
-    max-width: 240px; /* Modifica questo valore in base alla grandezza del tuo logo reale */
+    max-width: 350px !important; 
+    width: 100%; 
+    display: block;
 }
 
 .logo-subtitle {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 5px;
+    font-size: 0.85rem; 
+    color: var(--color-text-main); 
+    font-weight: 600; 
+    margin-top: -10px; 
+    margin-left: 5px;
 }
 
 /* BARRA DI RICERCA (NAVBAR) */
 .div-search {
     flex-grow: 1;
-    max-width: 500px;
-    margin: 0 40px;
+    max-width: 800px !important; 
+    margin: 0 60px; 
 }
 
 .form-search {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    padding: 5px 20px;
-    background-color: white;
+    border: 1px solid #d1d1d1 !important;
+    border-radius: 30px !important;
+    padding: 10px 25px !important;
+    background-color: white !important;
 }
 
 .form-search input {
-    border: none;
-    outline: none;
+    border: none !important; 
+    outline: none !important; 
+    box-shadow: none !important; 
+    background: transparent !important;
     flex-grow: 1;
-    padding: 10px 0;
     font-family: inherit;
     font-size: 1rem;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* AREA ICONE DI DESTRA (ACCOUNT, PREFERITI, CARRELLO) */
+.form-search button {
+    background: transparent !important;
+    border: none !important; 
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--color-text-main) !important; 
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* AREA ICONE DI DESTRA */
 .div-actions {
     display: flex;
-    gap: 30px;
+    gap: 35px; 
 }
 
 .action-element {
@@ -136,8 +165,9 @@ body {
     align-items: center;
     text-decoration: none;
     color: var(--color-text-main);
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
+    gap: 5px; 
 }
 
 .action-element:hover {
@@ -145,22 +175,42 @@ body {
 }
 
 .action-picture {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+    font-size: 1.6rem;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background-color: transparent !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* BADGE ARANCIOEN SUL CARRELLO */
+.action-element:hover .action-picture {
+    background-color: transparent !important; 
+}
+
+.action-element:hover i {
+    color: var(--color-primary) !important;
+}
+
+.action-element:hover img {
+    opacity: 0.7;
+    transform: scale(1.05); 
+    transition: all 0.2s ease;
+}
+
+/* BADGE CARRELLO */
 .cart-icon-wrapper {
     position: relative;
 }
 
 .cart-badge {
     position: absolute;
-    top: -8px;
-    right: -12px;
+    top: -5px;
+    right: -10px;
     background-color: var(--color-primary);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: bold;
     border-radius: 50%;
     width: 18px;
@@ -172,38 +222,32 @@ body {
 
 /* MENU DI NAVIGAZIONE INFERIORE */
 .main-nav {
-    padding: 15px 0;
+    padding: 0 0 20px 0; 
+    border: none !important; 
 }
 
 .main-nav ul {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 70px !important; 
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .main-nav a {
     text-decoration: none;
     color: var(--color-text-main);
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 700; 
+    font-size: 0.95rem;
 }
 
 .main-nav a:hover {
     color: var(--color-primary);
 }
 
-/* CLASSE PER RENDERE ARANCIONE LA VOCE "Offerte" */
 .text-orange {
     color: var(--color-primary) !important;
-}
-
-.form-search button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #333;
 }
 
 /*HERO SECTION*/
@@ -217,7 +261,7 @@ body {
     margin-top: 30px;
     position: relative;
     overflow: hidden; 
-    min-height: 450px; /* Diamo respiro alla sezione */
+    min-height: 450px; 
 }
 
 .hero-content {
@@ -351,18 +395,18 @@ body {
     aspect-ratio: 1;
     border-radius: var(--border-radius-card);
     display: flex;
-    align-items: center; /* Centriamo l'immagine esattamente in mezzo */
+    align-items: center; 
     justify-content: center;
     position: relative;
     margin-bottom: 25px;
 }
 
 .category-img-wrap img { 
-    width: 90%;  /* Occupa il 90% della larghezza della card */
-    height: 90%; /* FORZATURA: Occupa anche il 90% dell'altezza! */
-    object-fit: cover; /* MAGIA: Ritaglia la foto se non è quadrata, riempiendo tutto lo spazio! */
-    border-radius: 10px; /* Dà un leggero smusso agli angoli della foto, molto elegante */
-    margin-bottom: 10px; /* Evita che la foto copra il tondino con l'icona in basso */
+    width: 90%;  
+    height: 90%; 
+    object-fit: cover; 
+    border-radius: 10px; 
+    margin-bottom: 10px; 
 }
 
 .cat-icon {
@@ -460,59 +504,95 @@ body {
 
 .btn-add-cart:hover { background-color: #71b95b; }
 
-/* --- NEWSLETTER SECTION --- */
+/* ZAMPACOMMUNITY */
+
 .newsletter-section {
-    background-color: #eaf5eb; 
-    border-radius: var(--border-radius-card);
-    padding: 40px 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 60px;
-    position: relative;
-    overflow: hidden;
+    background-color: #eaf5eb !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 40px !important;
+    min-height: 130px !important;
+    position: relative !important;
+    overflow: visible !important; 
+    margin: 80px auto 60px auto !important; 
+    box-sizing: border-box !important;
 }
 
 .news-icon-bg {
-    background-color: #a7d79b;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: #fff;
-    margin-right: 30px;
+    background-color: #a0d4a4 !important; 
+    color: white !important;
+    min-width: 85px !important; 
+    height: 85px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2.5rem !important;
+    margin-right: 25px !important;
+    z-index: 2 !important;
 }
 
-.news-text h2 { font-size: 1.8rem; font-weight: 800; color: var(--color-text-main); margin-bottom: 5px; }
-.news-text p { color: var(--color-text-light); font-size: 1.1rem; }
+.news-text {
+    flex-grow: 1 !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
 
-.news-action { margin-left: auto; z-index: 2; }
-.news-action .btn-primary { padding: 15px 35px; border-radius: 30px;}
+.news-text h2 {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    color: var(--color-text-main) !important;
+    margin: 0 0 5px 0 !important;
+}
+
+.news-text p {
+    font-size: 0.95rem !important;
+    color: var(--color-text-light) !important;
+    margin: 0 !important;
+}
+
+.news-action {
+    margin-right: 320px !important; /* Mantiene il bottone lontano dagli animali */
+    z-index: 2 !important;
+    flex-shrink: 0 !important;
+}
 
 .news-image {
-    position: absolute;
-    right: -20px;
-    bottom: -20px;
-    height: 120%;
-    z-index: 1;
-    opacity: 0.8;
+    position: absolute !important;
+    right: 20px !important; 
+    bottom: 0 !important; 
+    height: 140% !important; 
+    z-index: 1 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important; 
+}
+
+.news-image img {
+    height: 100% !important;
+    width: auto !important;
+    max-width: 320px !important; 
+    object-fit: contain !important;
+    object-position: right bottom !important; 
+    display: block !important;
+    mix-blend-mode: multiply !important; 
 }
 
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
 @media (max-width: 992px) {
     .hero-section { flex-direction: column; padding: 40px; text-align: center; }
     .hero-content, .hero-image { max-width: 100%; }
-    .hero-image { margin-top: 30px; }
+    .hero-image { margin-top: 30px; position: relative; height: auto; }
     .features-banner { flex-wrap: wrap; margin-top: 20px; }
     .feature-item { width: 48%; margin-bottom: 20px; }
     .categories-grid { grid-template-columns: repeat(3, 1fr); }
     .products-grid { grid-template-columns: repeat(3, 1fr); }
-    .newsletter-section { flex-direction: column; text-align: center; padding: 30px; }
-    .news-icon-bg { margin: 0 auto 20px auto; }
-    .news-action { margin: 20px auto 0 auto; }
+    .newsletter-section { flex-direction: column; text-align: center; padding: 40px; margin-top: 120px !important; }
+    .news-action { margin: 20px auto 0 auto !important; }
+    .news-image { height: 120px !important; right: 50% !important; transform: translateX(50%) !important; bottom: 100% !important; }
 }
 
 @media (max-width: 576px) {
@@ -520,4 +600,4 @@ body {
     .categories-grid { grid-template-columns: repeat(2, 1fr); }
     .products-grid { grid-template-columns: repeat(1, 1fr); }
     .hero-content h1 { font-size: 2.5rem; }
-}    
+}

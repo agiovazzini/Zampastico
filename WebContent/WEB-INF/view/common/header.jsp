@@ -17,8 +17,8 @@
 <header class="top-section container">
 	<!-- AREA, LOGO E SOTTOTITOLO -->
 	<div class="div-logo">
-		<a href="${pageContext.request.contextPath}/profile/index.jsp">
-			<img src="${pageContext.request.contextPath}/images/assets/logo.png" alt="Zampastico">
+		<a href="${pageContext.request.contextPath}/index.jsp">
+			<img src="${pageContext.request.contextPath}/images/assets/logo_nuovo.png" alt="Zampastico">
 		</a>
 		<span class="logo-subtitle">Tutto ciò che rende felice il tuo amico a 4 zampe!</span>
 	</div>
@@ -49,7 +49,7 @@
 			<span>Preferiti</span>
 		</a>
 		
-		<a href="#" class="action-element">
+		<a href="${pageContext.request.contextPath}/cart.jsp" class="action-element">
 			<div class="action-picture cart-icon-wrapper">
 				<i class="fa-solid fa-cart-shopping"></i>
 				
