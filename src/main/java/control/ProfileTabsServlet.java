@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.IndirizzoBEAN;
+import model.OrdineBEAN;
 import model.UtenteBEAN;
 
 import java.io.IOException;
@@ -18,11 +19,13 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import dao.IndirizzoDAOImp;
+import dao.OrdineDAOImp;
 
 @WebServlet("/profile/*")
 public class ProfileTabsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private IndirizzoDAOImp indirizzoDAO;
+    private OrdineDAOImp ordineDAO;
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -31,6 +34,7 @@ public class ProfileTabsServlet extends HttpServlet {
             throw new ServletException("DataSource non disponibile nel contesto");
         }
         indirizzoDAO = new IndirizzoDAOImp(ds);
+        ordineDAO = new OrdineDAOImp(ds);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,6 +50,15 @@ public class ProfileTabsServlet extends HttpServlet {
         	} else if (pathInfo.equals("/orders-history")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-orders.jsp";
         		activeTab = "orders-history";
+        		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
+        		if (userLogged != null) {
+        			try {
+        				List<OrdineBEAN> ordini = ordineDAO.doRetrieveByUser(userLogged.getIdUtente());
+                        request.setAttribute("orders", ordini);
+        			} catch (SQLException e) {
+        				request.setAttribute("feedback", "Errore nel caricamento degli ordini.");
+        			}
+        		}
         	} else if (pathInfo.equals("/addresses")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-address.jsp";
         		activeTab = "addresses";
