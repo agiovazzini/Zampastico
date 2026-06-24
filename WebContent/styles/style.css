@@ -819,7 +819,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* ================= MESSAGGIO CARRELLO VUOTO ================= */
+/* --- MESSAGGIO CARRELLO VUOTO --- */
 .empty-cart-message {
     background-color: #fff;
     border: 1px solid #eaeaea;
@@ -849,6 +849,53 @@ body {
     color: var(--color-text-light);
     font-size: 1.1rem;
     margin-bottom: 30px;
+}
+
+/* --- BOX PER I MESSAGGI DI ERRORE --- */
+.error-message {
+    background-color: #fff1f0;
+    color: #d93025;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #f9d9d7;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.login-card {
+    background-color: #ffffff;
+    border-radius: 16px; /* Bordi più arrotondati = più moderno */
+    padding: 45px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Ombra più soffusa */
+    border: 1px solid #f0f0f0;
+    margin: 0 auto;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+    width: 100%;
+    box-sizing: border-box; /* Importante per non far uscire i bordi */
+    padding: 16px;
+    margin-top: 8px;
+    border: 2px solid #f0f0f0; /* Bordo più leggero */
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: var(--color-primary);
+    background-color: #fffaf7; /* Leggero tocco arancione al focus */
+    outline: none;
+}
+
+.login-form .form-group {
+    margin-bottom: 25px;
 }
 
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
