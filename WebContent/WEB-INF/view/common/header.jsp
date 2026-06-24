@@ -42,10 +42,8 @@
 			<span>Account</span>
 		</a>
 		
-		<a href="#" class="action-element">
-			<div class="action-picture">
-				<i class="fa-regular fa-heart"></i>
-			</div>
+		<a href="${pageContext.request.contextPath}/wishlist" class="action-element">
+    		<button class="action-picture"><i class="fa-regular fa-heart"></i></button>
 			<span>Preferiti</span>
 		</a>
 		
