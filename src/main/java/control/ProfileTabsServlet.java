@@ -7,18 +7,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.IndirizzoBEAN;
 import model.UtenteBEAN;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
+
+import dao.IndirizzoDAOImp;
 
 @WebServlet("/profile/*")
 public class ProfileTabsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    private IndirizzoDAOImp indirizzoDAO;
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -26,9 +30,11 @@ public class ProfileTabsServlet extends HttpServlet {
         if (ds == null) {
             throw new ServletException("DataSource non disponibile nel contesto");
         }
+        indirizzoDAO = new IndirizzoDAOImp(ds);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		String feedback = null;
         String pathInfo = request.getPathInfo();
         String contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
@@ -43,6 +49,15 @@ public class ProfileTabsServlet extends HttpServlet {
         	} else if (pathInfo.equals("/addresses")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-address.jsp";
         		activeTab = "addresses";
+        		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
+        		if (userLogged != null) {
+        			try {
+        				List<IndirizzoBEAN> list = indirizzoDAO.doRetrieveByUser(userLogged.getIdUtente());
+        				request.setAttribute("addresses", list);
+        			} catch (SQLException e) {
+        				request.setAttribute("feedback", "Errore nel caricamento degli indirizzi.");
+        			}
+        		}
         	} else if (pathInfo.equals("/reviews")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-reviews.jsp";
         		activeTab = "reviews";

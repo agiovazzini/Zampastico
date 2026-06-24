@@ -10,56 +10,95 @@ import java.util.List;
 import javax.sql.DataSource;
 import model.IndirizzoBEAN;
 
-public class IndirizzoDAOImp {
+public class IndirizzoDAOImp implements IndirizzoDAO {
 	private static final String TABLE_NAME = "Indirizzo";
     private DataSource ds;
-    public static final int ADDRESS_LIMIT = 3;
+    public static final int ADDRESS_LIMIT = 5;
+    
     public IndirizzoDAOImp(DataSource ds) {
         this.ds = ds;
     }
     
+    @Override
     public synchronized void doSave(IndirizzoBEAN address) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id_utente, citta, provincia, via, cap, predefinito) VALUES (?, ?, ?, ?, ?, ?)";
         String countSQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_utente = ?";
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
-             PreparedStatement preparedStatementCount = connection.prepareStatement(countSQL)	 
-        	) {
-        	preparedStatementCount.setInt(1, address.getIdUtente());
-        	try (ResultSet resultSet = preparedStatementCount.executeQuery()){
-        		if (resultSet.next() ) {
-        			int count = resultSet.getInt(1);
-        			if (count >= ADDRESS_LIMIT) {
-        				throw new IllegalStateException("Hai raggiunto il limite massimo di indirizzi");
-        			}
-        		}
-        	}
-            preparedStatement.setInt(1, address.getIdUtente());
-            preparedStatement.setString(2, address.getCitta());
-            preparedStatement.setString(3, address.getProvincia());
-            preparedStatement.setString(4, address.getVia());
-            preparedStatement.setString(5, address.getCap());
-            preparedStatement.setBoolean(6, address.isPredefinito());
-            preparedStatement.executeUpdate();
+        String resetSQL = "UPDATE " + TABLE_NAME + " SET predefinito = false WHERE id_utente = ?";
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id_utente, citta, provincia, via, cap, predefinito) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection connection = ds.getConnection()) {
+            try (PreparedStatement preparedStatementCount = connection.prepareStatement(countSQL)) {
+                preparedStatementCount.setInt(1, address.getIdUtente());
+                try (ResultSet resultSet = preparedStatementCount.executeQuery()){
+                    if (resultSet.next() ) {
+                        int count = resultSet.getInt(1);
+                        if (count >= ADDRESS_LIMIT) {
+                            throw new IllegalStateException("Hai raggiunto il limite massimo di indirizzi");
+                        }
+                    }
+                }
+            }
+            connection.setAutoCommit(false);
+            try {
+                if (address.isPredefinito()) {
+                    try (PreparedStatement preparedStatementReset = connection.prepareStatement(resetSQL)) {
+                    	preparedStatementReset.setInt(1, address.getIdUtente());
+                    	preparedStatementReset.executeUpdate();
+                    }
+                }
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+                    preparedStatement.setInt(1, address.getIdUtente());
+                    preparedStatement.setString(2, address.getCitta());
+                    preparedStatement.setString(3, address.getProvincia());
+                    preparedStatement.setString(4, address.getVia());
+                    preparedStatement.setString(5, address.getCap());
+                    preparedStatement.setBoolean(6, address.isPredefinito());
+                    preparedStatement.executeUpdate();
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
         }
     }
 
+    @Override
     public synchronized boolean doUpdate(IndirizzoBEAN address) throws SQLException {
+        String resetSQL = "UPDATE " + TABLE_NAME + " SET predefinito = false WHERE id_utente = ?";
         String updateSQL = "UPDATE " + TABLE_NAME + " SET citta = ?, provincia = ?, via = ?, cap = ?, predefinito = ? WHERE id_indirizzo = ? AND id_utente = ?";
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-            preparedStatement.setString(1, address.getCitta());
-            preparedStatement.setString(2, address.getProvincia());
-            preparedStatement.setString(3, address.getVia());
-            preparedStatement.setString(4, address.getCap());
-            preparedStatement.setBoolean(5, address.isPredefinito());
-            preparedStatement.setInt(6, address.getIdIndirizzo());
-            preparedStatement.setInt(7, address.getIdUtente());
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected != 0;
+        try (Connection connection = ds.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (address.isPredefinito()) {
+                    try (PreparedStatement psReset = connection.prepareStatement(resetSQL)) {
+                        psReset.setInt(1, address.getIdUtente());
+                        psReset.executeUpdate();
+                    }
+                }
+                int rowsAffected;
+                try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                    preparedStatement.setString(1, address.getCitta());
+                    preparedStatement.setString(2, address.getProvincia());
+                    preparedStatement.setString(3, address.getVia());
+                    preparedStatement.setString(4, address.getCap());
+                    preparedStatement.setBoolean(5, address.isPredefinito());
+                    preparedStatement.setInt(6, address.getIdIndirizzo());
+                    preparedStatement.setInt(7, address.getIdUtente());
+                    rowsAffected = preparedStatement.executeUpdate();
+                }
+                connection.commit();
+                return rowsAffected != 0;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
         }
     }
 
+    @Override
     public synchronized boolean doDelete(int idAddress, int idUser) throws SQLException {
         String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE id_indirizzo = ? AND id_utente = ?";
         try (Connection connection = ds.getConnection();
@@ -71,6 +110,7 @@ public class IndirizzoDAOImp {
         }
     }
     
+    @Override
     public IndirizzoBEAN doRetrieveByKey(int idAddress) throws SQLException {
         IndirizzoBEAN bean = null;
         String selectSQL = "SELECT id_indirizzo, id_utente, citta, provincia, via, cap, predefinito FROM " + TABLE_NAME + " WHERE id_indirizzo = ?";
@@ -93,9 +133,10 @@ public class IndirizzoDAOImp {
         return bean;
     }
     
+    @Override
     public List<IndirizzoBEAN> doRetrieveByUser(int idUser) throws SQLException {
         List<IndirizzoBEAN> indirizzi = new LinkedList<>();
-        String selectSQL = "SELECT id_indirizzo, id_utente, citta, provincia, via, cap, predefinito FROM " + TABLE_NAME + " WHERE id_utente = ?";
+        String selectSQL = "SELECT id_indirizzo, id_utente, citta, provincia, via, cap, predefinito FROM " + TABLE_NAME + " WHERE id_utente = ? ORDER BY predefinito DESC, id_indirizzo ASC";
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setInt(1, idUser);
@@ -116,6 +157,7 @@ public class IndirizzoDAOImp {
         return indirizzi;
     }
     
+    @Override
     public synchronized boolean doSetPredefinito(int idAddress, int idUser) throws SQLException {
         String resetSQL = "UPDATE " + TABLE_NAME + " SET predefinito = false WHERE id_utente = ?";
         String setSQL = "UPDATE " + TABLE_NAME + " SET predefinito = true WHERE id_indirizzo = ? AND id_utente = ?";
@@ -133,6 +175,8 @@ public class IndirizzoDAOImp {
             } catch (SQLException e) {
                 connection.rollback();
                 throw e; 
+            } finally {
+                connection.setAutoCommit(true);
             }
         } 
     }
