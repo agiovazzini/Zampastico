@@ -33,10 +33,14 @@ public class VoceOrdineDAOImp implements VoceOrdineDAO {
         }
     }
 
-    @Override
     public List<VoceOrdineBEAN> doRetrieveByOrdine(int idOrdine) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
         List<VoceOrdineBEAN> vociOrdine = new LinkedList<>();
+        String selectSQL = "SELECT v.*, p.nome AS nome_prodotto, p.brand, vp.formato " +
+                           "FROM VoceOrdine v " +
+                           "JOIN VarianteProdotto vp ON v.id_varianteProdotto = vp.id_varianteProdotto " +
+                           "JOIN Prodotto p ON vp.id_prodotto = p.id_prodotto " +
+                           "WHERE v.id_ordine = ?";
+                           
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setInt(1, idOrdine);
@@ -46,7 +50,6 @@ public class VoceOrdineDAOImp implements VoceOrdineDAO {
                 }
             }
         }
-
         return vociOrdine;
     }
 
@@ -67,6 +70,18 @@ public class VoceOrdineDAOImp implements VoceOrdineDAO {
         bean.setIdVarianteProdotto(rs.getInt("id_varianteProdotto"));
         bean.setQuantita(rs.getInt("quantita"));
         bean.setPrezzoAcquisto(rs.getDouble("prezzo_acquisto"));
+        try {
+            bean.setNomeProdotto(rs.getString("nome_prodotto"));
+        } catch (SQLException e) {}
+        
+        try {
+            bean.setBrand(rs.getString("brand"));
+        } catch (SQLException e) {}
+        
+        try {
+            bean.setFormato(rs.getString("formato"));
+        } catch (SQLException e) {}
+        
         return bean;
     }
 }

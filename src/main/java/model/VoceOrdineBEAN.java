@@ -9,10 +9,29 @@ public class VoceOrdineBEAN implements Serializable {
     private int idVarianteProdotto;
     private int quantita;
     private double prezzoAcquisto;
+    private String nomeProdotto;
+    private String brand;
+    private String formato;
 
     public VoceOrdineBEAN() {
     }
 
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getFormato() {
+        return formato;
+    }
+
+    public void setFormato(String formato) {
+        this.formato = formato;
+    }
+    
     public int getIdOrdine() {
         return idOrdine;
     }
@@ -43,5 +62,13 @@ public class VoceOrdineBEAN implements Serializable {
 
     public void setPrezzoAcquisto(double prezzoAcquisto) {
         this.prezzoAcquisto = prezzoAcquisto;
+    }
+    
+    public String getNomeProdotto() {
+        return nomeProdotto;
+    }
+
+    public void setNomeProdotto(String nomeProdotto) {
+        this.nomeProdotto = nomeProdotto;
     }
 }

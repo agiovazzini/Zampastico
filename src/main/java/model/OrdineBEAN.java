@@ -18,21 +18,71 @@ public class OrdineBEAN implements Serializable {
     private String spedizioneVia;
     private String spedizioneCap;
     public enum StatoOrdine {
-    	in_attesa, 
-    	pagato, 
-    	in_lavorazione, 
-    	spedito, 
-    	consegnato,
-    	annullato
-	}
+        in_attesa("In attesa di pagamento"), 
+        pagato("Pagato"), 
+        in_lavorazione("In lavorazione"), 
+        spedito("Spedito"), 
+        consegnato("Consegnato"),
+        annullato("Annullato");
+
+        private final String descrizione;
+
+        StatoOrdine(String descrizione) {
+            this.descrizione = descrizione;
+        }
+
+        public String getDescrizione() {
+            return descrizione;
+        }
+    }
+    
     private StatoOrdine stato = StatoOrdine.in_attesa;
     private LocalDateTime dataOrdine;
     private List<VoceOrdineBEAN> vociOrdine = new ArrayList<>();
+    private String metodoPagamento;
 
     public OrdineBEAN() {
     	super();
     }
 
+	 public String getStatoVisualizzabile() {
+	     if (this.stato == null) {
+	         return "Non specificato";
+	     }
+	     
+	     switch (this.stato) {
+	         case in_attesa:
+	             return "In attesa di pagamento";
+	         case pagato:
+	             return "Pagato";
+	         case in_lavorazione:
+	             return "In lavorazione";
+	         case spedito:
+	             return "Spedito";
+	         case consegnato:
+	             return "Consegnato";
+	         case annullato:
+	             return "Annullato";
+	         default:
+	             return this.stato.toString();
+	     }
+	 }
+	 public String getMetodoPagamentoVisualizzabile() {
+	     if (this.metodoPagamento == null) {
+	         return "Non specificato";
+	     }
+	     
+	     switch (this.metodoPagamento) {
+	         case "carta_credito":
+	             return "Carta di Credito";
+	         case "paypal":
+	             return "PayPal";
+	         case "bonifico":
+	             return "Bonifico Bancario";
+	         default:
+	             return this.metodoPagamento;
+	     }
+	 }
     public int getIdOrdine() {
         return idOrdine;
     }
@@ -123,5 +173,13 @@ public class OrdineBEAN implements Serializable {
     
     public void addVoce(VoceOrdineBEAN voce) {
         this.vociOrdine.add(voce);
+    }
+    
+    public String getMetodoPagamento() {
+        return metodoPagamento;
+    }
+
+    public void setMetodoPagamento(String metodoPagamento) {
+        this.metodoPagamento = metodoPagamento;
     }
 }

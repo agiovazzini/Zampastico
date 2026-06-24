@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -92,8 +91,8 @@ public class OrdineDAOImp implements OrdineDAO {
     }
 
     public synchronized OrdineBEAN doRetrieveByKey(int idOrdine) throws SQLException {
-        String selectOrdineSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
-        String selectVociSQL = "SELECT * FROM " + TABLE_VOCE + " WHERE id_ordine = ?";
+    	String selectOrdineSQL = "SELECT o.*, pag.metodo AS metodo_pagamento FROM " + TABLE_NAME + " o LEFT JOIN Pagamento pag ON o.id_ordine = pag.id_ordine WHERE o.id_ordine = ?";
+        String selectVociSQL = "SELECT v.*, p.nome AS nome_prodotto FROM " + TABLE_VOCE + " v JOIN VarianteProdotto vp ON v.id_varianteProdotto = vp.id_varianteProdotto JOIN Prodotto p ON vp.id_prodotto = p.id_prodotto WHERE v.id_ordine = ?";
         OrdineBEAN order = null;
         try (Connection connection = ds.getConnection()) {
             try (PreparedStatement psOrdine = connection.prepareStatement(selectOrdineSQL)) {
@@ -116,6 +115,7 @@ public class OrdineDAOImp implements OrdineDAO {
                         order.setSpedizioneCap(rsOrdine.getString("spedizione_cap"));
                         order.setStato(StatoOrdine.valueOf(rsOrdine.getString("stato"))); 
                         order.setDataOrdine(rsOrdine.getObject("data_ordine", java.time.LocalDateTime.class));
+                        order.setMetodoPagamento(rsOrdine.getString("metodo_pagamento"));
                     }
                 }
             }
@@ -130,6 +130,7 @@ public class OrdineDAOImp implements OrdineDAO {
                             voce.setIdVarianteProdotto(rsVoci.getInt("id_variante_prodotto"));
                             voce.setQuantita(rsVoci.getInt("quantita"));
                             voce.setPrezzoAcquisto(rsVoci.getDouble("prezzo_acquisto"));
+                            voce.setNomeProdotto(rsVoci.getString("nome_prodotto"));
                             voci.add(voce); 
                         }
                     }
@@ -141,7 +142,7 @@ public class OrdineDAOImp implements OrdineDAO {
     }
 
     public synchronized List<OrdineBEAN> doRetrieveByUser(int idUtente) throws SQLException {
-        String selectOrdiniSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_utente = ? ORDER BY data_ordine DESC";
+        String selectOrdiniSQL = "SELECT o.*, pag.metodo AS metodo_pagamento FROM " + TABLE_NAME + " o LEFT JOIN Pagamento pag ON o.id_ordine = pag.id_ordine WHERE o.id_utente = ? ORDER BY o.data_ordine DESC";
         List<OrdineBEAN> ordini = new ArrayList<>();
         VoceOrdineDAOImp voceDAO = new VoceOrdineDAOImp(this.ds);
         try (Connection connection = ds.getConnection();
@@ -150,6 +151,10 @@ public class OrdineDAOImp implements OrdineDAO {
             try (ResultSet rsOrdini = psOrdini.executeQuery()) {
                 while (rsOrdini.next()) {
                     OrdineBEAN order = extractBean(rsOrdini);
+                    try {
+                        order.setMetodoPagamento(rsOrdini.getString("metodo_pagamento"));
+                    } catch (SQLException e) {
+                    }
                     ordini.add(order);
                 }
             }
@@ -167,8 +172,8 @@ public class OrdineDAOImp implements OrdineDAO {
 
     @Override
     public synchronized List<OrdineBEAN> doRetrieveAll() throws SQLException {
-        String selectOrdiniSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY data_ordine DESC";
-        String selectVociSQL = "SELECT * FROM " + TABLE_VOCE + " WHERE id_ordine = ?";
+        String selectOrdiniSQL = "SELECT o.*, pag.metodo AS metodo_pagamento FROM " + TABLE_NAME + " o LEFT JOIN Pagamento pag ON o.id_ordine = pag.id_ordine ORDER BY o.data_ordine DESC";
+        String selectVociSQL = "SELECT v.*, p.nome AS nome_prodotto FROM " + TABLE_VOCE + " v JOIN VarianteProdotto vp ON v.id_varianteProdotto = vp.id_varianteProdotto JOIN Prodotto p ON vp.id_prodotto = p.id_prodotto WHERE v.id_ordine = ?";
         List<OrdineBEAN> ordini = new ArrayList<>();
         try (Connection connection = ds.getConnection()) {
             try (PreparedStatement psOrdini = connection.prepareStatement(selectOrdiniSQL);
@@ -190,6 +195,7 @@ public class OrdineDAOImp implements OrdineDAO {
                     order.setSpedizioneCap(rsOrdini.getString("spedizione_cap"));
                     order.setStato(StatoOrdine.valueOf(rsOrdini.getString("stato")));
                     order.setDataOrdine(rsOrdini.getObject("data_ordine", java.time.LocalDateTime.class));
+                    order.setMetodoPagamento(rsOrdini.getString("metodo_pagamento"));
                     order.setVociOrdine(new ArrayList<>());
                     ordini.add(order);
                 }
@@ -202,9 +208,10 @@ public class OrdineDAOImp implements OrdineDAO {
                             while (rsVoci.next()) {
                                 VoceOrdineBEAN voce = new VoceOrdineBEAN();
                                 voce.setIdOrdine(rsVoci.getInt("id_ordine"));
-                                voce.setIdVarianteProdotto(rsVoci.getInt("id_variante_prodotto"));
+                                voce.setIdVarianteProdotto(rsVoci.getInt("id_varianteProdotto"));
                                 voce.setQuantita(rsVoci.getInt("quantita"));
                                 voce.setPrezzoAcquisto(rsVoci.getDouble("prezzo_acquisto"));
+                                voce.setNomeProdotto(rsVoci.getString("nome_prodotto"));
                                 order.getVociOrdine().add(voce);
                             }
                         }
@@ -214,7 +221,7 @@ public class OrdineDAOImp implements OrdineDAO {
         }
         return ordini;
     }
-
+    
     @Override
     public synchronized void doCheckout(int idUser, Integer idSavedAddress, IndirizzoBEAN manualAddress, boolean saveCheck, Integer idCoupon, String paymentMethod) throws SQLException {
         try (Connection connection = ds.getConnection()) {
