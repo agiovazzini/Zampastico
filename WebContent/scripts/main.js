@@ -77,7 +77,7 @@ window.aggiungiPreferito = function(nome, prezzo, immagine) {
             dataAggiunta: new Date().getTime() // Registra il millisecondo esatto dell'aggiunta
         });
         localStorage.setItem('zampastico_wishlist', JSON.stringify(wishlist));
-        alert(nome + " aggiunto ai preferiti! Avrai 30 giorni per decidere se acquistarlo. ❤️");
+        alert(nome + " aggiunto ai preferiti! Cliccando sul cuoricino in alto potrai decidere se acquistarlo. ❤️");
     }
 };
 
