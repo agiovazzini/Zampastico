@@ -49,7 +49,7 @@
 			<span>Preferiti</span>
 		</a>
 		
-		<a href="#" class="action-element">
+		<a href="${pageContext.request.contextPath}/cart.jsp" class="action-element">
 			<div class="action-picture cart-icon-wrapper">
 				<i class="fa-solid fa-cart-shopping"></i>
 				
