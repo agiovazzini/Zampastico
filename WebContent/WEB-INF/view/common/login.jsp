@@ -16,7 +16,7 @@
         <div class="login-card">
             
             <div class="login-header">
-                <h2>Bentornato! <i class="fa-solid fa-paw"></i></h2>
+                <h2>Bevenuto! <i class="fa-solid fa-paw"></i></h2>
                 <p>Accedi per continuare lo shopping.</p>
             </div>
 
