@@ -1,6 +1,8 @@
 package control;
 
 import jakarta.servlet.ServletConfig;
+
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,9 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import model.IndirizzoBEAN;
 import model.OrdineBEAN;
 import model.UtenteBEAN;
-
 import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,12 +20,14 @@ import javax.sql.DataSource;
 
 import dao.IndirizzoDAOImp;
 import dao.OrdineDAOImp;
+import dao.VoceOrdineDAOImp;
 
 @WebServlet("/profile/*")
 public class ProfileTabsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private IndirizzoDAOImp indirizzoDAO;
     private OrdineDAOImp ordineDAO;
+    private VoceOrdineDAOImp voceOrdineDAO;
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -35,6 +37,7 @@ public class ProfileTabsServlet extends HttpServlet {
         }
         indirizzoDAO = new IndirizzoDAOImp(ds);
         ordineDAO = new OrdineDAOImp(ds);
+        voceOrdineDAO = new VoceOrdineDAOImp(ds);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,7 +57,7 @@ public class ProfileTabsServlet extends HttpServlet {
         		if (userLogged != null) {
         			try {
         				List<OrdineBEAN> ordini = ordineDAO.doRetrieveByUser(userLogged.getIdUtente());
-                        request.setAttribute("orders", ordini);
+        				request.setAttribute("orders", ordini);
         			} catch (SQLException e) {
         				request.setAttribute("feedback", "Errore nel caricamento degli ordini.");
         			}

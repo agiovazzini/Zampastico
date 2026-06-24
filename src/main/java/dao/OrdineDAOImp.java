@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -13,35 +15,67 @@ import javax.sql.DataSource;
 import model.IndirizzoBEAN;
 import model.OrdineBEAN;
 import model.OrdineBEAN.StatoOrdine;
+import model.VoceOrdineBEAN;
 
 public class OrdineDAOImp implements OrdineDAO {
 
     private static final String TABLE_NAME = "Ordine";
+    private static final String TABLE_VOCE = "VoceOrdine";
     private DataSource ds;
 
     public OrdineDAOImp(DataSource ds) {
         this.ds = ds;
     }
 
-    @Override
     public synchronized void doSave(OrdineBEAN order) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id_utente, id_coupon, totale, spedizione_citta, spedizione_provincia, spedizione_via, spedizione_cap, stato, data_ordine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
-        	preparedStatement.setInt(1, order.getIdUtente());
-            if (order.getIdCoupon() != null) {
-            	preparedStatement.setInt(2, order.getIdCoupon());
-            } else {
-            	preparedStatement.setNull(2, Types.INTEGER);
+        String insertOrdineSQL = "INSERT INTO " + TABLE_NAME + " (id_utente, id_coupon, totale, spedizione_citta, spedizione_provincia, spedizione_via, spedizione_cap, stato, data_ordine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertVoceSQL = "INSERT INTO " + TABLE_VOCE + " (id_ordine, id_variante_prodotto, quantita, prezzo_acquisto) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = ds.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                int idOrdine = -1;
+                try (PreparedStatement psOrdine = connection.prepareStatement(insertOrdineSQL, Statement.RETURN_GENERATED_KEYS)) {
+                    psOrdine.setInt(1, order.getIdUtente());
+                    if (order.getIdCoupon() != null) {
+                        psOrdine.setInt(2, order.getIdCoupon());
+                    } else {
+                        psOrdine.setNull(2, Types.INTEGER);
+                    }
+                    psOrdine.setBigDecimal(3, order.getTotale());
+                    psOrdine.setString(4, order.getSpedizioneCitta());
+                    psOrdine.setString(5, order.getSpedizioneProvincia());
+                    psOrdine.setString(6, order.getSpedizioneVia());
+                    psOrdine.setString(7, order.getSpedizioneCap());
+                    psOrdine.setString(8, order.getStato().name());
+                    psOrdine.setObject(9, order.getDataOrdine());
+                    psOrdine.executeUpdate();
+                    try (ResultSet generatedKeys = psOrdine.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            idOrdine = generatedKeys.getInt(1);
+                        } else {
+                            throw new SQLException("Errore: Impossibile recuperare l'ID dell'ordine generato.");
+                        }
+                    }
+                }
+                if (order.getVociOrdine() != null && !order.getVociOrdine().isEmpty()) {
+                    try (PreparedStatement psVoce = connection.prepareStatement(insertVoceSQL)) {
+                        for (VoceOrdineBEAN voce : order.getVociOrdine()) {
+                            psVoce.setInt(1, idOrdine);
+                            psVoce.setInt(2, voce.getIdVarianteProdotto());
+                            psVoce.setInt(3, voce.getQuantita());
+                            psVoce.setDouble(4, voce.getPrezzoAcquisto());
+                            psVoce.executeUpdate(); 
+                        }
+                    }
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                if (connection != null) {
+                    connection.rollback();
+                }
+                throw e;
             }
-            preparedStatement.setBigDecimal(3, order.getTotale());
-            preparedStatement.setString(4, order.getSpedizioneCitta());
-            preparedStatement.setString(5, order.getSpedizioneProvincia());
-            preparedStatement.setString(6, order.getSpedizioneVia());
-            preparedStatement.setString(7, order.getSpedizioneCap());
-            preparedStatement.setString(8, order.getStato().name());
-            preparedStatement.setObject(9, order.getDataOrdine());
-            preparedStatement.executeUpdate();
         }
     }
 
@@ -57,47 +91,125 @@ public class OrdineDAOImp implements OrdineDAO {
         }
     }
 
-    @Override
-    public OrdineBEAN doRetrieveByKey(int idOrder) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
+    public synchronized OrdineBEAN doRetrieveByKey(int idOrdine) throws SQLException {
+        String selectOrdineSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
+        String selectVociSQL = "SELECT * FROM " + TABLE_VOCE + " WHERE id_ordine = ?";
         OrdineBEAN order = null;
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
-            preparedStatement.setInt(1, idOrder);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    order = extractBean(resultSet);
+        try (Connection connection = ds.getConnection()) {
+            try (PreparedStatement psOrdine = connection.prepareStatement(selectOrdineSQL)) {
+                psOrdine.setInt(1, idOrdine);
+                try (ResultSet rsOrdine = psOrdine.executeQuery()) {
+                    if (rsOrdine.next()) {
+                        order = new OrdineBEAN();
+                        order.setIdOrdine(rsOrdine.getInt("id_ordine")); 
+                        order.setIdUtente(rsOrdine.getInt("id_utente"));
+                        int idCoupon = rsOrdine.getInt("id_coupon");
+                        if (!rsOrdine.wasNull()) {
+                            order.setIdCoupon(idCoupon);
+                        } else {
+                            order.setIdCoupon(null);
+                        }
+                        order.setTotale(rsOrdine.getBigDecimal("totale"));
+                        order.setSpedizioneCitta(rsOrdine.getString("spedizione_citta"));
+                        order.setSpedizioneProvincia(rsOrdine.getString("spedizione_provincia"));
+                        order.setSpedizioneVia(rsOrdine.getString("spedizione_via"));
+                        order.setSpedizioneCap(rsOrdine.getString("spedizione_cap"));
+                        order.setStato(StatoOrdine.valueOf(rsOrdine.getString("stato"))); 
+                        order.setDataOrdine(rsOrdine.getObject("data_ordine", java.time.LocalDateTime.class));
+                    }
                 }
+            }
+            if (order != null) {
+                List<VoceOrdineBEAN> voci = new ArrayList<>();
+                try (PreparedStatement psVoci = connection.prepareStatement(selectVociSQL)) {
+                    psVoci.setInt(1, idOrdine);
+                    try (ResultSet rsVoci = psVoci.executeQuery()) {
+                        while (rsVoci.next()) {
+                            VoceOrdineBEAN voce = new VoceOrdineBEAN();
+                            voce.setIdOrdine(rsVoci.getInt("id_ordine"));
+                            voce.setIdVarianteProdotto(rsVoci.getInt("id_variante_prodotto"));
+                            voce.setQuantita(rsVoci.getInt("quantita"));
+                            voce.setPrezzoAcquisto(rsVoci.getDouble("prezzo_acquisto"));
+                            voci.add(voce); 
+                        }
+                    }
+                }
+                order.setVociOrdine(voci);
             }
         }
         return order;
     }
 
-    @Override
-    public List<OrdineBEAN> doRetrieveByUser(int idUser) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_utente = ? ORDER BY data_ordine DESC";
-        List<OrdineBEAN> ordini = new LinkedList<>();
+    public synchronized List<OrdineBEAN> doRetrieveByUser(int idUtente) throws SQLException {
+        String selectOrdiniSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_utente = ? ORDER BY data_ordine DESC";
+        List<OrdineBEAN> ordini = new ArrayList<>();
+        VoceOrdineDAOImp voceDAO = new VoceOrdineDAOImp(this.ds);
         try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
-        	preparedStatement.setInt(1, idUser);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    ordini.add(extractBean(resultSet));
+             PreparedStatement psOrdini = connection.prepareStatement(selectOrdiniSQL)) {
+            psOrdini.setInt(1, idUtente);
+            try (ResultSet rsOrdini = psOrdini.executeQuery()) {
+                while (rsOrdini.next()) {
+                    OrdineBEAN order = extractBean(rsOrdini);
+                    ordini.add(order);
                 }
             }
+            for (OrdineBEAN order : ordini) {
+                List<VoceOrdineBEAN> voci = voceDAO.doRetrieveByOrdine(order.getIdOrdine());
+                order.setVociOrdine(voci);
+            }
+        } catch (SQLException e) {
+            System.err.println("ERRORE SQL IN doRetrieveByUser: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
         return ordini;
     }
 
     @Override
-    public List<OrdineBEAN> doRetrieveAll() throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY data_ordine DESC";
-        List<OrdineBEAN> ordini = new LinkedList<>();
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                ordini.add(extractBean(resultSet));
+    public synchronized List<OrdineBEAN> doRetrieveAll() throws SQLException {
+        String selectOrdiniSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY data_ordine DESC";
+        String selectVociSQL = "SELECT * FROM " + TABLE_VOCE + " WHERE id_ordine = ?";
+        List<OrdineBEAN> ordini = new ArrayList<>();
+        try (Connection connection = ds.getConnection()) {
+            try (PreparedStatement psOrdini = connection.prepareStatement(selectOrdiniSQL);
+                 ResultSet rsOrdini = psOrdini.executeQuery()) {
+                while (rsOrdini.next()) {
+                    OrdineBEAN order = new OrdineBEAN();
+                    order.setIdOrdine(rsOrdini.getInt("id_ordine"));
+                    order.setIdUtente(rsOrdini.getInt("id_utente"));
+                    int idCoupon = rsOrdini.getInt("id_coupon");
+                    if (!rsOrdini.wasNull()) {
+                        order.setIdCoupon(idCoupon);
+                    } else {
+                        order.setIdCoupon(null);
+                    }
+                    order.setTotale(rsOrdini.getBigDecimal("totale"));
+                    order.setSpedizioneCitta(rsOrdini.getString("spedizione_citta"));
+                    order.setSpedizioneProvincia(rsOrdini.getString("spedizione_provincia"));
+                    order.setSpedizioneVia(rsOrdini.getString("spedizione_via"));
+                    order.setSpedizioneCap(rsOrdini.getString("spedizione_cap"));
+                    order.setStato(StatoOrdine.valueOf(rsOrdini.getString("stato")));
+                    order.setDataOrdine(rsOrdini.getObject("data_ordine", java.time.LocalDateTime.class));
+                    order.setVociOrdine(new ArrayList<>());
+                    ordini.add(order);
+                }
+            }
+            if (!ordini.isEmpty()) {
+                try (PreparedStatement psVoci = connection.prepareStatement(selectVociSQL)) {
+                    for (OrdineBEAN order : ordini) {
+                        psVoci.setInt(1, order.getIdOrdine());
+                        try (ResultSet rsVoci = psVoci.executeQuery()) {
+                            while (rsVoci.next()) {
+                                VoceOrdineBEAN voce = new VoceOrdineBEAN();
+                                voce.setIdOrdine(rsVoci.getInt("id_ordine"));
+                                voce.setIdVarianteProdotto(rsVoci.getInt("id_variante_prodotto"));
+                                voce.setQuantita(rsVoci.getInt("quantita"));
+                                voce.setPrezzoAcquisto(rsVoci.getDouble("prezzo_acquisto"));
+                                order.getVociOrdine().add(voce);
+                            }
+                        }
+                    }
+                }
             }
         }
         return ordini;
@@ -204,21 +316,17 @@ public class OrdineDAOImp implements OrdineDAO {
                 }
 
                 double totaleOrdineTemp = 0.0;
-                
                 String getVociCarrelloSQL = 
                     "SELECT vc.id_varianteProdotto, vc.quantita, vp.prezzo_listino, s.percentuale_sconto " +
                     "FROM VoceCarrello vc " +
                     "JOIN VarianteProdotto vp ON vc.id_varianteProdotto = vp.id_varianteProdotto " +
                     "LEFT JOIN Sconto s ON vp.id_sconto = s.id_sconto " +
                     "WHERE vc.id_carrello = ?";
-
-                String insertVoceOrdineSQL = "INSERT INTO VoceOrdine (id_ordine, id_varianteProdotto, quantita, prezzo_acquisto) VALUES (?, ?, ?, ?)";
+                String insertVoceOrdineSQL = "INSERT INTO " + TABLE_VOCE + " (id_ordine, id_varianteProdotto, quantita, prezzo_acquisto) VALUES (?, ?, ?, ?)";
                 String updateStockSQL = "UPDATE InventarioStock SET quantita_disponibile = quantita_disponibile - ?, quantita_prenotata = quantita_prenotata + ? WHERE id_varianteProdotto = ?";
-
                 try (PreparedStatement preparedStatementGetVoci = connection.prepareStatement(getVociCarrelloSQL);
                      PreparedStatement preparedStatementInsertVoce = connection.prepareStatement(insertVoceOrdineSQL);
                      PreparedStatement preparedStatementUpdateStock = connection.prepareStatement(updateStockSQL)) {
-
                 	preparedStatementGetVoci.setInt(1, idCarrello);
                     try (ResultSet resultSet = preparedStatementGetVoci.executeQuery()) {
                         while (resultSet.next()) {

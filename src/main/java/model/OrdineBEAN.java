@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 public class OrdineBEAN implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -25,6 +27,7 @@ public class OrdineBEAN implements Serializable {
 	}
     private StatoOrdine stato = StatoOrdine.in_attesa;
     private LocalDateTime dataOrdine;
+    private List<VoceOrdineBEAN> vociOrdine = new ArrayList<>();
 
     public OrdineBEAN() {
     	super();
@@ -108,5 +111,17 @@ public class OrdineBEAN implements Serializable {
 
     public void setDataOrdine(LocalDateTime dataOrdine) {
         this.dataOrdine = dataOrdine;
+    }
+    
+    public List<VoceOrdineBEAN> getVociOrdine() {
+        return vociOrdine;
+    }
+
+    public void setVociOrdine(List<VoceOrdineBEAN> vociOrdine) {
+        this.vociOrdine = vociOrdine;
+    }
+    
+    public void addVoce(VoceOrdineBEAN voce) {
+        this.vociOrdine.add(voce);
     }
 }
