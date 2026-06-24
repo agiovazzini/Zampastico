@@ -13,36 +13,43 @@
     <%@ include file="header.jsp" %>
 
     <main class="login-container container">
-        <div class="login-card">
+        <div class="login-card-wrapper">
             
-            <div class="login-header">
-                <h2>Bevenuto! <i class="fa-solid fa-paw"></i></h2>
-                <p>Accedi per continuare lo shopping.</p>
+            <div class="login-form-side">
+                <div class="login-header">
+                    <h2>Benvenuto! <i class="fa-solid fa-paw"></i></h2>
+                    <p>Accedi per continuare lo shopping.</p>
+                </div>
+
+                <% if (errore != null) { %>
+                    <div class="error-message">
+                        <i class="fa-solid fa-circle-exclamation"></i> <%= errore %>
+                    </div>
+                <% } %>
+
+                <form id="loginForm" action="${pageContext.request.contextPath}/login" method="POST" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Email:</label>
+                        <input type="email" id="username" name="username" placeholder="Inserisci la tua email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-block">Accedi</button>
+                </form>
+
+                <div class="login-footer">
+                    <p>Non hai un account? <a href="${pageContext.request.contextPath}/register.jsp" class="register-link">Registrati ora</a></p>
+                </div>
             </div>
 
-            <% if (errore != null) { %>
-                <div class="error-message">
-                    <i class="fa-solid fa-circle-exclamation"></i> <%= errore %>
-                </div>
-            <% } %>
-
-            <form id="loginForm" action="${pageContext.request.contextPath}/login" method="POST" class="login-form">
-                <div class="form-group">
-                    <label for="username">Email:</label>
-                    <input type="email" id="username" name="username" placeholder="Inserisci la tua email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required>
-                </div>
-
-                <button type="submit" class="btn-primary btn-block">Accedi</button>
-            </form>
-
-            <div class="login-footer">
-                <p>Non hai un account? <a href="${pageContext.request.contextPath}/register.jsp" class="register-link">Registrati ora</a></p>
+            <div class="login-image-side">
+                <img src="${pageContext.request.contextPath}/images/assets/cane_login.png" alt="Cagnolino benvenuto">
             </div>
+
         </div>
     </main>
 
