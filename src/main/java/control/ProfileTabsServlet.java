@@ -11,17 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.IndirizzoBEAN;
 import model.OrdineBEAN;
+import model.RecensioneBEAN;
 import model.UtenteBEAN;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import dao.IndirizzoDAOImp;
 import dao.OrdineDAOImp;
 import dao.RecensioneDAOImp;
-import dao.VoceOrdineDAOImp;
 
 @WebServlet("/profile/*")
 public class ProfileTabsServlet extends HttpServlet {
@@ -41,7 +39,7 @@ public class ProfileTabsServlet extends HttpServlet {
         recensioneDAO = new RecensioneDAOImp(ds);
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		HttpSession session = request.getSession();
 		String feedback = null;
         String pathInfo = request.getPathInfo();
@@ -71,10 +69,13 @@ public class ProfileTabsServlet extends HttpServlet {
         	            List<OrdineBEAN> ordini = ordineDAO.doRetrieveByUserPaginated(userLogged.getIdUtente(), offset, recordsPerPage);
         	            int noOfRecords = ordineDAO.countByUser(userLogged.getIdUtente());
         	            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        	            if (page > noOfPages && page > 1) {
+        	                response.sendRedirect(request.getContextPath() + "/profile/orders-history?page=1");
+        	                return; 
+        	            }
         	            request.setAttribute("orders", ordini);
         	            request.setAttribute("noOfPages", noOfPages);
         	            request.setAttribute("currentPage", page);
-        	            
         	        } catch (SQLException e) {
         	            request.setAttribute("feedback", "Errore nel caricamento degli ordini.");
         	        }
@@ -93,12 +94,31 @@ public class ProfileTabsServlet extends HttpServlet {
         		}
         	} else if (pathInfo.equals("/reviews")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-reviews.jsp";
-        		activeTab = "reviews";
-        		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
-        		if (userLogged != null) {
+        	    activeTab = "reviews";
+        	    UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
+        	    if (userLogged != null) {
         	        try {
-        	            List<model.RecensioneBEAN> reviewList = recensioneDAO.doRetrieveByUtente(userLogged.getIdUtente());
+        	            int page = 1;
+        	            int recordsPerPage = 4;
+        	            if (request.getParameter("page") != null) {
+        	                try {
+        	                    page = Integer.parseInt(request.getParameter("page"));
+        	                    if (page < 1) page = 1;
+        	                } catch (NumberFormatException e) {
+        	                    page = 1;
+        	                }
+        	            }
+        	            int offset = (page - 1) * recordsPerPage;
+        	            List<RecensioneBEAN> reviewList = recensioneDAO.doRetrieveByUtentePaginated(userLogged.getIdUtente(), offset, recordsPerPage);
+        	            int noOfRecords = recensioneDAO.countByUtente(userLogged.getIdUtente());
+        	            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        	            if (page > noOfPages && page > 1) {
+        	                response.sendRedirect(request.getContextPath() + "/profile/reviews?page=1");
+        	                return; 
+        	            }
         	            request.setAttribute("userReviews", reviewList);
+        	            request.setAttribute("noOfPagesReviews", noOfPages);
+        	            request.setAttribute("currentPageReviews", page);
         	        } catch (SQLException e) {
         	            request.setAttribute("feedback", "Impossibile caricare le tue recensioni.");
         	        }

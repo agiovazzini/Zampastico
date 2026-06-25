@@ -11,4 +11,6 @@ public interface RecensioneDAO {
     List<RecensioneBEAN> doRetrieveByUtente(int idUtente) throws SQLException;
     List<RecensioneBEAN> doRetrieveByVariante(int idVarianteProdotto) throws SQLException;
     List<RecensioneBEAN> doRetrieveAll(String order) throws SQLException;
+    List<RecensioneBEAN> doRetrieveByUtentePaginated(int idUtente, int offset, int limit) throws SQLException;
+    int countByUtente(int idUtente) throws SQLException;
 }
