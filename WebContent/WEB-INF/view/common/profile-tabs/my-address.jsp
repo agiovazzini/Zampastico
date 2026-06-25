@@ -53,7 +53,7 @@
                         </c:if>
                         <p>${address.via}, ${address.citta} (${address.provincia}) - ${address.cap}</p>
                         <div class="button-group">
-                            <form action="${pageContext.request.contextPath}/deleteAddress" method="POST"">
+                            <form action="${pageContext.request.contextPath}/deleteAddress" method="POST">
                                 <input type="hidden" name="idAddress" value="${address.idIndirizzo}">
                                 <button type="submit" class="deleteButton">Elimina</button>
                             </form>
