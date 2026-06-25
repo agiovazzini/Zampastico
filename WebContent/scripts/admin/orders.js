@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {s
-    const dateFilterSelect = document.getElementById('dateFilter');
+document.addEventListener('DOMContentLoaded', function() {
+	const container = document.querySelector('.admin-orders-container');
+	    if (!container) return;
+	    const contextPath = container.getAttribute('data-context-path');
+	const dateFilterSelect = document.getElementById('dateFilter');
     const customDateRange = document.getElementById('custom-date-range');
     const dateFromInput = document.getElementById('dateFrom');
     const dateToInput = document.getElementById('dateTo');
