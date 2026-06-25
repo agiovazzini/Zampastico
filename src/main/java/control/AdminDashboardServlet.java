@@ -7,14 +7,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.OrdineBEAN;
 import model.UtenteBEAN;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.sql.DataSource;
+
+import dao.OrdineDAOImp;
 
 @WebServlet("/admin/*")
 public class AdminDashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private OrdineDAOImp ordineDAO;
    
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -23,6 +29,7 @@ public class AdminDashboardServlet extends HttpServlet {
         if (ds == null) {
             throw new ServletException("DataSource non disponibile nel contesto");
         }
+        ordineDAO = new OrdineDAOImp(ds);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,7 +45,6 @@ public class AdminDashboardServlet extends HttpServlet {
         String contentPage = "/WEB-INF/view/admin/admin-users.jsp";
         String activeTab = "users";
 
-     // 2. GESTIONE DEI TAB DINAMICI
         if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("/users")) {
         	contentPage = "/WEB-INF/view/admin/admin-users.jsp";
     		activeTab = "users";
@@ -52,6 +58,30 @@ public class AdminDashboardServlet extends HttpServlet {
                 case "/orders":
                     activeTab = "orders";
                     contentPage = "/WEB-INF/view/admin/admin-orders.jsp";
+                    int page = 1;
+                    int recordsPerPage = 10;
+                    if (request.getParameter("page") != null) {
+                        try {
+                            page = Integer.parseInt(request.getParameter("page"));
+                        } catch (NumberFormatException e) {
+                            page = 1;
+                        }
+                    }
+                    String emailFilter = request.getParameter("emailFilter");
+                    String dateFilter = request.getParameter("dateFilter");
+                    String dateFrom = request.getParameter("dateFrom");
+                    String dateTo = request.getParameter("dateTo");
+                    int offset = (page - 1) * recordsPerPage;
+                    List<OrdineBEAN> adminOrders = ordineDAO.doRetrieveAllWithFiltersAndPagination(offset, recordsPerPage, emailFilter, dateFilter, dateFrom, dateTo);
+                    int totalRecords = ordineDAO.countAllOrdersWithFilters(emailFilter, dateFilter, dateFrom, dateTo);
+                    int noOfPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+                    request.setAttribute("adminOrders", adminOrders);
+                    request.setAttribute("noOfPages", noOfPages);
+                    request.setAttribute("currentPage", page);
+                    request.setAttribute("emailFilter", emailFilter);
+                    request.setAttribute("dateFilter", dateFilter != null ? dateFilter : "all");
+                    request.setAttribute("dateFrom", dateFrom);
+                    request.setAttribute("dateTo", dateTo);
                     break;
                 case "/coupons":
                     activeTab = "coupons";
