@@ -145,7 +145,7 @@
     <section class="popular-products-section">
     	<div class="section-header">
     		<h2>I più amati <i class="fa-solid fa-heart" style="color: var(--color-primary);"></i></h2>
-    		<a href="${pageContext.request.contextPath}/catalogo" class="link-view-all">Vedi tutti i prodotti <i class="fa-solid fa-arrow-right"></i></a>
+    		<a href="${pageContext.request.contextPath}/catalog" class="link-view-all">Vedi tutti i prodotti <i class="fa-solid fa-arrow-right"></i></a>
     	</div>
     	<div class="products-grid">
     	
