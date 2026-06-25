@@ -53,6 +53,15 @@ public class ProdottoDAOImp implements ProdottoDAO {
         }
     }
     
+    public synchronized boolean doUpdateStato(int id, boolean stato) throws SQLException {
+        String sql = "UPDATE " + TABLE_NAME + " SET attivo = ? WHERE id_prodotto = ?";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setBoolean(1, stato);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        }
+    }
+    
     @Override
     public boolean doDelete(int id) throws SQLException {
         String sql = "UPDATE Prodotto SET attivo = TRUE WHERE id_prodotto = ?";
@@ -70,30 +79,79 @@ public class ProdottoDAOImp implements ProdottoDAO {
     @Override
     public List<ProdottoBEAN> doRetrieveAll(String orderBy) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, " +
-                     "vp.prezzo_listino, c.nome AS categoria, iv.url_immagine " +
+        
+        String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, p.attivo, " +
+                     "vp.id_varianteProdotto, vp.formato, vp.prezzo_listino, vp.id_sconto, vp.disponibile, " +
+                     "c.nome AS categoria, iv.url_immagine " +
                      "FROM Prodotto p " +
-                     "JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
-                     "JOIN Categoria c ON p.id_categoria = c.id_categoria " +
-                     "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE " +
-                     "WHERE p.attivo = FALSE";
+                     "LEFT JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
+                     "LEFT JOIN Categoria c ON p.id_categoria = c.id_categoria " +
+                     "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE";
+        
+        // Se in futuro vorrai usare il parametro orderBy
+        if (orderBy != null && !orderBy.trim().isEmpty()) {
+            sql += " ORDER BY " + orderBy;
+        }
         
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql); 
              ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
-                ProdottoBEAN p = new ProdottoBEAN();
-                p.setId(rs.getInt("id_prodotto"));
-                p.setNome(rs.getString("nome"));
-                p.setDescrizione(rs.getString("descrizione"));
-                p.setPrezzo(rs.getDouble("prezzo_listino"));
-                p.setMarca(rs.getString("brand"));
-                p.setImmagine(rs.getString("url_immagine"));
-                p.setCategoria(rs.getString("categoria"));
-                lista.add(p);
+                int idProdotto = rs.getInt("id_prodotto");
+                ProdottoBEAN p = null;
+                
+                // 1. Cerco il prodotto all'interno della lista
+                for (ProdottoBEAN prod : lista) {
+                    if (prod.getId() == idProdotto) {
+                        p = prod;
+                        break; // Prodotto trovato, esco dal ciclo di ricerca
+                    }
+                }
+                
+                // 2. Se non l'ho trovato (p è ancora null), è un prodotto nuovo: lo creo
+                if (p == null) {
+                    p = new ProdottoBEAN();
+                    p.setId(idProdotto);
+                    p.setNome(rs.getString("nome"));
+                    p.setDescrizione(rs.getString("descrizione"));
+                    p.setMarca(rs.getString("brand"));
+                    p.setCategoria(rs.getString("categoria"));
+                    p.setAttivo(rs.getBoolean("attivo"));
+                    
+                    // Salvo i dati della "copertina" (presi dalla prima riga/variante che incontro)
+                    p.setPrezzo(rs.getDouble("prezzo_listino"));
+                    p.setImmagine(rs.getString("url_immagine"));
+                    
+                    // Lo aggiungo alla lista generale
+                    lista.add(p);
+                }
+                
+                // 3. Gestione della variante per la riga corrente
+                int idVariante = rs.getInt("id_varianteProdotto");
+                
+                // Se idVariante non è nullo, vuol dire che c'è una variante da aggiungere
+                if (!rs.wasNull()) {
+                    model.VarianteProdottoBEAN variante = new model.VarianteProdottoBEAN();
+                    variante.setIdVarianteProdotto(idVariante);
+                    variante.setIdProdotto(idProdotto);
+                    variante.setFormato(rs.getString("formato"));
+                    variante.setPrezzoListino(rs.getDouble("prezzo_listino"));
+                    variante.setDisponibile(rs.getBoolean("disponibile"));
+                    
+                    int idSconto = rs.getInt("id_sconto");
+                    if (rs.wasNull()) {
+                        variante.setIdSconto(null);
+                    } else {
+                        variante.setIdSconto(idSconto);
+                    }
+                    
+                    // Aggiungo la variante alla lista interna del prodotto
+                    p.getVarianti().add(variante);
+                }
             }
         }
+        
         return lista;
     }
     
