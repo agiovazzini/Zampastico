@@ -12,19 +12,16 @@
                     </div>
                     <ul id="tabs-item" data-active-tab="${activeTab}">
                         <li class="${activeTab == 'users' ? 'active' : 'inactive'}" data-tab="users">
-                            <a href="${pageContext.request.contextPath}/admin/users">Users Management</a>
+                            <a href="${pageContext.request.contextPath}/admin/users">Gestione utenti</a>
                         </li>
                         <li class="${activeTab == 'orders' ? 'active' : 'inactive'}" data-tab="orders">
-                            <a href="${pageContext.request.contextPath}/admin/orders">Orders Management</a>
+                            <a href="${pageContext.request.contextPath}/admin/orders">Pannello ordini</a>
                         </li>
                         <li class="${activeTab == 'coupons' ? 'active' : 'inactive'}" data-tab="coupons">
-                            <a href="${pageContext.request.contextPath}/admin/coupons">Coupons Management</a>
+                            <a href="${pageContext.request.contextPath}/admin/coupons">Gestione coupons</a>
                         </li>
                         <li class="${activeTab == 'product' ? 'active' : 'inactive'}" data-tab="product">
-                            <a href="${pageContext.request.contextPath}/admin/product">Product Management</a>
-                        </li>
-                        <li class="${activeTab == 'catalog' ? 'active' : 'inactive'}" data-tab="catalog">
-                            <a href="${pageContext.request.contextPath}/admin/catalog">Catalog Management</a>
+                            <a href="${pageContext.request.contextPath}/admin/product">Gestione prodotti</a>
                         </li>
                         <li class="logout-item">
                             <a href="${pageContext.request.contextPath}/logout">Esci dall'account</a>
