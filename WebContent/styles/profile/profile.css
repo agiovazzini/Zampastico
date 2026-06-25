@@ -551,7 +551,7 @@ button:disabled {
     text-align: right;
 }
 
-.no-reviews, .no-orders {
+.no-reviews, .no-orders, .no-addresses {
     background-color: #fafafa;
     border: 1px dashed #e2e8f0;
     border-radius: 8px;
