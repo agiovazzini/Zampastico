@@ -177,4 +177,31 @@ public class ProdottoDAOImp implements ProdottoDAO {
         }
         return lista;
     }
+    
+ // Metodo per controllare se esiste già un prodotto con lo stesso nome e brand
+    public boolean checkEsiste(String nome, String brand) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) AND LOWER(brand) = LOWER(?)";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nome);
+            ps.setString(2, brand);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+    
+    // Metodo per contare quante varianti ha un prodotto (serve per l'eliminazione)
+    public int contaVarianti(int idProdotto) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM VarianteProdotto WHERE id_prodotto = ?";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idProdotto);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }
