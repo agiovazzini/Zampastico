@@ -69,6 +69,14 @@
                 </c:forEach>
             </div>
         </c:if>
+        <c:if test="${empty address}">
+	        <div class="addresses-list">
+                <h3>I tuoi indirizzi salvati</h3>
+                <div class="no-addresses">
+                	<p>Non hai ancora salvato alcun indirizzo su Zampastico.</p>
+                </div>
+            </div>
+	    </c:if>
     </div>
     <script src="${pageContext.request.contextPath}/scripts/profile/my-address.js"></script>
 </body>
