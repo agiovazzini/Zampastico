@@ -17,8 +17,8 @@ import javax.sql.DataSource;
 import dao.CouponDAOImp;
 import model.CouponBEAN;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
 
-// Ho inserito la rotta sotto /admin/ per proteggerla con eventuali filtri di sicurezza
 @WebServlet("/admin/manageCoupons")
 public class AdminCouponServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -38,7 +38,7 @@ public class AdminCouponServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         UtenteBEAN utente = (session != null) ? (UtenteBEAN) session.getAttribute("utenteLoggato") : null;
-        if (utente == null || utente.getRuolo() != UtenteBEAN.Ruolo.amministratore) {
+        if (utente == null || utente.getRuolo() != Ruolo.amministratore) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

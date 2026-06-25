@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import model.CouponBEAN;
 import model.OrdineBEAN;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,12 +19,14 @@ import javax.sql.DataSource;
 
 import dao.CouponDAOImp;
 import dao.OrdineDAOImp;
+import dao.UtenteDAOImp;
 
 @WebServlet("/admin/*")
 public class AdminDashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private OrdineDAOImp ordineDAO;
     private CouponDAOImp couponDAO;
+    private UtenteDAOImp utenteDAO;
    
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -34,13 +37,13 @@ public class AdminDashboardServlet extends HttpServlet {
         }
         ordineDAO = new OrdineDAOImp(ds);
         couponDAO = new CouponDAOImp(ds);
+        utenteDAO = new UtenteDAOImp(ds);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         UtenteBEAN utente = (UtenteBEAN) session.getAttribute("utenteLoggato");
-        
-        if (utente == null || utente.getRuolo() != UtenteBEAN.Ruolo.amministratore) {
+        if (utente == null || utente.getRuolo() != Ruolo.amministratore) {
             session.setAttribute("errore", "Accesso negato. Area riservata agli amministratori.");
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -49,19 +52,70 @@ public class AdminDashboardServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
         String contentPage = "/WEB-INF/view/admin/admin-users.jsp";
         String activeTab = "users";
-
         if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("/users")) {
             contentPage = "/WEB-INF/view/admin/admin-users.jsp";
             activeTab = "users";
         }
-        
         try {
             if (pathInfo != null) {
                 switch (pathInfo) {
-                    case "/users":
-                        activeTab = "users";
-                        contentPage = "/WEB-INF/view/admin/admin-users.jsp";
-                        break;
+                case "/users":
+                    activeTab = "users";
+                    contentPage = "/WEB-INF/view/admin/admin-users.jsp";
+                    
+                    int pageAdmin = 1;
+                    int pageClient = 1;
+                    int recordsPerPageUsers = 10;
+                    
+                    // Lettura parametri pagina separati
+                    if (request.getParameter("pageAdmin") != null) {
+                        try {
+                            pageAdmin = Integer.parseInt(request.getParameter("pageAdmin"));
+                            if (pageAdmin < 1) pageAdmin = 1;
+                        } catch (NumberFormatException e) { pageAdmin = 1; }
+                    }
+                    if (request.getParameter("pageClient") != null) {
+                        try {
+                            pageClient = Integer.parseInt(request.getParameter("pageClient"));
+                            if (pageClient < 1) pageClient = 1;
+                        } catch (NumberFormatException e) { pageClient = 1; }
+                    }
+                    
+                    // Calcolo Offset indipendenti
+                    int offsetAdmin = (pageAdmin - 1) * recordsPerPageUsers;
+                    int offsetClient = (pageClient - 1) * recordsPerPageUsers;
+                    
+                    // Recupero Liste
+                    List<UtenteBEAN> adminUsers = utenteDAO.doRetrieveByRuoloPaginated(Ruolo.amministratore, offsetAdmin, recordsPerPageUsers);
+                    List<UtenteBEAN> clientUsers = utenteDAO.doRetrieveByRuoloPaginated(Ruolo.cliente, offsetClient, recordsPerPageUsers);
+                    
+                    // Calcolo Pagine Separate
+                    int totalAdmins = utenteDAO.countByRuolo(Ruolo.amministratore);
+                    int totalClients = utenteDAO.countByRuolo(Ruolo.cliente);
+                    
+                    int noOfPagesAdmin = (int) Math.ceil((double) totalAdmins / recordsPerPageUsers);
+                    int noOfPagesClient = (int) Math.ceil((double) totalClients / recordsPerPageUsers);
+                    
+                    // Redirect di sicurezza se l'utente manomette l'URL
+                    if (pageAdmin > noOfPagesAdmin && pageAdmin > 1) {
+                        response.sendRedirect(request.getContextPath() + "/admin/users?pageAdmin=1&pageClient=" + pageClient);
+                        return;
+                    }
+                    if (pageClient > noOfPagesClient && pageClient > 1) {
+                        response.sendRedirect(request.getContextPath() + "/admin/users?pageAdmin=" + pageAdmin + "&pageClient=1");
+                        return;
+                    }
+                    
+                    // Salvataggio attributi Admin
+                    request.setAttribute("adminUsers", adminUsers);
+                    request.setAttribute("noOfPagesAdmin", noOfPagesAdmin);
+                    request.setAttribute("currentPageAdmin", pageAdmin);
+                    
+                    // Salvataggio attributi Clienti
+                    request.setAttribute("clientUsers", clientUsers);
+                    request.setAttribute("noOfPagesClient", noOfPagesClient);
+                    request.setAttribute("currentPageClient", pageClient);
+                    break;
                     case "/orders":
                         activeTab = "orders";
                         contentPage = "/WEB-INF/view/admin/admin-orders.jsp";

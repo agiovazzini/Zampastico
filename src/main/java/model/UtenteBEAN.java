@@ -94,6 +94,7 @@ public class UtenteBEAN implements Serializable{
 
     public void setAttivo(boolean attivo) {
         this.attivo = attivo;
+        dataAnonimizzazione = null;
     }
 	
 }
