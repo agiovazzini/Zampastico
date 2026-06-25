@@ -18,12 +18,10 @@ public class ProdottoDAOImp implements ProdottoDAO {
     
     @Override
     public void doSave(ProdottoBEAN prodotto) throws SQLException {
-        // Lo implementeremo quando faremo il lato Amministratore!
     }
     
     @Override
     public boolean doDelete(int id) throws SQLException {
-        // Nel tuo DB la colonna si chiama "eliminato" e non "attivo"
         String sql = "UPDATE Prodotto SET eliminato = TRUE WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -33,14 +31,12 @@ public class ProdottoDAOImp implements ProdottoDAO {
 
     @Override
     public ProdottoBEAN doRetrieveByKey(int id) throws SQLException {
-        return null; // Lo implementeremo per la pagina del singolo prodotto
+        return null;
     }
 
     @Override
     public List<ProdottoBEAN> doRetrieveAll(String orderBy) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        
-        // LA MAGIA: Uniamo (JOIN) le tue tabelle per recuperare tutti i pezzi del prodotto!
         String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, " +
                      "vp.prezzo_listino, c.nome AS categoria, iv.url_immagine " +
                      "FROM Prodotto p " +
@@ -58,9 +54,9 @@ public class ProdottoDAOImp implements ProdottoDAO {
                 p.setId(rs.getInt("id_prodotto"));
                 p.setNome(rs.getString("nome"));
                 p.setDescrizione(rs.getString("descrizione"));
-                p.setPrezzo(rs.getDouble("prezzo_listino")); // Preso dalla Variante!
+                p.setPrezzo(rs.getDouble("prezzo_listino"));
                 p.setMarca(rs.getString("brand"));
-                p.setImmagine(rs.getString("url_immagine")); // Preso dalle Immagini!
+                p.setImmagine(rs.getString("url_immagine"));
                 p.setCategoria(rs.getString("categoria"));
                 lista.add(p);
             }
