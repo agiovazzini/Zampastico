@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 
 import dao.IndirizzoDAOImp;
 import dao.OrdineDAOImp;
+import dao.RecensioneDAOImp;
 import dao.VoceOrdineDAOImp;
 
 @WebServlet("/profile/*")
@@ -27,7 +28,7 @@ public class ProfileTabsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private IndirizzoDAOImp indirizzoDAO;
     private OrdineDAOImp ordineDAO;
-    private VoceOrdineDAOImp voceOrdineDAO;
+    private RecensioneDAOImp recensioneDAO;
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -37,7 +38,7 @@ public class ProfileTabsServlet extends HttpServlet {
         }
         indirizzoDAO = new IndirizzoDAOImp(ds);
         ordineDAO = new OrdineDAOImp(ds);
-        voceOrdineDAO = new VoceOrdineDAOImp(ds);
+        recensioneDAO = new RecensioneDAOImp(ds);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -77,6 +78,15 @@ public class ProfileTabsServlet extends HttpServlet {
         	} else if (pathInfo.equals("/reviews")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-reviews.jsp";
         		activeTab = "reviews";
+        		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
+        		if (userLogged != null) {
+        	        try {
+        	            List<model.RecensioneBEAN> reviewList = recensioneDAO.doRetrieveByUtente(userLogged.getIdUtente());
+        	            request.setAttribute("userReviews", reviewList);
+        	        } catch (SQLException e) {
+        	            request.setAttribute("feedback", "Impossibile caricare le tue recensioni.");
+        	        }
+        	    }
         	} else {
         		feedback = "La sezione richiesta non esiste. Ti abbiamo reindirizzato ai dati personali.";
                 contentPage = "/WEB-INF/view/common/profile-tabs/my-data.jsp";
