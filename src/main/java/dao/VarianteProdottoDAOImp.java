@@ -132,4 +132,18 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
 
         return bean;
     }
+    
+    public List<VarianteProdottoBEAN> doRetrieveByProdotto(int idProdotto) throws SQLException {
+        List<VarianteProdottoBEAN> varianti = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM VarianteProdotto WHERE id_prodotto = ?";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idProdotto);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    varianti.add(extractBean(rs));
+                }
+            }
+        }
+        return varianti;
+    }
 }
