@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/profile/my-reviews.css">
 </head>
 <body>
     <div class="reviews-container">
@@ -32,7 +31,7 @@
                             <span class="review-date">Recensito il: ${recensione.dataCreazione}</span>
                             <form action="${pageContext.request.contextPath}/DeleteReview" method="POST">
                                 <input type="hidden" name="idVarianteProdotto" value="${recensione.idVarianteProdotto}">
-                                <button type="button" class="deleteReviewButton" onclick="submitDeletion(this)">Elimina Recensione</button>
+                                <button type="button" class="deleteButton" onclick="submitDeletion(this)">Elimina Recensione</button>
                             </form>
                         </div>
                     </div>
