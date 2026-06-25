@@ -68,4 +68,46 @@ public class CouponDAOImp implements CouponDAO {
         }
         return couponList;
     }
+    
+    @Override
+    public List<CouponBEAN> doRetrieveAllPaginated(int offset, int limit) throws SQLException {
+        List<CouponBEAN> couponList = new ArrayList<>();
+        // Usa LIMIT e OFFSET per la paginazione
+        String query = "SELECT * FROM Coupon ORDER BY id_coupon DESC LIMIT ? OFFSET ?";
+        
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CouponBEAN coupon = new CouponBEAN();
+                    coupon.setIdCoupon(rs.getInt("id_coupon"));
+                    coupon.setCodice(rs.getString("codice"));
+                    coupon.setPercentualeSconto(rs.getDouble("percentuale_sconto"));
+                    Timestamp ts = rs.getTimestamp("data_scadenza");
+                    if (ts != null) {
+                        coupon.setDataScadenza(ts.toLocalDateTime());
+                    }
+                    couponList.add(coupon);
+                }
+            }
+        }
+        return couponList;
+    }
+
+    @Override
+    public int countAllCoupons() throws SQLException {
+        String query = "SELECT COUNT(*) FROM Coupon";
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }

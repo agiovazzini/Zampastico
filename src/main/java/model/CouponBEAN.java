@@ -45,4 +45,11 @@ public class CouponBEAN implements Serializable {
     public void setDataScadenza(LocalDateTime dataScadenza) {
         this.dataScadenza = dataScadenza;
     }
+    
+    public boolean isScaduto() {
+        if (this.dataScadenza == null) {
+            return false;
+        }
+        return this.dataScadenza.isBefore(java.time.LocalDateTime.now());
+    }
 }
