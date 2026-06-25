@@ -93,8 +93,35 @@ public class AdminDashboardServlet extends HttpServlet {
                     case "/coupons":
                         activeTab = "coupons";
                         contentPage = "/WEB-INF/view/admin/admin-coupons.jsp";
-                        List<CouponBEAN> coupons = couponDAO.doRetrieveAll();
+                        
+                        int pageCoupons = 1;
+                        int recordsPerPageCoupons = 10; // Quanti coupon mostrare per pagina
+                        
+                        if (request.getParameter("page") != null) {
+                            try {
+                                pageCoupons = Integer.parseInt(request.getParameter("page"));
+                                if (pageCoupons < 1) pageCoupons = 1;
+                            } catch (NumberFormatException e) {
+                                pageCoupons = 1;
+                            }
+                        }
+                        
+                        int offsetCoupons = (pageCoupons - 1) * recordsPerPageCoupons;
+                        
+                        // Recupera i coupon paginati e il conteggio totale
+                        List<CouponBEAN> coupons = couponDAO.doRetrieveAllPaginated(offsetCoupons, recordsPerPageCoupons);
+                        int totalCoupons = couponDAO.countAllCoupons();
+                        int noOfPagesCoupons = (int) Math.ceil((double) totalCoupons / recordsPerPageCoupons);
+                        
+                        // Controlla se l'utente prova ad accedere a una pagina vuota e oltre il limite
+                        if (pageCoupons > noOfPagesCoupons && pageCoupons > 1) {
+                            response.sendRedirect(request.getContextPath() + "/admin/coupons?page=1");
+                            return;
+                        }
+                        
                         request.setAttribute("coupons", coupons);
+                        request.setAttribute("noOfPages", noOfPagesCoupons);
+                        request.setAttribute("currentPage", pageCoupons);
                         break;
                     case "/product":
                         activeTab = "product";
