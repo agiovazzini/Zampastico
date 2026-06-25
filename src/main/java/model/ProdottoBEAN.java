@@ -1,6 +1,8 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProdottoBEAN implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -12,7 +14,9 @@ public class ProdottoBEAN implements Serializable {
     private String marca;
     private String immagine;
     private String categoria;
+    private int idCategoria;
     private boolean attivo; //Non elimina prodotti dagli ordini passati
+    private List<VarianteProdottoBEAN> varianti = new ArrayList<>();
     
     public ProdottoBEAN() {
         this.attivo = true;
@@ -42,4 +46,11 @@ public class ProdottoBEAN implements Serializable {
 
     public boolean isAttivo() { return attivo; }
     public void setAttivo(boolean attivo) { this.attivo = attivo; }
+
+    public int getIdCategoria() { return idCategoria; }
+    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
+    
+    public List<VarianteProdottoBEAN> getVarianti() { return varianti; }
+    public void setVarianti(List<VarianteProdottoBEAN> varianti) { this.varianti = varianti; }
+
 }
