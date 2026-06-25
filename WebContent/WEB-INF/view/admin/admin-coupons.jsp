@@ -6,7 +6,6 @@
     </div>
 
     <div class="coupons-layout">
-        
         <div class="filter-section">
             <h4>Crea Nuovo Coupon</h4>
             <form action="${pageContext.request.contextPath}/admin/manageCoupons" method="POST" class="admin-filter-bar">
