@@ -83,7 +83,7 @@
                             // Formattiamo il prezzo con 2 decimali e la virgola
                             String prezzoForm = String.format("%.2f", p.getPrezzo()).replace(".", ",");
                             
-                            // Rendiamo i nomi sicuri per JavaScript (sostituiamo eventuali apici)
+                            // Rendiamo i nomi sicuri
                             String nomeSafe = p.getNome() != null ? p.getNome().replace("'", "\\'") : "Prodotto";
                             String imgPath = p.getImmagine() != null ? p.getImmagine() : "images/assets/placeholder.png";
                     %>
