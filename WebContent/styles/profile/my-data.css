@@ -1,0 +1,20 @@
+.data-wrapper .anonym-container {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
+.anonym-container .saveButton {
+    background-color: #e74c3c;
+    max-width: 250px;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+}
+
+.anonym-container .saveButton:not(:disabled):hover {
+    background-color: #c0392b;
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.35);
+}
+
+.anonym-container .saveButton.confirmButton {
+    background-color: #8b0000;
+    animation: pulseAlert 1.5s infinite;
+}

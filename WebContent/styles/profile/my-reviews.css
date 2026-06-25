@@ -1,0 +1,47 @@
+.review-card {
+    padding: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.review-header {
+    border-bottom: 1px solid #fafafa;
+    padding-bottom: 8px;
+}
+
+.review-product-info {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.review-stars {
+    font-size: 0.95rem;
+    color: #e2e8f0;
+}
+
+.star.filled {
+    color: #ffb703;
+}
+
+.review-text {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.review-footer {
+    padding-top: 8px;
+}
+
+.review-footer .deleteButton.confirmButton {
+    animation: pulseAlert 1.0s infinite;
+}

@@ -1,0 +1,113 @@
+/* =========================================
+   2. MY-ADDRESS.JSP
+   ========================================= */
+#defaultForm {
+    display: grid;
+    grid-template-columns: auto auto; 
+    gap: 10px;
+}
+
+#defaultForm label {
+    cursor: pointer;
+}
+
+.address-container {
+    position: relative; 
+    overflow: hidden; 
+}
+
+.addresses-list h3 {
+    color: var(--color-primary);
+}
+
+.address-element {
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.address-element:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.address-element.isDefault {
+    border: 2px solid var(--color-primary);
+    background-color: rgba(255, 102, 0, 0.03); 
+}
+
+.address-element p {
+    margin: 0 0 15px 0;
+    line-height: 1.5;
+    color: var(--color-text-main);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.address-element.highlight-card {
+    border: 2px solid var(--color-primary, #ff6600);
+    background-color: rgba(255, 102, 0, 0.08);
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2);
+    z-index: 10;
+}
+
+.address-element.highlight-card::before {
+    content: "✏️ IN MODIFICA";
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background-color: var(--color-primary, #ff6600);
+    color: white;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.address-container.edit-mode {
+    border: 2px dashed var(--color-primary, #ff6600);
+    background-color: rgba(255, 102, 0, 0.02);
+    transition: all 0.3s ease;
+}
+
+.locked-overlay {
+    display: none; 
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(3px); 
+    z-index: 10;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.address-container.locked-mode .locked-overlay {
+    display: flex; 
+}
+
+.locked-message {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    padding: 20px 25px;
+    border-radius: 12px;
+    color: var(--color-primary, #ff6600);
+    font-size: 1.1rem;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.locked-message span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    display: block;
+    margin-top: 8px;
+}

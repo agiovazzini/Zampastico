@@ -1,8 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/profile/my-reviews.css">
+    </head>
     <body>
         <div class="reviews-container">
             <h3>Le tue recensioni</h3>
@@ -13,13 +14,12 @@
                             <div class="review-header">
                                 <div class="review-product-info">
                                     <span class="product-title">
-                                    <span class="product-brand">${recensione.brandProdotto}</span> - ${recensione.nomeProdotto}
-                                    <span class="product-format">(${recensione.formatoProdotto})</span>
+                                        <span class="product-brand">${recensione.brandProdotto}</span> - ${recensione.nomeProdotto} <span class="product-format">(${recensione.formatoProdotto})</span>
                                     </span>
                                 </div>
                                 <div class="review-stars">
                                     <c:forEach begin="1" end="5" var="i">
-                                        <span class="star ${i <= recensione.votazione ? 'filled' : ''}">★</span>
+                                        <span class="star ${i <= recensione.votazione ? 'filled' : ''}">★ </span>
                                     </c:forEach>
                                 </div>
                             </div>
