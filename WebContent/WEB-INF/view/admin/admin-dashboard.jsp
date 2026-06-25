@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<% String feedback = (String) session.getAttribute("feedback"); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,10 +40,10 @@
 			</div>
 		</section>
 		<section class="tab-content">
-		    <c:if test="${not empty feedback}">
-				<div class="feedback-div">${feedback}</div>
-			</c:if>
-    	    
+		    <% if (feedback != null) { %>
+        	<div class="feedback-div"><%= feedback %></div>
+    	<% } %>
+    	<% if (feedback != null) session.removeAttribute("feedback");%> 
  		    <c:if test="${not empty contentPage}">
  		        <jsp:include page="${contentPage}"/>
  		    </c:if>

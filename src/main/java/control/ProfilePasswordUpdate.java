@@ -35,7 +35,6 @@ public class ProfilePasswordUpdate extends HttpServlet {
 		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
 		String oldPasswordForm = request.getParameter("passwordForm");
 		String newPasswordForm = request.getParameter("newPasswordForm");
-		String confirmPasswordForm = request.getParameter("confirmPasswordForm");
 		if (userLogged == null) {
 			response.sendRedirect(request.getContextPath() + "/login");
 			return;
