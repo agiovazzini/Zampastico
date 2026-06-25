@@ -45,7 +45,7 @@
     	<div class="hero-content">
     		<h1>Il meglio per loro, <br>scelto con <span>amore</span><i class="fa-solid fa-paw paw-icon"></i></h1>
     		<p>Scopri migliaia di prodotti di qualità per il benessere dei tuoi animali.</p>
-    		<a href="${pageContext.request.contextPath}/catalogo" class="btn-primary hero-btn">
+    		<a href="${pageContext.request.contextPath}/catalog" class="btn-primary hero-btn">
     			Scopri il catalogo <i class="fa-solid fa-paw"></i>
     		</a>
     	</div>
@@ -88,7 +88,7 @@
     <section class="categories-section">
     	<div class="section-header">
     		<h2>Esplora le categorie <i class="fa-solid fa-paw" style="color: var(--color-primary);"></i></h2>
-    		<a href="${pageContext.request.contextPath}/catalogo" class="link-view-all">Vedi tutte <i class="fa-solid fa-arrow-right"></i></a>
+    		<a href="${pageContext.request.contextPath}/catalog" class="link-view-all">Vedi tutte <i class="fa-solid fa-arrow-right"></i></a>
     	</div>
     	<div class="categories-grid">
     		<a href="#" class="category-card">
