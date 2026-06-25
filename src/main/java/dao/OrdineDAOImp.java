@@ -435,6 +435,36 @@ public class OrdineDAOImp implements OrdineDAO {
         return 0;
     }
 
+    
+    public synchronized int countAllOrders() throws SQLException {
+        String countSQL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(countSQL);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    public synchronized List<OrdineBEAN> doRetrieveAllWithPagination(int offset, int limit) throws SQLException {
+        List<OrdineBEAN> orders = new ArrayList<>();
+        String selectSQL = "SELECT O.*, U.email FROM " + TABLE_NAME + " O JOIN Utente U ON O.id_utente = U.id_utente ORDER BY O.data_ordine DESC LIMIT ? OFFSET ?";
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(selectSQL)) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrdineBEAN bean = extractBean(rs);
+                    bean.setEmailUtente(rs.getString("email"));
+                    orders.add(bean);
+                }
+            }
+        }
+        return orders;
+    }
     private OrdineBEAN extractBean(ResultSet rs) throws SQLException {
         OrdineBEAN bean = new OrdineBEAN();
         bean.setIdOrdine(rs.getInt("id_ordine"));
@@ -459,5 +489,112 @@ public class OrdineDAOImp implements OrdineDAO {
         return bean;
     }
     
+    public synchronized List<OrdineBEAN> doRetrieveAllWithFiltersAndPagination(int offset, int limit, String emailFilter, String dateFilter, String dateFrom, String dateTo) throws SQLException {
+        List<OrdineBEAN> orders = new ArrayList<>();
+        String sql = "SELECT O.*, U.email FROM " + TABLE_NAME + " O JOIN Utente U ON O.id_utente = U.id_utente WHERE 1=1 ";
+        List<Object> params = new ArrayList<>();
+        if (emailFilter != null && !emailFilter.trim().isEmpty()) {
+            sql += " AND U.email LIKE ? ";
+            params.add("%" + emailFilter.trim() + "%");
+        }
+        if (dateFilter != null) {
+            switch(dateFilter) {
+                case "oggi": 
+                    sql += " AND DATE(O.data_ordine) = CURRENT_DATE "; 
+                    break;
+                case "ieri": 
+                    sql += " AND DATE(O.data_ordine) = CURRENT_DATE - INTERVAL 1 DAY "; 
+                    break;
+                case "ultimi_7": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 7 DAY "; 
+                    break;
+                case "ultimo_mese": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 1 MONTH "; 
+                    break;
+                case "ultimo_anno": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 1 YEAR "; 
+                    break;
+                case "custom":
+                    if (dateFrom != null && !dateFrom.isEmpty()) {
+                        sql += " AND DATE(O.data_ordine) >= ? ";
+                        params.add(dateFrom);
+                    }
+                    if (dateTo != null && !dateTo.isEmpty()) {
+                        sql += " AND DATE(O.data_ordine) <= ? ";
+                        params.add(dateTo);
+                    }
+                    break;
+            }
+        }
+        sql += " ORDER BY O.data_ordine DESC LIMIT ? OFFSET ?";
+        params.add(limit);
+        params.add(offset);
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrdineBEAN bean = extractBean(rs);
+                    bean.setEmailUtente(rs.getString("email"));
+                    orders.add(bean);
+                }
+            }
+        }
+        return orders;
+    }
+
+    public synchronized int countAllOrdersWithFilters(String emailFilter, String dateFilter, String dateFrom, String dateTo) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " O JOIN Utente U ON O.id_utente = U.id_utente WHERE 1=1 ";
+        List<Object> params = new ArrayList<>();
+        if (emailFilter != null && !emailFilter.trim().isEmpty()) {
+            sql += " AND U.email LIKE ? ";
+            params.add("%" + emailFilter.trim() + "%");
+        }
+        if (dateFilter != null) {
+            switch(dateFilter) {
+                case "oggi": 
+                    sql += " AND DATE(O.data_ordine) = CURRENT_DATE "; 
+                    break;
+                case "ieri": 
+                    sql += " AND DATE(O.data_ordine) = CURRENT_DATE - INTERVAL 1 DAY "; 
+                    break;
+                case "ultimi_7": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 7 DAY "; 
+                    break;
+                case "ultimo_mese": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 1 MONTH "; 
+                    break;
+                case "ultimo_anno": 
+                    sql += " AND O.data_ordine >= CURRENT_DATE - INTERVAL 1 YEAR "; 
+                    break;
+                case "custom":
+                    if (dateFrom != null && !dateFrom.isEmpty()) {
+                        sql += " AND DATE(O.data_ordine) >= ? ";
+                        params.add(dateFrom);
+                    }
+                    if (dateTo != null && !dateTo.isEmpty()) {
+                        sql += " AND DATE(O.data_ordine) <= ? ";
+                        params.add(dateTo);
+                    }
+                    break;
+            }
+        }
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
     
 }

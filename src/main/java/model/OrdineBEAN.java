@@ -40,11 +40,21 @@ public class OrdineBEAN implements Serializable {
     private LocalDateTime dataOrdine;
     private List<VoceOrdineBEAN> vociOrdine = new ArrayList<>();
     private String metodoPagamento;
+    private String emailUtente;
 
     public OrdineBEAN() {
     	super();
     }
 
+    
+    public String getEmailUtente() {
+        return emailUtente;
+    }
+
+    public void setEmailUtente(String emailUtente) {
+        this.emailUtente = emailUtente;
+    }
+    
 	 public String getStatoVisualizzabile() {
 	     if (this.stato == null) {
 	         return "Non specificato";
