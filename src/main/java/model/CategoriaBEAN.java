@@ -7,7 +7,7 @@ public class CategoriaBEAN implements Serializable {
 
     private int idCategoria;
     private String nome;
-    private String descrizione;
+    private int idSuperCategoria;
 
     public CategoriaBEAN() {
     	super();
@@ -29,11 +29,11 @@ public class CategoriaBEAN implements Serializable {
     	this.nome = nome; 
     }
 
-    public String getDescrizione() { 
-    	return descrizione; 
+    public int getIdSuper() { 
+    	return idSuperCategoria; 
     }
     
-    public void setDescrizione(String descrizione) { 
-    	this.descrizione = descrizione; 
+    public void setidSuper(int idSuperCategoria) { 
+    	this.idSuperCategoria = idSuperCategoria; 
     }
 }
