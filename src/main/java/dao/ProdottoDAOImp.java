@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import model.ProdottoBEAN;
 
 public class ProdottoDAOImp implements ProdottoDAO {
-	private DataSource ds;
+    private DataSource ds;
 
     public ProdottoDAOImp(DataSource ds) {
         this.ds = ds;
@@ -18,62 +18,32 @@ public class ProdottoDAOImp implements ProdottoDAO {
     
     @Override
     public void doSave(ProdottoBEAN prodotto) throws SQLException {
-        String sql = "INSERT INTO prodotto (nome, descrizione, prezzo, marca, immagine, categoria, attivo) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, prodotto.getNome());
-            ps.setString(2, prodotto.getDescrizione());
-            ps.setDouble(3, prodotto.getPrezzo());
-            ps.setString(4, prodotto.getMarca());
-            ps.setString(5, prodotto.getImmagine());
-            ps.setString(6, prodotto.getCategoria());
-            ps.setBoolean(7, prodotto.isAttivo());
-            ps.executeUpdate();
-        }
     }
     
     @Override
     public boolean doDelete(int id) throws SQLException {
-        // Impostiamo attivo = false (Soft Delete)
-        String sql = "UPDATE prodotto SET attivo = false WHERE id = ?";
+        String sql = "UPDATE Prodotto SET eliminato = TRUE WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            return ps.executeUpdate() > 0;
         }
     }
 
     @Override
     public ProdottoBEAN doRetrieveByKey(int id) throws SQLException {
-        String sql = "SELECT * FROM prodotto WHERE id = ?";
-        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    ProdottoBEAN p = new ProdottoBEAN();
-                    p.setId(rs.getInt("id"));
-                    p.setNome(rs.getString("nome"));
-                    p.setDescrizione(rs.getString("descrizione"));
-                    p.setPrezzo(rs.getDouble("prezzo"));
-                    
-                    // CORREZIONE 2: Era p.setString, ora è p.setMarca
-                    p.setMarca(rs.getString("marca"));
-                    
-                    p.setImmagine(rs.getString("immagine"));
-                    p.setCategoria(rs.getString("categoria"));
-                    p.setAttivo(rs.getBoolean("attivo"));
-                    return p;
-                }
-            }
-        }
         return null;
     }
 
     @Override
     public List<ProdottoBEAN> doRetrieveAll(String orderBy) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        String order = (orderBy != null && !orderBy.isEmpty()) ? orderBy : "id";
-        // Mostriamo solo i prodotti attivi nel catalogo pubblico!
-        String sql = "SELECT * FROM prodotto WHERE attivo = true ORDER BY " + order;
+        String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, " +
+                     "vp.prezzo_listino, c.nome AS categoria, iv.url_immagine " +
+                     "FROM Prodotto p " +
+                     "JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
+                     "JOIN Categoria c ON p.id_categoria = c.id_categoria " +
+                     "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE " +
+                     "WHERE p.eliminato = FALSE";
         
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql); 
@@ -81,14 +51,13 @@ public class ProdottoDAOImp implements ProdottoDAO {
             
             while (rs.next()) {
                 ProdottoBEAN p = new ProdottoBEAN();
-                p.setId(rs.getInt("id"));
+                p.setId(rs.getInt("id_prodotto"));
                 p.setNome(rs.getString("nome"));
                 p.setDescrizione(rs.getString("descrizione"));
-                p.setPrezzo(rs.getDouble("prezzo"));
-                p.setMarca(rs.getString("marca"));
-                p.setImmagine(rs.getString("immagine"));
+                p.setPrezzo(rs.getDouble("prezzo_listino"));
+                p.setMarca(rs.getString("brand"));
+                p.setImmagine(rs.getString("url_immagine"));
                 p.setCategoria(rs.getString("categoria"));
-                p.setAttivo(rs.getBoolean("attivo"));
                 lista.add(p);
             }
         }
