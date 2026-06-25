@@ -41,9 +41,13 @@ public class LoginServlet extends HttpServlet {
         try {
             UtenteBEAN utente = utenteDAO.doRetrieveByEmail(email);
             if (utente != null && utente.getEmail() != null && utente.isAttivo()) {
-                if (utente.getPass().equals(password)) {
+            	if (utente.getPass().equals(password)) {
                     session.setAttribute("utenteLoggato", utente);
-                    response.sendRedirect(request.getContextPath() + "/home");
+                    if (utente.getRuolo() == UtenteBEAN.Ruolo.amministratore) {
+                        response.sendRedirect(request.getContextPath() + "/admin/users");
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/home");
+                    }
                     return; 
                 }
             }
