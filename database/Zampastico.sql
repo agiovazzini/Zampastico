@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS Prodotto(
     brand VARCHAR(255),
     descrizione TEXT,
     data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    eliminato BOOLEAN DEFAULT FALSE,
+    attivo BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria) ON DELETE SET NULL
 );
 
