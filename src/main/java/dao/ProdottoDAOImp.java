@@ -61,18 +61,33 @@ public class ProdottoDAOImp implements ProdottoDAO {
             return ps.executeUpdate() > 0;
         }
     }
-    
+
     @Override
     public boolean doDelete(int id) throws SQLException {
-        String sql = "UPDATE Prodotto SET attivo = TRUE WHERE id_prodotto = ?";
+        String sql = "DELETE FROM " + TABLE_NAME + " WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         }
     }
-
     @Override
     public ProdottoBEAN doRetrieveByKey(int id) throws SQLException {
+        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id_prodotto = ?";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ProdottoBEAN p = new ProdottoBEAN();
+                    p.setId(rs.getInt("id_prodotto"));
+                    p.setNome(rs.getString("nome"));
+                    p.setDescrizione(rs.getString("descrizione"));
+                    p.setMarca(rs.getString("brand"));
+                    p.setIdCategoria(rs.getInt("id_categoria"));
+                    p.setAttivo(rs.getBoolean("attivo"));
+                    return p;
+                }
+            }
+        }
         return null;
     }
 
@@ -88,7 +103,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
                      "LEFT JOIN Categoria c ON p.id_categoria = c.id_categoria " +
                      "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE";
         
-        // Se in futuro vorrai usare il parametro orderBy
         if (orderBy != null && !orderBy.trim().isEmpty()) {
             sql += " ORDER BY " + orderBy;
         }
@@ -101,15 +115,13 @@ public class ProdottoDAOImp implements ProdottoDAO {
                 int idProdotto = rs.getInt("id_prodotto");
                 ProdottoBEAN p = null;
                 
-                // 1. Cerco il prodotto all'interno della lista
                 for (ProdottoBEAN prod : lista) {
                     if (prod.getId() == idProdotto) {
                         p = prod;
-                        break; // Prodotto trovato, esco dal ciclo di ricerca
+                        break; 
                     }
                 }
                 
-                // 2. Se non l'ho trovato (p è ancora null), è un prodotto nuovo: lo creo
                 if (p == null) {
                     p = new ProdottoBEAN();
                     p.setId(idProdotto);
@@ -118,19 +130,14 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setMarca(rs.getString("brand"));
                     p.setCategoria(rs.getString("categoria"));
                     p.setAttivo(rs.getBoolean("attivo"));
-                    
-                    // Salvo i dati della "copertina" (presi dalla prima riga/variante che incontro)
                     p.setPrezzo(rs.getDouble("prezzo_listino"));
                     p.setImmagine(rs.getString("url_immagine"));
                     
-                    // Lo aggiungo alla lista generale
                     lista.add(p);
                 }
                 
-                // 3. Gestione della variante per la riga corrente
                 int idVariante = rs.getInt("id_varianteProdotto");
                 
-                // Se idVariante non è nullo, vuol dire che c'è una variante da aggiungere
                 if (!rs.wasNull()) {
                     model.VarianteProdottoBEAN variante = new model.VarianteProdottoBEAN();
                     variante.setIdVarianteProdotto(idVariante);
@@ -146,7 +153,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
                         variante.setIdSconto(idSconto);
                     }
                     
-                    // Aggiungo la variante alla lista interna del prodotto
                     p.getVarianti().add(variante);
                 }
             }
@@ -178,7 +184,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
         return lista;
     }
     
- // Metodo per controllare se esiste già un prodotto con lo stesso nome e brand
     public boolean checkEsiste(String nome, String brand) throws SQLException {
         String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) AND LOWER(brand) = LOWER(?)";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -193,7 +198,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
         return false;
     }
     
-    // Metodo per contare quante varianti ha un prodotto (serve per l'eliminazione)
     public int contaVarianti(int idProdotto) throws SQLException {
         String sql = "SELECT COUNT(*) FROM VarianteProdotto WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
