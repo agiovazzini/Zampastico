@@ -52,14 +52,33 @@
 	                        </div> </div> </div> </c:forEach>
 	        </div>
 	    </c:if>
-	    
+	    <c:if test="${noOfPages > 1}">
+        <div class="pagination-container">
+            <c:if test="${currentPage > 1}">
+                <a href="${pageContext.request.contextPath}/profile/orders-history?page=${currentPage - 1}" class="page-link">&laquo; Precedente</a>
+            </c:if>
+            <c:forEach begin="1" end="${noOfPages}" var="i">
+                <c:choose>
+                    <c:when test="${currentPage eq i}">
+                        <span class="page-link active">${i}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/profile/orders-history?page=${i}" class="page-link">${i}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            <c:if test="${currentPage < noOfPages}">
+                <a href="${pageContext.request.contextPath}/profile/orders-history?page=${currentPage + 1}" class="page-link">Successivo &raquo;</a>
+            </c:if>
+            
+        </div>
+    </c:if>
+    </div>
 	    <c:if test="${empty orders}">
 	        <div class="no-orders">
 	            <p>Non hai ancora effettuato alcun ordine su Zampastico.</p>
 	        </div>
 	    </c:if>
-	</div>
-	
 	<script src="${pageContext.request.contextPath}/scripts/profile/my-orders.js"></script>
 </body>
 </html>

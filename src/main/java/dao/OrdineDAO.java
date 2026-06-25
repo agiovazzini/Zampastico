@@ -14,5 +14,6 @@ public interface OrdineDAO {
     List<OrdineBEAN> doRetrieveByUser(int idUser) throws SQLException;
     List<OrdineBEAN> doRetrieveAll() throws SQLException;
     void doCheckout(int idUser, Integer idSavedAddress, IndirizzoBEAN manualAddress, boolean saveCheck, Integer idCoupon, String paymentMethod) throws SQLException;
-
+    List<OrdineBEAN> doRetrieveByUserPaginated(int idUser, int offset, int limit) throws SQLException;
+    int countByUser(int idUser) throws SQLException;
 }

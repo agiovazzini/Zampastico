@@ -53,16 +53,32 @@ public class ProfileTabsServlet extends HttpServlet {
         		activeTab = "personal-data";
         	} else if (pathInfo.equals("/orders-history")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-orders.jsp";
-        		activeTab = "orders-history";
-        		UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");
-        		if (userLogged != null) {
-        			try {
-        				List<OrdineBEAN> ordini = ordineDAO.doRetrieveByUser(userLogged.getIdUtente());
-        				request.setAttribute("orders", ordini);
-        			} catch (SQLException e) {
-        				request.setAttribute("feedback", "Errore nel caricamento degli ordini.");
-        			}
-        		}
+        	    activeTab = "orders-history";
+        	    UtenteBEAN userLogged = (UtenteBEAN) session.getAttribute("utenteLoggato");  
+        	    if (userLogged != null) {
+        	        try {
+        	            int page = 1;
+        	            int recordsPerPage = 5;
+        	            if (request.getParameter("page") != null) {
+        	                try {
+        	                    page = Integer.parseInt(request.getParameter("page"));
+        	                    if (page < 1) page = 1;
+        	                } catch (NumberFormatException e) {
+        	                    page = 1;
+        	                }
+        	            }
+        	            int offset = (page - 1) * recordsPerPage;
+        	            List<OrdineBEAN> ordini = ordineDAO.doRetrieveByUserPaginated(userLogged.getIdUtente(), offset, recordsPerPage);
+        	            int noOfRecords = ordineDAO.countByUser(userLogged.getIdUtente());
+        	            int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        	            request.setAttribute("orders", ordini);
+        	            request.setAttribute("noOfPages", noOfPages);
+        	            request.setAttribute("currentPage", page);
+        	            
+        	        } catch (SQLException e) {
+        	            request.setAttribute("feedback", "Errore nel caricamento degli ordini.");
+        	        }
+        	    }
         	} else if (pathInfo.equals("/addresses")) {
         		contentPage = "/WEB-INF/view/common/profile-tabs/my-address.jsp";
         		activeTab = "addresses";

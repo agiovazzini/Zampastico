@@ -16,7 +16,12 @@ import java.io.IOException;
 })
 public class AdminFilter extends HttpFilter{
 
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 

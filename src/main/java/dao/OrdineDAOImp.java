@@ -239,7 +239,6 @@ public class OrdineDAOImp implements OrdineDAO {
                         }
                     }
                 }
-
                 String checkElementi = "SELECT COUNT(*) FROM VoceCarrello WHERE id_carrello = ?";
                 try (PreparedStatement preparedStatement = connection.prepareStatement(checkElementi)) {
                 	preparedStatement.setInt(1, idCarrello);
@@ -321,7 +320,6 @@ public class OrdineDAOImp implements OrdineDAO {
                         }
                     }
                 }
-
                 double totaleOrdineTemp = 0.0;
                 String getVociCarrelloSQL = 
                     "SELECT vc.id_varianteProdotto, vc.quantita, vp.prezzo_listino, s.percentuale_sconto " +
@@ -391,6 +389,51 @@ public class OrdineDAOImp implements OrdineDAO {
             }
         }
     }
+    
+    @Override
+    public synchronized List<OrdineBEAN> doRetrieveByUserPaginated(int idUtente, int offset, int limit) throws SQLException {
+        String selectOrdiniSQL = "SELECT o.*, pag.metodo AS metodo_pagamento FROM " + TABLE_NAME + " o LEFT JOIN Pagamento pag ON o.id_ordine = pag.id_ordine WHERE o.id_utente = ? ORDER BY o.data_ordine DESC LIMIT ? OFFSET ?";
+        List<OrdineBEAN> ordini = new ArrayList<>();
+        VoceOrdineDAOImp voceDAO = new VoceOrdineDAOImp(this.ds);
+        try (Connection connection = ds.getConnection();
+             PreparedStatement psOrdini = connection.prepareStatement(selectOrdiniSQL)) {
+            psOrdini.setInt(1, idUtente);
+            psOrdini.setInt(2, limit);
+            psOrdini.setInt(3, offset);
+            try (ResultSet rsOrdini = psOrdini.executeQuery()) {
+                while (rsOrdini.next()) {
+                    OrdineBEAN order = extractBean(rsOrdini);
+                    try {
+                        order.setMetodoPagamento(rsOrdini.getString("metodo_pagamento"));
+                    } catch (SQLException e) {
+                    }
+                    ordini.add(order);
+                }
+            }
+            for (OrdineBEAN order : ordini) {
+                List<VoceOrdineBEAN> voci = voceDAO.doRetrieveByOrdine(order.getIdOrdine());
+                order.setVociOrdine(voci);
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return ordini;
+    }
+
+    @Override
+    public synchronized int countByUser(int idUtente) throws SQLException {
+        String countSQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_utente = ?";
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(countSQL)) {
+            ps.setInt(1, idUtente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
 
     private OrdineBEAN extractBean(ResultSet rs) throws SQLException {
         OrdineBEAN bean = new OrdineBEAN();
@@ -415,4 +458,6 @@ public class OrdineDAOImp implements OrdineDAO {
         bean.setDataOrdine(data);
         return bean;
     }
+    
+    
 }
