@@ -15,11 +15,12 @@ public class ProdottoBEAN implements Serializable {
     private String immagine;
     private String categoria;
     private int idCategoria;
-    private boolean attivo; //Non elimina prodotti dagli ordini passati
+    private boolean attivo;
     private List<VarianteProdottoBEAN> varianti = new ArrayList<>();
-    
+    private String path;
+    private String mimeType;
+
     public ProdottoBEAN() {
-        this.attivo = true;
     }
     
     //Metodi Getter e Setter
@@ -52,5 +53,13 @@ public class ProdottoBEAN implements Serializable {
     
     public List<VarianteProdottoBEAN> getVarianti() { return varianti; }
     public void setVarianti(List<VarianteProdottoBEAN> varianti) { this.varianti = varianti; }
+
+    // Aggiungi questi metodi in fondo alla classe
+    public String getPath() { return path; }
+    public void setPath(String path) { this.path = path; }
+
+    public String getMimeType() { return mimeType; }
+    public void setMimeType(String mimeType) { this.mimeType = mimeType; }
+    
 
 }

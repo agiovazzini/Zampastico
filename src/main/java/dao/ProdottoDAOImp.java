@@ -216,4 +216,15 @@ public class ProdottoDAOImp implements ProdottoDAO {
         }
         return 0;
     }
+    
+    public synchronized boolean doUpdateImage(int idProdotto, String path, String mimeType) throws SQLException {
+        String sql = "UPDATE " + TABLE_NAME + " SET path = ?, mime_type = ? WHERE id_prodotto = ?";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, path);
+            ps.setString(2, mimeType);
+            ps.setInt(3, idProdotto);
+            return ps.executeUpdate() != 0;
+        }
+    }
 }

@@ -12,4 +12,5 @@ public interface ProdottoDAO {
     public List<ProdottoBEAN> doRetrieveByCategoria(int idCategoria) throws SQLException;
     public boolean checkEsiste(String nome, String brand) throws SQLException;
     public int contaVarianti(int idProdotto) throws SQLException;
+    boolean doUpdateImage(int idProdotto, String path, String mimeType) throws SQLException;
 }
