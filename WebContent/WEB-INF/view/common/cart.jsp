@@ -7,7 +7,6 @@
 <title>Il tuo carrello | Zampastico</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/style.css">
 
-<!-- FontAwesome per l'icona del cestino -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -26,7 +25,7 @@
                 <a href="${pageContext.request.contextPath}/home" class="btn-primary">Inizia lo shopping</a>
             </div>
 
-            </div>
+        </div>
 
         <div class="cart-summary-section">
             <h3 class="summary-title">Riepilogo Ordine</h3>
@@ -48,7 +47,7 @@
                 <span id="summary-total">0,00€</span>
             </div>
             
-            <a href="#" class="btn-primary btn-block" style="opacity: 0.5; pointer-events: none;">Procedi all'ordine</a>
+            <a href="${pageContext.request.contextPath}/checkout" class="btn-primary btn-block" style="opacity: 0.5; pointer-events: none;">Procedi all'ordine</a>
             
             <div class="secure-checkout">
                 <i class="fa-solid fa-shield-halved"></i> Pagamento Sicuro
@@ -159,10 +158,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Inclusione nel footer -->
 <jsp:include page="footer.jsp" />
 
-<!-- Inclusione dello script JS -->
 <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
 </body>
 </html>
