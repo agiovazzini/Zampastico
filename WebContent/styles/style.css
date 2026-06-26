@@ -1275,6 +1275,94 @@ body {
     to { opacity: 0; transform: translateY(-10px); }
 }
 
+/* --- CLASSI UTILITY PER IL CHECKOUT (Niente stili in linea!) --- */
+
+/* Messaggio di Blocco per Utenti Non Loggati */
+.auth-lock-card {
+    margin: 60px auto;
+    text-align: center;
+}
+
+.lock-icon {
+    font-size: 3.5rem;
+    color: #e74c3c;
+    margin-bottom: 20px;
+}
+
+.auth-lock-card h2 {
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.auth-lock-card p {
+    color: #666666;
+    margin-bottom: 25px;
+}
+
+.btn-login-prompt {
+    display: inline-block;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+/* Icona colorata nel titolo */
+.primary-icon {
+    color: var(--color-primary, #f37925);
+}
+
+/* Griglia per i campi del form (Città e CAP) */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.col-2 {
+    flex: 2;
+}
+
+.col-1 {
+    flex: 1;
+}
+
+/* Bottone di Checkout più grande */
+.btn-checkout {
+    font-size: 1.2rem;
+    padding: 15px;
+}
+
+/* Separatore e Testi del Riepilogo */
+.checkout-divider {
+    border: 0;
+    border-top: 1px solid #eeeeee;
+    margin: 15px 0;
+}
+
+.loading-cart-msg {
+    text-align: center;
+    color: #888888;
+}
+
+.checkout-empty-state {
+    text-align: center;
+    color: #e74c3c;
+    padding: 20px 0;
+}
+
+.checkout-empty-state i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.item-name {
+    font-weight: bold;
+}
+
+.item-qty {
+    color: #666666;
+    font-size: 0.8rem;
+}
+
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
 @media (max-width: 992px) {
 	/* --- HOME PAGE --- */
