@@ -71,7 +71,7 @@ public class ProdottoDAOImp implements ProdottoDAO {
         }
     }
     @Override
-    public ProdottoBEAN doRetrieveByKey(int id) throws SQLException {
+    public synchronized ProdottoBEAN doRetrieveByKey(int id) throws SQLException {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -84,6 +84,9 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setMarca(rs.getString("brand"));
                     p.setIdCategoria(rs.getInt("id_categoria"));
                     p.setAttivo(rs.getBoolean("attivo"));
+                    p.setPath(rs.getString("path"));
+                    p.setMimeType(rs.getString("mime_type"));
+                    
                     return p;
                 }
             }
@@ -94,7 +97,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
     @Override
     public List<ProdottoBEAN> doRetrieveAll(String orderBy) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        
         String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, p.attivo, " +
                      "vp.id_varianteProdotto, vp.formato, vp.prezzo_listino, vp.id_sconto, vp.disponibile, " +
                      "c.nome AS categoria, iv.url_immagine " +
@@ -102,26 +104,21 @@ public class ProdottoDAOImp implements ProdottoDAO {
                      "LEFT JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
                      "LEFT JOIN Categoria c ON p.id_categoria = c.id_categoria " +
                      "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE";
-        
         if (orderBy != null && !orderBy.trim().isEmpty()) {
             sql += " ORDER BY " + orderBy;
         }
-        
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql); 
              ResultSet rs = ps.executeQuery()) {
-            
             while (rs.next()) {
                 int idProdotto = rs.getInt("id_prodotto");
                 ProdottoBEAN p = null;
-                
                 for (ProdottoBEAN prod : lista) {
                     if (prod.getId() == idProdotto) {
                         p = prod;
                         break; 
                     }
                 }
-                
                 if (p == null) {
                     p = new ProdottoBEAN();
                     p.setId(idProdotto);
@@ -131,13 +128,11 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setCategoria(rs.getString("categoria"));
                     p.setAttivo(rs.getBoolean("attivo"));
                     p.setPrezzo(rs.getDouble("prezzo_listino"));
-                    p.setImmagine(rs.getString("url_immagine"));
-                    
+                    p.setPath(rs.getString("path"));
+                    p.setMimeType(rs.getString("mime_type"));
                     lista.add(p);
                 }
-                
                 int idVariante = rs.getInt("id_varianteProdotto");
-                
                 if (!rs.wasNull()) {
                     model.VarianteProdottoBEAN variante = new model.VarianteProdottoBEAN();
                     variante.setIdVarianteProdotto(idVariante);
@@ -145,14 +140,12 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     variante.setFormato(rs.getString("formato"));
                     variante.setPrezzoListino(rs.getDouble("prezzo_listino"));
                     variante.setDisponibile(rs.getBoolean("disponibile"));
-                    
                     int idSconto = rs.getInt("id_sconto");
                     if (rs.wasNull()) {
                         variante.setIdSconto(null);
                     } else {
                         variante.setIdSconto(idSconto);
                     }
-                    
                     p.getVarianti().add(variante);
                 }
             }
@@ -170,12 +163,9 @@ public class ProdottoDAOImp implements ProdottoDAO {
                      "    INNER JOIN CategoriaTree ct ON c.id_supercategoria = ct.id_categoria " +
                      ") " +
                      "SELECT * FROM " + TABLE_NAME + " WHERE id_categoria IN (SELECT id_categoria FROM CategoriaTree)";
-                     
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql)) {
-             
             ps.setInt(1, idCategoria);
-            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     ProdottoBEAN p = new ProdottoBEAN();
@@ -185,6 +175,8 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setMarca(rs.getString("brand"));
                     p.setIdCategoria(rs.getInt("id_categoria"));
                     p.setAttivo(rs.getBoolean("attivo"));
+                    p.setPath(rs.getString("path"));
+                    p.setMimeType(rs.getString("mime_type"));
                     lista.add(p);
                 }
             }
