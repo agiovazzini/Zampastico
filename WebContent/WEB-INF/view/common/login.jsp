@@ -42,7 +42,7 @@
                 </form>
 
                 <div class="login-footer">
-                    <p>Non hai un account? <a href="${pageContext.request.contextPath}/register.jsp" class="register-link">Registrati ora</a></p>
+                    <p>Non hai un account? <a href="${pageContext.request.contextPath}/registrazione" class="register-link">Registrati ora</a></p>
                 </div>
             </div>
 

@@ -159,3 +159,56 @@ window.spostaNelCarrello = function(index) {
         alert(prodottoScelto.nome + " è stato spostato nel carrello! 🛒");
     }
 };
+
+/* VALIDAZIONE FORM REGISTRAZIONE (ZAMPASTICO) */
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('regForm');
+    
+    //Se il form non esiste (es. siamo nella Home), il codice si ferma qui e non rompe il resto del sito!
+    if (!form) return; 
+
+    // Se siamo qui, significa che l'utente è dentro registrazione.jsp
+    const inputNome = document.getElementById('nome');
+    const inputCognome = document.getElementById('cognome');
+    const inputEmail = document.getElementById('email');
+    const inputPassword = document.getElementById('password');
+
+    // ESPRESSIONI REGOLARI
+    const regexTesto = /^[a-zA-Z\s']{2,50}$/; 
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/; 
+
+    // Funzione interna per manipolare il DOM e mostrare/nascondere errori
+    function validaCampo(input, regex, spanId, messaggioErrore) {
+        const span = document.getElementById(spanId);
+        if (!span) return false;
+
+        if (!regex.test(input.value.trim())) {
+            input.style.borderColor = '#e74c3c';
+            span.textContent = messaggioErrore;
+            span.style.display = 'block';
+            return false;
+        } else {
+            input.style.borderColor = '#2ecc71';
+            span.style.display = 'none';
+            return true;
+        }
+    }
+
+    inputNome.addEventListener('change', () => validaCampo(inputNome, regexTesto, 'err-nome', 'Nome non valido. Inserisci almeno 2 lettere.'));
+    inputCognome.addEventListener('change', () => validaCampo(inputCognome, regexTesto, 'err-cognome', 'Cognome non valido. Inserisci almeno 2 lettere.'));
+    inputEmail.addEventListener('change', () => validaCampo(inputEmail, regexEmail, 'err-email', 'Formato email non valido (es. info@zampastico.it).'));
+    inputPassword.addEventListener('change', () => validaCampo(inputPassword, regexPassword, 'err-password', 'La password deve avere almeno 8 caratteri, una lettera e un numero.'));
+
+    form.addEventListener('submit', function(event) {
+        let isNomeValido = validaCampo(inputNome, regexTesto, 'err-nome', 'Il nome è richiesto.');
+        let isCognomeValido = validaCampo(inputCognome, regexTesto, 'err-cognome', 'Il cognome è richiesto.');
+        let isEmailValida = validaCampo(inputEmail, regexEmail, 'err-email', 'L\'email è richiesta.');
+        let isPasswordValida = validaCampo(inputPassword, regexPassword, 'err-password', 'La password è richiesta.');
+
+        // Se anche solo un controllo fallisce, impediamo al form di ricaricare la pagina
+        if (!isNomeValido || !isCognomeValido || !isEmailValida || !isPasswordValida) {
+            event.preventDefault(); 
+        }
+    });
+});
