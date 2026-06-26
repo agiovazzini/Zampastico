@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -43,7 +44,7 @@ public class LoginServlet extends HttpServlet {
             if (utente != null && utente.getEmail() != null && utente.isAttivo()) {
             	if (utente.getPass().equals(password)) {
                     session.setAttribute("utenteLoggato", utente);
-                    if (utente.getRuolo() == UtenteBEAN.Ruolo.amministratore) {
+                    if (utente.getRuolo() == Ruolo.amministratore) {
                         response.sendRedirect(request.getContextPath() + "/admin/users");
                     } else {
                         response.sendRedirect(request.getContextPath() + "/home");

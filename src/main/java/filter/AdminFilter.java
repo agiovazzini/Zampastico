@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
 
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class AdminFilter extends HttpFilter{
         }
         
         UtenteBEAN utente = (UtenteBEAN) session.getAttribute("utenteLoggato");
-        if (utente.getRuolo() != UtenteBEAN.Ruolo.amministratore) {
+        if (utente.getRuolo() != Ruolo.amministratore) {
             response.sendRedirect(request.getContextPath() + "/login?errore=not_allowed");
             return; 
         }

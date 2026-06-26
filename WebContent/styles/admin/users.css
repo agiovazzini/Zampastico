@@ -1,0 +1,170 @@
+.users-layout {
+    margin-top: 20px;
+    align-items: start;
+}
+
+.users-column {
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.column-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    border-bottom: 2px dashed var(--color-bg-footer, #eaeaea);
+}
+
+.admin-header {
+    background-color: rgba(255, 102, 0, 0.04); 
+    color: var(--color-primary, #ff6600);
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+
+.column-header h4 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.admin-orders-table {
+    border-spacing: 0;
+}
+
+.admin-orders-table th {
+    background-color: #f8fafc;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 5px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.admin-orders-table tr:hover td {
+    background-color: #f8fafc;
+}
+
+.admin-orders-table td, .users-table td {
+    padding: 6px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid var(--color-text-light);
+}
+
+.users-table {
+    width: 100%;
+    table-layout: auto;
+}
+
+.users-table th {
+    padding: 12px 15px;
+    text-align: left; 
+}
+
+.order-id-cell {
+    font-weight: 700;
+    color: var(--color-primary, #ff6600);
+}
+
+.user-info-cell {
+    display: grid;
+    gap: 2px;
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.active-user {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.inactive-user {
+    background-color: #f8fafc;
+    color: #94a3b8;
+    border: 1px dashed #cbd5e1;
+}
+
+/* FORSE COMUNE*/
+.column-pagination {
+    margin: 0;
+    padding: 15px 20px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.column-pagination .page-link {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+}
+
+.no-data-card {
+    background-color: #fafafa;
+    border-top: 1px solid #f0f0f0;
+    padding: 30px;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

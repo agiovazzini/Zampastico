@@ -16,6 +16,8 @@ import javax.sql.DataSource;
 import dao.OrdineDAOImp;
 import model.OrdineBEAN.StatoOrdine;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
+
 import org.json.JSONObject;
 
 @WebServlet("/admin/updateStatus")
@@ -41,7 +43,7 @@ public class UpdateOrderStatusServlet extends HttpServlet {
         JSONObject jsonResponse = new JSONObject();
         HttpSession session = request.getSession(false);
         UtenteBEAN utente = (session != null) ? (UtenteBEAN) session.getAttribute("utenteLoggato") : null;
-        if (utente == null || utente.getRuolo() != UtenteBEAN.Ruolo.amministratore) {
+        if (utente == null || utente.getRuolo() != Ruolo.amministratore) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonResponse.put("success", false);
             jsonResponse.put("message", "Accesso negato. Operazione non autorizzata.");

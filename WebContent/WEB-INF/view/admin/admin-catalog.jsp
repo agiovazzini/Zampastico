@@ -2,11 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-	<%@ include file="../common/common-head.jsp" %>
-<title>Gestione Catalogo</title>
-</head>
-<body>
-
-</body>
+    <head><%@ include file="../common/common-head.jsp" %> <title>Gestione Catalogo</title>
+    </head>
+    <body></body>
 </html>

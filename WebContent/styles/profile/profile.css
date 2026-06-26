@@ -1,3 +1,6 @@
+/* =========================================
+   1. GLOBALE E CONDIVISI (admin-dashboard.jsp e struttura base)
+   ========================================= */
 .profile-container {
     max-width: 1200px;
     margin: 60px auto;
@@ -58,26 +61,6 @@
     border-top: 1px solid var(--color-bg-footer);
 }
 
-.data-container, 
-.password-container, 
-.anonym-container,
-.address-container { 
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-}
-
-.data-wrapper .anonym-container {
-	grid-column: 1 / -1;
-	justify-self: center;
-}
-.address-container {
-    position: relative; 
-    overflow: hidden; 
-}
-
 .feedback-div {
     border-left: 6px solid var(--color-primary, #ff6600); 
     padding: 10px 20px;
@@ -89,6 +72,65 @@
     animation: fadeInDown 0.4s ease-out forwards;
 }
 
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 9999;
+}
+
+/* --- Layout Grid Condivisi --- */
+.addresses-wrapper, .data-wrapper, .users-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.data-container, 
+.password-container, 
+.anonym-container,
+.address-container,
+.address-element,
+.review-card,
+.users-column { 
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.order-main,
+.order-summary,
+.item-container,
+.item-info,
+.review-header,
+.review-footer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.itemslist, .reviews-list, .order-payment-details {
+    display: grid;
+    gap: 8px;
+}
+
+.order-card:hover, .users-column:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Form Condivisi --- */
 .form-element {
     margin-bottom: 20px;
     display: grid;
@@ -100,7 +142,7 @@
 }
 
 .form-element input {
-	max-width: 400px;
+    max-width: 400px;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -108,28 +150,30 @@
     transition: border-color 0.3s ease;
 }
 
-.form-element input:focus {
+.form-element input:focus,
+.filter-input:focus,
+.filter-select:focus {
     border-color: var(--color-primary, #ff6600);
     outline: none;
+}
+
+.form-element input:focus {
     box-shadow: 0 0 5px rgba(255, 102, 0, 0.2);
 }
 
-#defaultForm {
-    display: grid;
-    grid-template-columns: auto auto; 
-    gap: 10px;
-}
-
-#defaultForm label {
-    cursor: pointer;
-}
-
+/* --- Bottoni Condivisi --- */
 .saveButton, .deleteButton, .editButton, .defaultButton, .detailsButton {
     border-radius: 8px;
-    font-family: inherit;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.editButton, .defaultButton, .deleteButton, .detailsButton {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background-color: transparent;
 }
 
 .saveButton:not(:disabled):hover,
@@ -138,6 +182,7 @@
 .defaultButton:not(:disabled):hover,
 .detailsButton:hover {
     transform: translateY(-2px);
+    color: white;
 }
 
 .saveButton {
@@ -145,7 +190,6 @@
     color: white;
     padding: 12px 24px;
     font-size: 1rem;
-    font-weight: 700;
     box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
 }
 
@@ -154,30 +198,26 @@
     background-color: #e65c00;
 }
 
-.editButton, .defaultButton, .deleteButton, .detailsButton {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    background-color: transparent;
-    color: var(--color-primary);
+.editButton, .deleteButton {
     border-color: var(--color-primary);
 }
 
-.editButton:not(:disabled):hover,
-.defaultButton:not(:disabled):hover {
+.editButton {
+    color: var(--color-primary);
+}
+
+.editButton:not(:disabled):hover {
     background-color: var(--color-primary, #ff6600);
-    color: white;
     box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25);
 }
 
 .detailsButton {
-	color: var(--color-accent-green-hover);
+    color: var(--color-accent-green-hover);
     border-color: var(--color-accent-green-hover);
 }
 
 .detailsButton:hover {
-	background-color: var(--color-accent-green);
-    color: white;
+    background-color: var(--color-accent-green);
     box-shadow: 0 4px 12px rgba(116, 143, 116, 0.25);
 }
 
@@ -199,28 +239,7 @@
 
 .deleteButton:not(:disabled):hover {
     background-color: #e74c3c;
-    color: white;
     box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
-}
-
-.anonym-container .saveButton {
-    background-color: #e74c3c;
-    max-width: 250px;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
-}
-
-.anonym-container .saveButton:not(:disabled):hover {
-    background-color: #c0392b;
-    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.35);
-}
-
-.anonym-container .saveButton.confirmButton {
-    background-color: #8b0000;
-    animation: pulseAlert 1.5s infinite;
-}
-
-.review-footer .deleteButton.confirmButton{
-	animation: pulseAlert 1.0s infinite;
 }
 
 button:disabled {
@@ -232,325 +251,7 @@ button:disabled {
     box-shadow: none;
 }
 
-.addresses-wrapper, .data-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
-
-.addresses-list h3 {
-    color: var(--color-primary);
-}
-
-.address-element {
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
-}
-
-.address-element:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    transform: translateY(-3px);
-}
-
-.address-element.isDefault {
-    border: 2px solid var(--color-primary);
-    background-color: rgba(255, 102, 0, 0.03); 
-}
-
-.address-element p {
-    margin: 0 0 15px 0;
-    line-height: 1.5;
-    color: var(--color-text-main);
-}
-
-.button-group {
-    display: flex;
-    gap: 10px;
-}
-
-.address-element.highlight-card {
-    border: 2px solid var(--color-primary, #ff6600);
-    background-color: rgba(255, 102, 0, 0.08);
-    transform: scale(1.03);
-    box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2);
-    z-index: 10;
-}
-
-.address-element.highlight-card::before {
-    content: "✏️ IN MODIFICA";
-    position: absolute;
-    top: -12px;
-    right: 20px;
-    background-color: var(--color-primary, #ff6600);
-    color: white;
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.address-container.edit-mode {
-    border: 2px dashed var(--color-primary, #ff6600);
-    background-color: rgba(255, 102, 0, 0.02);
-    transition: all 0.3s ease;
-}
-
-.locked-overlay {
-    display: none; 
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(3px); 
-    z-index: 10;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.address-container.locked-mode .locked-overlay {
-    display: flex; 
-}
-
-.locked-message {
-    background: #ffffff;
-    border: 1px solid #eaeaea;
-    padding: 20px 25px;
-    border-radius: 12px;
-    color: var(--color-primary, #ff6600);
-    font-size: 1.1rem;
-    font-weight: 800;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.locked-message span {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--color-text-main);
-    display: block;
-    margin-top: 8px;
-}
-
-.order-card {
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 12px;
-    border: 1px solid #ebebeb;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.order-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-.order-main {
-    background: #f4f4f4;
-    padding: 16px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-}
-
-.order-info {
-    display: grid;
-}
-
-.order-id {
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.order-date, .review-date {
-    font-size: 0.85rem;
-    color: #7f8c8d;
-}
-
-.order-status {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.status-in_attesa { 
-	background-color: #fffbeb; 
-	color: #d97706; 
-	border: 1px solid #fde68a; 
-}
-
-.status-pagato { 
-	background-color: #ecfdf5; 
-	color: #059669; 
-	border: 1px solid #a7f3d0; 
-}
-
-.status-in_lavorazione { 
-	background-color: #f0f9ff; 
-	color: #0284c7; 
-	border: 1px solid #bae6fd; 
-}
-
-.status-spedito { 
-	background-color: #eef2ff; 
-	color: #4f46e5; 
-	border: 1px solid #c7d2fe; 
-}
-
-.status-consegnato { 
-	background-color: #f0fdf4; 
-	color: #16a34a; 
-	border: 1px solid #bbf7d0; 
-}
-
-.status-annullato { 
-	background-color: #fef2f2; 
-	color: #dc2626; 
-	border: 1px solid #fecaca; 
-}
-
-.order-body {
-    padding: 20px;
-}
-
-.order-summary {
-    width: 100%; 
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-}
-
-.order-payment-details {
-    display: grid;
-    gap: 8px;
-    justify-items: start;
-}
-
-.order-total {
-    font-size: 1.1rem;
-    font-weight: 800;
-}
-
-.price-amount {
-    font-size: 1.1rem;
-    color: var(--color-primary, #ff6600);
-    margin-left: 4px;
-}
-
-.order-payment {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #64748b;
-    background: #f8fafc;
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-}
-
-.order-details {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.3s ease-out;
-}
-
-.order-details.open {
-    grid-template-rows: 1fr;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px dashed #eaeaea;
-}
-
-.order-products {
-    overflow: hidden;
-}
-
-.order-products h4 {
-    margin-bottom: 15px;
-    font-size: 1.05rem;
-}
-
-.itemslist, reviews-list {
-    display: grid;
-    gap: 8px;
-}
-
-.item-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    border: 1px solid #f0f0f0;
-    padding: 12px 16px;
-    border-radius: 8px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.item-container:hover {
-    border-color: #e2e8f0;
-    background-color: #fcfcfc;
-}
-
-.item-info {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-}
-
-.list-item-name, .review-product-info {
-    font-size: 0.95rem;
-    font-weight: 700;
-}
-
-.product-brand {
-    color: var(--color-primary);
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    margin-right: 4px;
-}
-
-.product-format {
-    color: #94a3b8;
-    font-style: italic;
-    font-size: 0.85rem;
-}
-
-.item-amount {
-    background-color: #f1f5f9;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: center;
-    min-width: 35px;
-    border: 1px solid #e2e8f0; 
-}
-
-
-
-.item-amount::before {
-    content: "x ";
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.review-text {
-    font-size: 0.9rem;
-    color: #64748b;
-    line-height: 1.5;
-}
-
-.list-item-price {
-    font-weight: 700;
-    font-size: 0.95rem;
-    min-width: 60px;
-    text-align: right;
-}
-
+/* --- Messaggi Nessun Dato --- */
 .no-reviews, .no-orders, .no-addresses {
     background-color: #fafafa;
     border: 1px dashed #e2e8f0;
@@ -559,45 +260,13 @@ button:disabled {
     text-align: center;
 }
 
-.no-reviews p, .no-orders p {
+.no-reviews p, .no-orders p, .no-addresses p {
     font-size: 0.9rem;
     color: #64748b;
     margin: 0;
 }
 
-.review-card {
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-    padding: 16px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.review-card:hover {
-    border-color: #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-}
-
-.review-header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    border-bottom: 1px solid #fafafa;
-    padding-bottom: 8px;
-}
-
-.review-stars {
-    font-size: 0.95rem;
-    color: #e2e8f0;
-}
-
-.star.filled {
-    color: #ffb703;
-}
-.review-footer {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    padding-top: 8px;
-}
-
+/* --- Paginazione Condivisa --- */
 .pagination-container {
     display: grid;
     grid-auto-flow: column;
@@ -642,6 +311,7 @@ span.page-link.active {
     user-select: none;
 }
 
+/* --- Animazioni --- */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-15px); }
     to { opacity: 1; transform: translateY(0); }
@@ -656,285 +326,4 @@ span.page-link.active {
 @keyframes popIn {
     0% { transform: scale(0); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
-}
-
-.admin-orders-table {
-    border-spacing: 0;
-}
-
-.admin-orders-table th {
-    background-color: #f8fafc;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    padding: 5px;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.admin-orders-table td {
-    padding: 6px;
-    font-size: 0.8rem;
-    border-bottom: 1px solid var(--color-text-light);
-}
-
-.admin-orders-table tr:hover td {
-    background-color: #f8fafc;
-}
-
-.order-id-cell {
-    font-weight: 700;
-    color: var(--color-primary, #ff6600);
-}
-
-.order-email-cell {
-    font-weight: 600;
-}
-
-.order-date-cell {
-    color: #64748b;
-}
-
-.order-price-cell {
-    font-weight: 700;
-}
-
-.order-address-cell {
-    color: #64748b;
-    text-align: center;
-    min-width: 200px;
-    max-width: 300px;
-}
-
-.coupon-ticket {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #fffbeb;
-    color: #b45309;
-    border: 1px dashed #fde68a;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-weight: 700;
-}
-
-.coupon-icon {
-    font-size: 0.9rem;
-}
-
-.no-coupon {
-    color: #cbd5e1;
-}
-
-.status-inline-form {
-    margin: 0;
-    display: inline-block;
-}
-
-.status-select {
-    padding: 6px 32px 6px 14px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    border: 1px solid transparent;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.status-select:focus {
-    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.3);
-}
-
-.status-select.status-in_attesa { 
-	background-color: #fffbeb; 
-	color: #b45309; 
-	border-color: #fde68a; 
-}
-
-.status-select.status-pagato { 
-	background-color: #ecfdf5; 
-	color: #047857; 
-	border-color: #a7f3d0; 
-}
-
-.status-select.status-in_lavorazione { 
-	background-color: #f0f9ff; 
-	color: #0369a1; 
-	border-color: #bae6fd; 
-}
-
-.status-select.status-spedito { 
-	background-color: #eef2ff; 
-	color: #4338ca; 
-	border-color: #c7d2fe; 
-}
-
-.status-select.status-consegnato { 
-	background-color: #f0fdf4; 
-	color: #15803d; 
-	border-color: #bbf7d0; 
-}
-
-.status-select.status-annullato { 
-	background-color: #fef2f2; 
-	color: #b91c1c; 
-	border-color: #fecaca; 
-}
-
-
-.no-orders-alert { 
-    background-color: #f8fafc;
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 50px;
-    text-align: center;
-    color: #64748b;
-    font-weight: 500;
-}
-
-.toast-notification {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    padding: 14px 28px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    font-size: 0.95rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: 9999;
-}
-
-.filter-section {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-.admin-filter-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-}
-
-.filter-group {
-    min-width: 180px;
-}
-
-.filter-group label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.filter-input, .filter-select {
-    height: 38px;
-    width: 100%;
-    padding: 6px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    color: #1e293b;
-    transition: all 0.3s ease;
-}
-
-.filter-select {
-	padding-right: 30px; 
-    cursor: pointer;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-}
-
-.filter-input:focus, .filter-select:focus {
-    border-color: var(--color-primary, #ff6600);
-    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
-    outline: none;
-}
-
-.date-range-group {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    grid-column: span 2; 
-    animation: fadeInDown 0.3s ease-out forwards;
-}
-
-.filter-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px;
-    align-items: center;
-}
-
-.filter-actions .filter-btn,
-.filter-actions .reset-btn {
-    padding: 0 10px; 
-    font-size: 0.9rem;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    height: 38px;
-    text-decoration: none;
-}
-
-
-.coupons-layout {
-	display: grid;
-	grid-template-columns: 320px 1fr;
-	gap: 30px;
-	margin-top: 20px;
-}
-
-.vertical-form-group .saveButton { width: 100%; justify-content: center; }
-
-.coupon-ticket {
-	display: inline-flex;
-   	align-items: flex-start;
-	transition: all 0.3s ease;
-}
-
-.coupon-text {
-	max-width: 15ch; 
-	word-break: break-all;  
-	font-family: 'Courier New', Courier, monospace; 
-	line-height: 1.3;
-}
-
-.expired-row {
-	opacity: 0.55;
-	background-color: #fdfdfd;
-}
-
-.expired-ticket {
-	background-color: #f1f5f9; 
-	border-color: #e2e8f0;
-	color: #94a3b8; 
-}
-
-.expired-badge {
-	background-color: #fee2e2; 
-	color: #ef4444;
-	font-size: 0.65rem;
-	padding: 3px 6px;
-	border-radius: 4px;
-	font-weight: 800;
-	text-transform: uppercase;
 }

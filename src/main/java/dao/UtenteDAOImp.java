@@ -1,7 +1,6 @@
-package dao;
-
 import javax.sql.DataSource;
 import model.UtenteBEAN;
+import model.UtenteBEAN.Ruolo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +19,7 @@ public class UtenteDAOImp {
         this.ds = ds;
     }
     
-    // 1. INSERIMENTO UTENTE (Registrazione)
+    //INSERIMENTO UTENTE (Registrazione)
     public synchronized void doSave(UtenteBEAN utente) throws SQLException {
         String insertSQL = "INSERT INTO " + TABLE_NAME + " (nome, cognome, email, pass, data_anonimizzazione, ruolo, attivo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = ds.getConnection();
@@ -46,7 +45,7 @@ public class UtenteDAOImp {
         }
     }
     
-    // 2. RESTITUZIONE UTENTE TRAMITE ID
+    //RESTITUZIONE UTENTE TRAMITE ID
     public UtenteBEAN doRetrieveById(int idUtente) throws SQLException {
         UtenteBEAN bean = null;
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
@@ -78,9 +77,7 @@ public class UtenteDAOImp {
                     
                     String varRuolo = resultSet.getString("ruolo");
                     if (varRuolo != null) {
-                        // Assicurati che l'enum in Java combaci con il valore nel DB
-                        // Se nel DB è 'cliente', in Java l'enum si chiamerà cliente (in minuscolo)
-                        bean.setRuolo(UtenteBEAN.Ruolo.valueOf(varRuolo));
+                        bean.setRuolo(Ruolo.valueOf(varRuolo));
                     }
                     bean.setAttivo(resultSet.getBoolean("attivo"));   
                 }
@@ -89,7 +86,7 @@ public class UtenteDAOImp {
         return bean;
     }
 
-    // 3. AGGIORNAMENTO PROFILO UTENTE
+    //AGGIORNAMENTO PROFILO UTENTE
     public synchronized boolean doUpdate(UtenteBEAN utente) throws SQLException {
         String updateSQL = "UPDATE " + TABLE_NAME + " SET nome = ?, cognome = ?, pass = ?, data_anonimizzazione = ?, attivo = ? WHERE id_utente = ?";
         try (Connection connection = ds.getConnection();
@@ -113,7 +110,7 @@ public class UtenteDAOImp {
         }
     }
     
-    // 4. ANONIMIZZAZIONE UTENTE (Soft Delete per Ordini Passati)
+    //ANONIMIZZAZIONE UTENTE
     public synchronized boolean doDelete(int idUtente) throws SQLException {
         String anonymSQL = "UPDATE " + TABLE_NAME + " SET attivo = false, data_anonimizzazione = CURRENT_TIMESTAMP WHERE id_utente = ?";
         try (Connection connection = ds.getConnection();
@@ -125,7 +122,7 @@ public class UtenteDAOImp {
         }
     }
     
-    // 5. RESTITUZIONE UTENTE TRAMITE EMAIL (Usato nel Login)
+    //RESTITUZIONE UTENTE TRAMITE EMAIL (Usato nel Login)
     public UtenteBEAN doRetrieveByEmail(String email) throws SQLException {
         UtenteBEAN bean = null;
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
@@ -157,7 +154,7 @@ public class UtenteDAOImp {
                     
                     String varRuolo = resultSet.getString("ruolo");
                     if (varRuolo != null) {
-                        bean.setRuolo(UtenteBEAN.Ruolo.valueOf(varRuolo));
+                        bean.setRuolo(Ruolo.valueOf(varRuolo));
                     }  
                     bean.setAttivo(resultSet.getBoolean("attivo"));   
                 }
@@ -166,7 +163,7 @@ public class UtenteDAOImp {
         return bean;
     }
     
-    // 6. RESTITUZIONE DI TUTTI GLI UTENTI (Pannello Admin)
+    //RESTITUZIONE DI TUTTI GLI UTENTI (Pannello Admin)
     public synchronized List<UtenteBEAN> doRetrieveAll(String order) throws SQLException {
         List<UtenteBEAN> utenti = new LinkedList<>();
         String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
@@ -215,12 +212,73 @@ public class UtenteDAOImp {
                 
                 String varRuolo = resultSet.getString("ruolo");
                 if (varRuolo != null) {
-                    bean.setRuolo(UtenteBEAN.Ruolo.valueOf(varRuolo));
+                    bean.setRuolo(Ruolo.valueOf(varRuolo));
                 }
                 bean.setAttivo(resultSet.getBoolean("attivo"));   
                 utenti.add(bean); 
             }
         }
         return utenti;
+    }
+    
+    //RESTITUZIONE UTENTI PER RUOLO PAGINATI
+    public synchronized List<UtenteBEAN> doRetrieveByRuoloPaginated(Ruolo ruolo, int offset, int limit) throws SQLException {
+        List<UtenteBEAN> utenti = new LinkedList<>();
+        String selectSQL = "SELECT id_utente, nome, cognome, email, pass, data_creazione, data_anonimizzazione, ruolo, attivo " +
+                           "FROM " + TABLE_NAME + " WHERE ruolo = ? ORDER BY id_utente LIMIT ? OFFSET ?";
+                           
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(selectSQL)) {
+             
+            ps.setString(1, ruolo.name());
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
+            
+            try (ResultSet resultSet = ps.executeQuery()) {
+                while (resultSet.next()) {
+                    UtenteBEAN bean = new UtenteBEAN();
+                    bean.setIdUtente(resultSet.getInt("id_utente"));
+                    bean.setNome(resultSet.getString("nome"));
+                    bean.setCognome(resultSet.getString("cognome"));
+                    bean.setEmail(resultSet.getString("email"));
+                    bean.setPass(resultSet.getString("pass"));
+                    
+                    Timestamp varCreazione = resultSet.getTimestamp("data_creazione");
+                    if (varCreazione != null) {
+                        bean.setDataCreazione(varCreazione.toLocalDateTime());
+                    }
+                    
+                    Timestamp varAnonym = resultSet.getTimestamp("data_anonimizzazione");
+                    if (varAnonym != null) {
+                        bean.setDataAnonimizzazione(varAnonym.toLocalDateTime());
+                    }
+                    
+                    String varRuolo = resultSet.getString("ruolo");
+                    if (varRuolo != null) {
+                        bean.setRuolo(Ruolo.valueOf(varRuolo));
+                    }
+                    bean.setAttivo(resultSet.getBoolean("attivo"));   
+                    utenti.add(bean); 
+                }
+            }
+        }
+        return utenti;
+    }
+
+    //CONTEGGIO UTENTI PER RUOLO (Per la paginazione)
+    public int countByRuolo(Ruolo ruolo) throws SQLException {
+        String countSQL = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE ruolo = ?";
+        try (Connection connection = ds.getConnection();
+             PreparedStatement ps = connection.prepareStatement(countSQL)) {
+             
+            ps.setString(1, ruolo.name());
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
     }
 }
