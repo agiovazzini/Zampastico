@@ -89,11 +89,10 @@ public class CategoriaDAOImp implements CategoriaDAO {
 
     @Override
     public List<CategoriaBEAN> doRetrieveAll() throws SQLException {
-        List<CategoriaBEAN> categorie = new LinkedList<>();
+        List<CategoriaBEAN> tutteLeCategorie = new LinkedList<>();
         String selectSQL = "SELECT c1.id_categoria, c1.nome, c1.id_supercategoria, c2.nome AS nome_super " +
                            "FROM " + TABLE_NAME + " c1 " +
-                           "LEFT JOIN " + TABLE_NAME + " c2 ON c1.id_supercategoria = c2.id_categoria " +
-                           "ORDER BY c2.nome, c1.nome";
+                           "LEFT JOIN " + TABLE_NAME + " c2 ON c1.id_supercategoria = c2.id_categoria";
         
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
@@ -110,11 +109,43 @@ public class CategoriaDAOImp implements CategoriaDAO {
                 } else {
                     bean.setidSuper(idSuper);
                 }
+                
                 bean.setNomeSuper(rs.getString("nome_super"));
-                categorie.add(bean);
+                tutteLeCategorie.add(bean);
             }
         }
-        return categorie;
+        List<CategoriaBEAN> categorieOrdinate = new LinkedList<>();
+        List<CategoriaBEAN> roots = new LinkedList<>();
+        for (CategoriaBEAN c : tutteLeCategorie) {
+            if (c.getIdSuper() == 0) {
+                roots.add(c);
+            }
+        }
+        roots.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
+        for (CategoriaBEAN root : roots) {
+            aggiungiGerarchia(root, tutteLeCategorie, categorieOrdinate);
+        }
+        for (CategoriaBEAN c : tutteLeCategorie) {
+            if (!categorieOrdinate.contains(c)) {
+                categorieOrdinate.add(c);
+            }
+        }
+        
+        return categorieOrdinate;
+    }
+    
+    private void aggiungiGerarchia(CategoriaBEAN padre, List<CategoriaBEAN> tutte, List<CategoriaBEAN> ordinate) {
+        ordinate.add(padre);
+        List<CategoriaBEAN> figli = new LinkedList<>();
+        for (CategoriaBEAN c : tutte) {
+            if (c.getIdSuper() == padre.getIdCategoria()) {
+                figli.add(c);
+            }
+        }
+        figli.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
+        for (CategoriaBEAN figlio : figli) {
+            aggiungiGerarchia(figlio, tutte, ordinate);
+        }
     }
 
     private CategoriaBEAN extractBean(ResultSet rs) throws SQLException {
@@ -131,10 +162,10 @@ public class CategoriaDAOImp implements CategoriaDAO {
         } catch (SQLException e) {}
         return bean;
     }
-    public CategoriaBEAN doRetrieveRootByName(String nomeRoot) throws SQLException {
-        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) AND (id_supercategoria IS NULL OR id_supercategoria = 0)";
+    public CategoriaBEAN doRetrieveByName(String nome) throws SQLException {
+        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) LIMIT 1";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, nomeRoot.trim()); 
+            ps.setString(1, nome.trim()); 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return extractBean(rs);
@@ -144,17 +175,22 @@ public class CategoriaDAOImp implements CategoriaDAO {
         return null; 
     }
 
-    public CategoriaBEAN doRetrieveByNameAndIdSuper(String nomeSub, int idSuper) throws SQLException {
-        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) AND id_supercategoria = ?";
+    public CategoriaBEAN doRetrieveByNameAndIdSuper(String nome, int idSuper) throws SQLException {
+        String sql = (idSuper == 0) 
+            ? "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND (id_supercategoria IS NULL OR id_supercategoria = 0)"
+            : "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND id_supercategoria = ?";
+        
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, nomeSub.trim()); 
-            ps.setInt(2, idSuper); 
+            ps.setString(1, nome.trim());
+            if (idSuper != 0) {
+                ps.setInt(2, idSuper);
+            }
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return extractBean(rs);
                 }
             }
         }
-        return null; 
+        return null;
     }
 }
