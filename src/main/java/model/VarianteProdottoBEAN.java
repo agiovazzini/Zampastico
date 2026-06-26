@@ -11,6 +11,8 @@ public class VarianteProdottoBEAN implements Serializable {
     private double prezzoListino;
     private Integer idSconto;
     private boolean disponibile = false;
+    private String path;
+    private String mimeType;
 
     public VarianteProdottoBEAN() {
     	super();
@@ -63,4 +65,10 @@ public class VarianteProdottoBEAN implements Serializable {
     public void setDisponibile(boolean disponibile) { 
     	this.disponibile = disponibile; 	
     }
+    
+    public String getPath() { return path; }
+    public void setPath(String path) { this.path = path; }
+
+    public String getMimeType() { return mimeType; }
+    public void setMimeType(String mimeType) { this.mimeType = mimeType; }
 }
