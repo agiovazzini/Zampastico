@@ -20,14 +20,16 @@ public class ProdottoDAOImp implements ProdottoDAO {
     
     @Override
     public synchronized void doSave(ProdottoBEAN prodotto) throws SQLException {
-        String sql = "INSERT INTO " + TABLE_NAME + " (nome, descrizione, brand, id_categoria, attivo) VALUES (?, ?, ?, ?, ?)";
+    	String sql = "INSERT INTO " + TABLE_NAME + " (nome, descrizione, brand, id_categoria, attivo, path, mime_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, prodotto.getNome());
             ps.setString(2, prodotto.getDescrizione());
             ps.setString(3, prodotto.getMarca());
             ps.setInt(4, prodotto.getIdCategoria());
-            ps.setBoolean(5, prodotto.isAttivo());         
+            ps.setBoolean(5, prodotto.isAttivo());     
+            ps.setString(6, prodotto.getPath());
+            ps.setString(7, prodotto.getMimeType()); 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -39,7 +41,7 @@ public class ProdottoDAOImp implements ProdottoDAO {
     
     // Aggiornamento
     public synchronized boolean doUpdate(ProdottoBEAN prodotto) throws SQLException {
-        String sql = "UPDATE " + TABLE_NAME + " SET nome = ?, descrizione = ?, brand = ?, id_categoria = ?, attivo = ? WHERE id_prodotto = ?";
+    	String sql = "UPDATE " + TABLE_NAME + " SET nome = ?, descrizione = ?, brand = ?, id_categoria = ?, attivo = ?, path = ?, mime_type = ? WHERE id_prodotto = ?";
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, prodotto.getNome());
@@ -47,7 +49,9 @@ public class ProdottoDAOImp implements ProdottoDAO {
             ps.setString(3, prodotto.getMarca());
             ps.setInt(4, prodotto.getIdCategoria());
             ps.setBoolean(5, prodotto.isAttivo());
-            ps.setInt(6, prodotto.getId());
+            ps.setString(6, prodotto.getPath());
+            ps.setString(7, prodotto.getMimeType());
+            ps.setInt(8, prodotto.getId());
             
             return ps.executeUpdate() > 0;
         }
@@ -59,6 +63,17 @@ public class ProdottoDAOImp implements ProdottoDAO {
             ps.setBoolean(1, stato);
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
+        }
+    }
+    
+    public synchronized boolean doUpdateImage(int idProdotto, String path, String mimeType) throws SQLException {
+        String sql = "UPDATE " + TABLE_NAME + " SET path = ?, mime_type = ? WHERE id_prodotto = ?";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, path);
+            ps.setString(2, mimeType);
+            ps.setInt(3, idProdotto);
+            return ps.executeUpdate() != 0;
         }
     }
 
@@ -86,7 +101,6 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setAttivo(rs.getBoolean("attivo"));
                     p.setPath(rs.getString("path"));
                     p.setMimeType(rs.getString("mime_type"));
-                    
                     return p;
                 }
             }
@@ -97,13 +111,12 @@ public class ProdottoDAOImp implements ProdottoDAO {
     @Override
     public List<ProdottoBEAN> doRetrieveAll(String orderBy) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, p.attivo, " +
-                     "vp.id_varianteProdotto, vp.formato, vp.prezzo_listino, vp.id_sconto, vp.disponibile, " +
-                     "c.nome AS categoria, iv.url_immagine " +
-                     "FROM Prodotto p " +
-                     "LEFT JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
-                     "LEFT JOIN Categoria c ON p.id_categoria = c.id_categoria " +
-                     "LEFT JOIN ImmagineVariante iv ON vp.id_varianteProdotto = iv.id_varianteProdotto AND iv.immagine_copertina = TRUE";
+        String sql = "SELECT p.id_prodotto, p.nome, p.descrizione, p.brand, p.attivo, p.path AS prod_path, p.mime_type AS prod_mime, " +
+                "vp.id_varianteProdotto, vp.formato, vp.prezzo_listino, vp.id_sconto, vp.disponibile, vp.path AS var_path, vp.mime_type AS var_mime, " +
+                "c.nome AS categoria " +
+                "FROM Prodotto p " +
+                "LEFT JOIN VarianteProdotto vp ON p.id_prodotto = vp.id_prodotto " +
+                "LEFT JOIN Categoria c ON p.id_categoria = c.id_categoria ";
         if (orderBy != null && !orderBy.trim().isEmpty()) {
             sql += " ORDER BY " + orderBy;
         }
@@ -128,8 +141,8 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     p.setCategoria(rs.getString("categoria"));
                     p.setAttivo(rs.getBoolean("attivo"));
                     p.setPrezzo(rs.getDouble("prezzo_listino"));
-                    p.setPath(rs.getString("path"));
-                    p.setMimeType(rs.getString("mime_type"));
+                    p.setPath(rs.getString("prod_path"));
+                    p.setMimeType(rs.getString("prod_mime"));
                     lista.add(p);
                 }
                 int idVariante = rs.getInt("id_varianteProdotto");
@@ -209,14 +222,4 @@ public class ProdottoDAOImp implements ProdottoDAO {
         return 0;
     }
     
-    public synchronized boolean doUpdateImage(int idProdotto, String path, String mimeType) throws SQLException {
-        String sql = "UPDATE " + TABLE_NAME + " SET path = ?, mime_type = ? WHERE id_prodotto = ?";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, path);
-            ps.setString(2, mimeType);
-            ps.setInt(3, idProdotto);
-            return ps.executeUpdate() != 0;
-        }
-    }
 }
