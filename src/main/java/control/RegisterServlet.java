@@ -27,7 +27,6 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // IL PERCORSO ESATTO SENZA LA CARTELLA COMMON
         request.getRequestDispatcher("/WEB-INF/view/common/profile-tabs/registrazione.jsp").forward(request, response);
     }
 
@@ -41,7 +40,6 @@ public class RegisterServlet extends HttpServlet {
         try {
             if (utenteDAO.doRetrieveByEmail(email) != null) {
                 request.setAttribute("erroreEmail", "Questa email è già registrata!");
-                // IL PERCORSO ESATTO SENZA LA CARTELLA COMMON
                 request.getRequestDispatcher("/WEB-INF/view/common/profile-tabs/registrazione.jsp").forward(request, response);
                 return;
             }
