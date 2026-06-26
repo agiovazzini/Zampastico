@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -66,6 +66,7 @@ public class CategoriaDAOImp implements CategoriaDAO {
         String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE id_categoria = ?";
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+            
             preparedStatement.setInt(1, idCategoria);
             return preparedStatement.executeUpdate() != 0;
         }
@@ -77,6 +78,7 @@ public class CategoriaDAOImp implements CategoriaDAO {
         CategoriaBEAN bean = null;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+            
             preparedStatement.setInt(1, idCategoria);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
@@ -89,15 +91,17 @@ public class CategoriaDAOImp implements CategoriaDAO {
 
     @Override
     public List<CategoriaBEAN> doRetrieveAll() throws SQLException {
-        List<CategoriaBEAN> tutteLeCategorie = new LinkedList<>();
+        // Passaggio da LinkedList ad ArrayList
+        List<CategoriaBEAN> tutteLeCategorie = new ArrayList<>();
+        
         String selectSQL = "SELECT c1.id_categoria, c1.nome, c1.id_supercategoria, c2.nome AS nome_super " +
                            "FROM " + TABLE_NAME + " c1 " +
                            "LEFT JOIN " + TABLE_NAME + " c2 ON c1.id_supercategoria = c2.id_categoria";
-        
+                           
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
              ResultSet rs = preparedStatement.executeQuery()) {
-            
+             
             while (rs.next()) {
                 CategoriaBEAN bean = new CategoriaBEAN();
                 bean.setIdCategoria(rs.getInt("id_categoria"));
@@ -106,38 +110,45 @@ public class CategoriaDAOImp implements CategoriaDAO {
                 int idSuper = rs.getInt("id_supercategoria");
                 bean.setidSuper(rs.wasNull() ? 0 : idSuper);
                 bean.setNomeSuper(rs.getString("nome_super"));
+                
                 tutteLeCategorie.add(bean);
             }
         }
-
-        List<CategoriaBEAN> categorieOrdinate = new LinkedList<>();
-        List<CategoriaBEAN> roots = new LinkedList<>();
+        
+        // Passaggio da LinkedList ad ArrayList
+        List<CategoriaBEAN> categorieOrdinate = new ArrayList<>();
+        List<CategoriaBEAN> roots = new ArrayList<>();
+        
         for (CategoriaBEAN c : tutteLeCategorie) {
             if (c.getIdSuper() == 0) {
                 roots.add(c);
             }
         }
+        
         roots.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
+        
         for (CategoriaBEAN root : roots) {
             aggiungiGerarchia(root, tutteLeCategorie, categorieOrdinate, 0);
         }
         
         return categorieOrdinate;
     }
+    
     private void aggiungiGerarchia(CategoriaBEAN padre, List<CategoriaBEAN> tutte, List<CategoriaBEAN> ordinate, int livelloAttuale) {
         padre.setLivello(livelloAttuale);
         ordinate.add(padre);
+        List<CategoriaBEAN> figli = new ArrayList<>();
         
-        List<CategoriaBEAN> figli = new LinkedList<>();
         for (CategoriaBEAN c : tutte) {
             if (c.getIdSuper() == padre.getIdCategoria()) {
                 figli.add(c);
             }
         }
+        
         figli.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
         
         for (CategoriaBEAN figlio : figli) {
-            aggiungiGerarchia(figlio, tutte, ordinate, livelloAttuale + 1); // Incrementa il livello per i nipoti
+            aggiungiGerarchia(figlio, tutte, ordinate, livelloAttuale + 1);
         }
     }
 
@@ -145,16 +156,17 @@ public class CategoriaDAOImp implements CategoriaDAO {
         CategoriaBEAN bean = new CategoriaBEAN();
         bean.setIdCategoria(rs.getInt("id_categoria"));
         bean.setNome(rs.getString("nome"));
-        try {
-            int idSuper = rs.getInt("id_supercategoria");
-            if (rs.wasNull()) {
-                bean.setidSuper(0); 
-            } else {
-                bean.setidSuper(idSuper);
-            }
-        } catch (SQLException e) {}
+        
+        int idSuper = rs.getInt("id_supercategoria");
+        if (rs.wasNull()) {
+            bean.setidSuper(0); 
+        } else {
+            bean.setidSuper(idSuper);
+        }
+        
         return bean;
     }
+    
     public CategoriaBEAN doRetrieveByName(String nome) throws SQLException {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(nome) = LOWER(?) LIMIT 1";
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -172,7 +184,7 @@ public class CategoriaDAOImp implements CategoriaDAO {
         String sql = (idSuper == 0) 
             ? "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND (id_supercategoria IS NULL OR id_supercategoria = 0)"
             : "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND id_supercategoria = ?";
-        
+            
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nome.trim());
             if (idSuper != 0) {

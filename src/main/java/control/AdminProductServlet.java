@@ -189,7 +189,6 @@ public class AdminProductServlet extends HttpServlet {
                 break;
             }
             out.print(jsonResponse);
-            out.flush();
         } catch (Exception e) {
             if ("create".equals(action)) {
                 session.setAttribute("feedback", "Errore critico durante il salvataggio.");
