@@ -23,8 +23,8 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
 
     @Override
     public synchronized void doSave(VarianteProdottoBEAN variante) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id_prodotto, formato, prezzo_listino, id_sconto, disponibile) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = ds.getConnection();
+    	String insertSQL = "INSERT INTO " + TABLE_NAME + " (id_prodotto, formato, prezzo_listino, id_sconto, disponibile, path, mime_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    	try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
             
             preparedStatement.setInt(1, variante.getIdProdotto());
@@ -37,6 +37,8 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
             }
             
             preparedStatement.setBoolean(5, variante.isDisponibile());
+            preparedStatement.setString(6, variante.getPath());
+            preparedStatement.setString(7, variante.getMimeType());
             
             preparedStatement.executeUpdate();
         }
@@ -44,8 +46,8 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
 
     @Override
     public synchronized boolean doUpdate(VarianteProdottoBEAN variante) throws SQLException {
-        String updateSQL = "UPDATE " + TABLE_NAME + " SET id_prodotto = ?, formato = ?, prezzo_listino = ?, id_sconto = ?, disponibile = ? WHERE id_varianteProdotto = ?";
-        try (Connection connection = ds.getConnection();
+    	String updateSQL = "UPDATE " + TABLE_NAME + " SET id_prodotto = ?, formato = ?, prezzo_listino = ?, id_sconto = ?, disponibile = ?, path = ?, mime_type = ? WHERE id_varianteProdotto = ?";
+    	try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             
             preparedStatement.setInt(1, variante.getIdProdotto());
@@ -59,7 +61,9 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
             }
             
             preparedStatement.setBoolean(5, variante.isDisponibile());
-            preparedStatement.setInt(6, variante.getIdVarianteProdotto());
+            preparedStatement.setString(6, variante.getPath());
+            preparedStatement.setString(7, variante.getMimeType());
+            preparedStatement.setInt(8, variante.getIdVarianteProdotto());
             
             return preparedStatement.executeUpdate() != 0;
         }
@@ -120,6 +124,8 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
         bean.setFormato(rs.getString("formato"));
         bean.setPrezzoListino(rs.getDouble("prezzo_listino"));
         bean.setDisponibile(rs.getBoolean("disponibile"));
+        bean.setPath(rs.getString("path"));
+        bean.setMimeType(rs.getString("mime_type"));
         try {
             int idSconto = rs.getInt("id_sconto");
             if (rs.wasNull()) {
@@ -145,5 +151,16 @@ public class VarianteProdottoDAOImp implements VarianteProdottoDAO {
             }
         }
         return varianti;
+    }
+    
+    public synchronized boolean doUpdateImage(int idVariante, String path, String mimeType) throws SQLException {
+        String sql = "UPDATE VarianteProdotto SET path = ?, mime_type = ? WHERE id_varianteProdotto = ?";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, path);
+            ps.setString(2, mimeType);
+            ps.setInt(3, idVariante);
+            return ps.executeUpdate() != 0;
+        }
     }
 }
