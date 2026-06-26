@@ -11,4 +11,6 @@ public interface CategoriaDAO {
     boolean doDelete(int idCategoria) throws SQLException;
     CategoriaBEAN doRetrieveById(int idCategoria) throws SQLException;
     List<CategoriaBEAN> doRetrieveAll() throws SQLException;
+    public CategoriaBEAN doRetrieveRootByName(String nomeRoot) throws SQLException;
+    public CategoriaBEAN doRetrieveByNameAndIdSuper(String nomeSub, int idSuper) throws SQLException;
 }

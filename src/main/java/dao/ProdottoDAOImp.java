@@ -163,9 +163,17 @@ public class ProdottoDAOImp implements ProdottoDAO {
     
     public List<ProdottoBEAN> doRetrieveByCategoria(int idCategoria) throws SQLException {
         List<ProdottoBEAN> lista = new ArrayList<>();
-        String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id_categoria = ?";
+        String sql = "WITH RECURSIVE CategoriaTree AS ( " +
+                     "    SELECT id_categoria FROM Categoria WHERE id_categoria = ? " +
+                     "    UNION ALL " +
+                     "    SELECT c.id_categoria FROM Categoria c " +
+                     "    INNER JOIN CategoriaTree ct ON c.id_supercategoria = ct.id_categoria " +
+                     ") " +
+                     "SELECT * FROM " + TABLE_NAME + " WHERE id_categoria IN (SELECT id_categoria FROM CategoriaTree)";
+                     
         try (Connection con = ds.getConnection(); 
              PreparedStatement ps = con.prepareStatement(sql)) {
+             
             ps.setInt(1, idCategoria);
             
             try (ResultSet rs = ps.executeQuery()) {
