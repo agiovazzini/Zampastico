@@ -122,4 +122,20 @@ public class CategoriaDAOImp implements CategoriaDAO {
         
         return bean;
     }
+    
+    public CategoriaBEAN doRetrieveByName(String nome) throws SQLException {
+        String sql = "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?)";
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nome.trim()); 
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CategoriaBEAN c = new CategoriaBEAN();
+                    c.setIdCategoria(rs.getInt("id_categoria"));
+                    c.setNome(rs.getString("nome"));
+                    return c;
+                }
+            }
+        }
+        return null; 
+    }
 }
