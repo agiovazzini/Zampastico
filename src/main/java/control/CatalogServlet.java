@@ -33,14 +33,12 @@ public class CatalogServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             //Chiedi al DAO la lista di tutti i prodotti attivi
-            List<ProdottoBEAN> prodotti = prodottoDAO.doRetrieveAll("id");
-            
+        	List<ProdottoBEAN> prodotti = prodottoDAO.doRetrieveAll(""); 
             //Impacchetta i prodotti e chiamali "prodottiCatalogo"
             request.setAttribute("prodottiCatalogo", prodotti);
             
             //Fai il forward alla tua pagina JSP esatta
             request.getRequestDispatcher("/WEB-INF/view/common/catalog.jsp").forward(request, response);
-            
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nel recupero del catalogo");
