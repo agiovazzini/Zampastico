@@ -1,3 +1,4 @@
+/* --- INIZIALIZZAZIONE E CARRELLO GLOBALE --- */
 window.addEventListener('pageshow', function(event) {
     if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
         window.location.reload(true);
@@ -32,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('zampastico_cart', JSON.stringify(carrello));
             
             aggiornaPallinoCarrello();
-            
-            // Sostituito l'alert con il Toast
             mostraToast(nome + " aggiunto al carrello! 🐾");
             
             const vecchioColore = this.style.backgroundColor;
@@ -47,7 +46,6 @@ window.aggiornaPallinoCarrello = function() {
     const carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
     let totaleArticoli = 0;
     
-    // Filtro che conta solo gli articoli validi
     carrello.forEach(item => {
         if(item && item.quantita) {
             totaleArticoli += item.quantita;
@@ -61,30 +59,25 @@ window.aggiornaPallinoCarrello = function() {
     });
 };
 
-//PER LA WISHLIST (Lista dei Desideri)
-
-// 1. Aggiunge ai preferiti registrando la DATA DI OGGI
+/* --- WISHLIST (LISTA DEI DESIDERI) --- */
 window.aggiungiPreferito = function(nome, prezzo, immagine) {
     let wishlist = JSON.parse(localStorage.getItem('zampastico_wishlist')) || [];
     const esisteGia = wishlist.find(item => item.nome === nome);
     
     if (esisteGia) {
-        // Sostituito l'alert con il Toast (Messaggio di errore)
         mostraToast("Questo prodotto è già nei tuoi preferiti! 🐾");
     } else {
         wishlist.push({ 
             nome: nome, 
             prezzo: prezzo, 
             immagine: immagine,
-            dataAggiunta: new Date().getTime() // Registra il millisecondo esatto dell'aggiunta
+            dataAggiunta: new Date().getTime()
         });
         localStorage.setItem('zampastico_wishlist', JSON.stringify(wishlist));
-        // Sostituito l'alert con il Toast
         mostraToast(nome + " aggiunto ai preferiti! ❤️");
     }
 };
 
-// 2. Disegna la pagina filtrando i prodotti scaduti
 window.caricaWishlist = function() {
     let wishlist = JSON.parse(localStorage.getItem('zampastico_wishlist')) || [];
     const contenitore = document.getElementById('wishlist-content');
@@ -120,7 +113,6 @@ window.caricaWishlist = function() {
     contenitore.innerHTML = html;
 };
 
-// 3. Rimuove un elemento manualmente
 window.rimuoviDaWishlist = function(index) {
     let wishlist = JSON.parse(localStorage.getItem('zampastico_wishlist')) || [];
     wishlist.splice(index, 1);
@@ -128,14 +120,12 @@ window.rimuoviDaWishlist = function(index) {
     caricaWishlist(); 
 };
 
-// 4. La "Decisione": Sposta il prodotto nel Carrello e lo toglie dai Preferiti
 window.spostaNelCarrello = function(index) {
     let wishlist = JSON.parse(localStorage.getItem('zampastico_wishlist')) || [];
     
     if (index >= 0 && index < wishlist.length) {
         const prodottoScelto = wishlist[index];
 
-        // A. Lo aggiunge al Carrello
         let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
         const prodottoEsistente = carrello.find(item => item.nome === prodottoScelto.nome);
         
@@ -152,37 +142,29 @@ window.spostaNelCarrello = function(index) {
         localStorage.setItem('zampastico_cart', JSON.stringify(carrello));
         if(typeof aggiornaPallinoCarrello === 'function') aggiornaPallinoCarrello();
 
-        // B. Lo RIMUOVE dai Preferiti (perché la decisione è stata presa)
         wishlist.splice(index, 1);
         localStorage.setItem('zampastico_wishlist', JSON.stringify(wishlist));
         
-        // C. Ricarica la grafica della pagina
         caricaWishlist();
-        
-        // Sostituito l'alert con il Toast
         mostraToast(prodottoScelto.nome + " è stato spostato nel carrello! 🛒");
     }
 };
 
-/* VALIDAZIONE FORM REGISTRAZIONE (ZAMPASTICO) */
+/* --- VALIDAZIONE FORM REGISTRAZIONE --- */
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('regForm');
     
-    //Se il form non esiste (es. siamo nella Home), il codice si ferma qui e non rompe il resto del sito!
     if (!form) return; 
 
-    // Se siamo qui, significa che l'utente è dentro registrazione.jsp
     const inputNome = document.getElementById('nome');
     const inputCognome = document.getElementById('cognome');
     const inputEmail = document.getElementById('email');
     const inputPassword = document.getElementById('password');
 
-    // ESPRESSIONI REGOLARI
     const regexTesto = /^[a-zA-Z\s']{2,50}$/; 
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
     const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/; 
 
-    // Funzione interna per manipolare il DOM e mostrare/nascondere errori
     function validaCampo(input, regex, spanId, messaggioErrore) {
         const span = document.getElementById(spanId);
         if (!span) return false;
@@ -210,16 +192,87 @@ document.addEventListener('DOMContentLoaded', function() {
         let isEmailValida = validaCampo(inputEmail, regexEmail, 'err-email', 'L\'email è richiesta.');
         let isPasswordValida = validaCampo(inputPassword, regexPassword, 'err-password', 'La password è richiesta.');
 
-        // Se anche solo un controllo fallisce, impediamo al form di ricaricare la pagina
         if (!isNomeValido || !isCognomeValido || !isEmailValida || !isPasswordValida) {
             event.preventDefault(); 
         }
     });
 });
 
-/* --- SISTEMA DI NOTIFICHE TOAST (Alternativa agli Alert) --- */
+/* --- PAGINA CHECKOUT --- */
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutContainer = document.getElementById('checkout-items-container');
+    
+    if (checkoutContainer) {
+        let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
+        let html = '';
+        let totale = 0;
+
+        if (carrello.length === 0) {
+            checkoutContainer.innerHTML = `
+                <div class="checkout-empty-state">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <p>Il tuo carrello è vuoto!</p>
+                </div>`;
+            document.getElementById('checkout-total-price').innerText = "0,00€";
+            
+            const btnPaga = document.querySelector('#formCheckout button[type="submit"]');
+            if (btnPaga) {
+                btnPaga.disabled = true;
+                btnPaga.classList.add('btn-disabled');
+            }
+            return;
+        }
+
+        carrello.forEach(item => {
+            let subtotale = item.prezzo * item.quantita;
+            totale += subtotale;
+            
+            html += `
+            <div class="checkout-item">
+                <div class="checkout-item-details">
+                    <span class="item-name">${item.nome}</span>
+                    <span class="item-qty">Q.tà: ${item.quantita}</span>
+                </div>
+                <div class="checkout-item-price">
+                    ${subtotale.toFixed(2).replace('.', ',')}€
+                </div>
+            </div>`;
+        });
+
+        checkoutContainer.innerHTML = html;
+        document.getElementById('checkout-total-price').innerText = totale.toFixed(2).replace('.', ',') + "€";
+    }
+
+    const formCheckout = document.getElementById('formCheckout');
+    if (formCheckout) {
+        formCheckout.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const cap = document.getElementById('cap').value;
+            if(!/^\d{5}$/.test(cap)) {
+                const inputCap = document.getElementById('cap');
+                const errCap = document.getElementById('err-cap');
+                
+                inputCap.style.borderColor = '#e74c3c';
+                errCap.textContent = "Il CAP deve contenere 5 numeri.";
+                errCap.style.display = 'block';
+                return;
+            }
+
+            mostraToast("Ordine elaborato con successo! Grazie per l'acquisto.");
+            
+            localStorage.removeItem('zampastico_cart');
+            if(typeof aggiornaPallinoCarrello === 'function') aggiornaPallinoCarrello();
+            
+            setTimeout(() => {
+                window.location.href = 'catalog'; 
+            }, 3000);
+        });
+    }
+});
+
+/* --- SISTEMA DI NOTIFICHE TOAST (Niente più Alert!) --- */
 function mostraToast(messaggio) {
-    //Cerca il contenitore dei toast. Se non esiste, lo crea nel DOM.
     let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
@@ -228,15 +281,12 @@ function mostraToast(messaggio) {
         document.body.appendChild(container);
     }
 
-    //Crea il singolo avviso (il Toast)
     const toast = document.createElement('div');
     toast.className = 'toast-msg';
     toast.innerHTML = `<i class="fa-solid fa-check"></i> ${messaggio}`;
 
-    //Aggiunge il toast al contenitore per mostrarlo a schermo
     container.appendChild(toast);
 
-    //Rimuove l'elemento dal DOM dopo 3.5 secondi per tenere pulita la pagina
     setTimeout(() => {
         toast.remove();
     }, 3500);
