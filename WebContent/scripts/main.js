@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             aggiornaPallinoCarrello();
             
-            alert(nome + " aggiunto al carrello! 🐾");
+            // Sostituito l'alert con il Toast
+            mostraToast(nome + " aggiunto al carrello! 🐾");
             
             const vecchioColore = this.style.backgroundColor;
             this.style.backgroundColor = '#4caf50'; 
@@ -68,7 +69,8 @@ window.aggiungiPreferito = function(nome, prezzo, immagine) {
     const esisteGia = wishlist.find(item => item.nome === nome);
     
     if (esisteGia) {
-        alert("Questo prodotto è già nei tuoi preferiti! 🐾");
+        // Sostituito l'alert con il Toast (Messaggio di errore)
+        mostraToast("Questo prodotto è già nei tuoi preferiti! 🐾");
     } else {
         wishlist.push({ 
             nome: nome, 
@@ -77,7 +79,8 @@ window.aggiungiPreferito = function(nome, prezzo, immagine) {
             dataAggiunta: new Date().getTime() // Registra il millisecondo esatto dell'aggiunta
         });
         localStorage.setItem('zampastico_wishlist', JSON.stringify(wishlist));
-        alert(nome + " aggiunto ai preferiti! Cliccando sul cuoricino in alto potrai decidere se acquistarlo. ❤️");
+        // Sostituito l'alert con il Toast
+        mostraToast(nome + " aggiunto ai preferiti! ❤️");
     }
 };
 
@@ -156,7 +159,8 @@ window.spostaNelCarrello = function(index) {
         // C. Ricarica la grafica della pagina
         caricaWishlist();
         
-        alert(prodottoScelto.nome + " è stato spostato nel carrello! 🛒");
+        // Sostituito l'alert con il Toast
+        mostraToast(prodottoScelto.nome + " è stato spostato nel carrello! 🛒");
     }
 };
 
@@ -212,3 +216,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+/* --- SISTEMA DI NOTIFICHE TOAST (Alternativa agli Alert) --- */
+function mostraToast(messaggio) {
+    //Cerca il contenitore dei toast. Se non esiste, lo crea nel DOM.
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    //Crea il singolo avviso (il Toast)
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerHTML = `<i class="fa-solid fa-check"></i> ${messaggio}`;
+
+    //Aggiunge il toast al contenitore per mostrarlo a schermo
+    container.appendChild(toast);
+
+    //Rimuove l'elemento dal DOM dopo 3.5 secondi per tenere pulita la pagina
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
+}
