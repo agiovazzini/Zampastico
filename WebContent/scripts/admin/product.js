@@ -1,44 +1,60 @@
 document.addEventListener("DOMContentLoaded", function() {
     
-    // --- 0. FEEDBACK GLOBALE ---
+    // ==========================================
+    // 0. FEEDBACK GLOBALE UNIFICATO
+    // ==========================================
     function showFeedback(message) {
         let feedbackDiv = document.querySelector('.feedback-div');
+        
+        // Se non esiste, crea il componente e aggancialo sotto l'header principale
         if (!feedbackDiv) {
             feedbackDiv = document.createElement('div');
             feedbackDiv.className = 'feedback-div';
-            const tabContent = document.querySelector('.tab-content');
-            if (tabContent) tabContent.prepend(feedbackDiv);
+            
+            const header = document.querySelector('.admin-products-header');
+            if (header) {
+                header.insertAdjacentElement('afterend', feedbackDiv);
+            }
         }
+        
         feedbackDiv.textContent = message;
         feedbackDiv.style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
+        // Nasconde automaticamente il messaggio dopo 5 secondi
+        setTimeout(() => {
+            feedbackDiv.style.display = 'none';
+        }, 5000);
     }
 	
-	// --- GESTIONE CREAZIONE NUOVA CATEGORIA AL VOLO ---
-	    const idCategoriaSelect = document.getElementById('idCategoria');
-	    const newCatContainer = document.getElementById('new-cat-container');
-	    const nuovaCategoriaInput = document.getElementById('nuovaCategoria');
-	    const nuovaSupercategoriaInput = document.getElementById('nuovaSupercategoria');
+    // ==========================================
+    // 1. GESTIONE CREAZIONE NUOVA CATEGORIA AL VOLO
+    // ==========================================
+    const idCategoriaSelect = document.getElementById('idCategoria');
+    const newCatContainer = document.getElementById('new-cat-container');
+    const nuovaCategoriaInput = document.getElementById('nuovaCategoria');
+    const nuovaSupercategoriaInput = document.getElementById('nuovaSupercategoria');
 
-	    if (idCategoriaSelect && newCatContainer && nuovaCategoriaInput && nuovaSupercategoriaInput) {
-	        idCategoriaSelect.addEventListener('change', function() {
-	            if (this.value === 'new') {
-	                newCatContainer.style.display = 'flex'; 
-	                nuovaCategoriaInput.required = true;     // Obbligatorio
-	                nuovaSupercategoriaInput.required = false; // SEMPRE Opzionale
-	                nuovaCategoriaInput.focus();
-	            } else {
-	                newCatContainer.style.display = 'none';
-	                nuovaCategoriaInput.required = false;
-	                nuovaSupercategoriaInput.required = false;
-	                nuovaCategoriaInput.value = '';
-	                nuovaSupercategoriaInput.value = '';
-	            }
-	        });
-	    }
+    if (idCategoriaSelect && newCatContainer && nuovaCategoriaInput && nuovaSupercategoriaInput) {
+        idCategoriaSelect.addEventListener('change', function() {
+            if (this.value === 'new') {
+                newCatContainer.style.display = 'flex'; 
+                nuovaCategoriaInput.required = true;       // Obbligatorio
+                nuovaSupercategoriaInput.required = false; // SEMPRE Opzionale
+                nuovaCategoriaInput.focus();
+            } else {
+                newCatContainer.style.display = 'none';
+                nuovaCategoriaInput.required = false;
+                nuovaSupercategoriaInput.required = false;
+                nuovaCategoriaInput.value = '';
+                nuovaSupercategoriaInput.value = '';
+            }
+        });
+    }
 
-    // --- 1. GESTIONE TABS PRINCIPALI ---
+    // ==========================================
+    // 2. GESTIONE NAVIGAZIONE TABS PRINCIPALI
+    // ==========================================
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.product-tab-content');
 
@@ -48,10 +64,16 @@ document.addEventListener("DOMContentLoaded", function() {
             tabContents.forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById(btn.dataset.target).classList.add('active');
+            
+            // Nasconde eventuali feedback precedenti quando si cambia pannello
+            const feedback = document.querySelector('.feedback-div');
+            if (feedback) feedback.style.display = 'none';
         });
     });
 
-    // --- 2. FUNZIONE GENERICA AJAX ---
+    // ==========================================
+    // 3. FUNZIONE GENERICA CHIAMATE AJAX
+    // ==========================================
     function fetchAjax(action, params, callback) {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "manageProducts", true);
@@ -68,7 +90,9 @@ document.addEventListener("DOMContentLoaded", function() {
         xhr.send(`action=${action}&${params}`);
     }
 
-    // --- 3. LOGICA TAB MODIFICA ---
+    // ==========================================
+    // 4. LOGICA TAB MODIFICA PRODOTTI E VARIANTI
+    // ==========================================
     const editCatSelect = document.getElementById('edit-cat-select');
     const editProdSelect = document.getElementById('edit-prod-select');
     const editVarSelect = document.getElementById('edit-var-select');
@@ -154,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // EVENT LISTENERS PULSANTI MODIFICA
+    // Event Listeners Bottoni Interfaccia Modifica
     document.getElementById('btn-show-add-variant')?.addEventListener('click', function() {
         hideAllEditForms();
         document.getElementById('new-formato').value = '';
@@ -174,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function() {
         formUpdateProduct.style.display = 'block';
     });
 
-    // SUBMIT FORM MODIFICHE
+    // Submit Modifiche Prodotto
     formUpdateProduct?.addEventListener('submit', function(e) {
         e.preventDefault();
         let idProd = document.getElementById('edit-hidden-idProd').value;
@@ -197,6 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // Submit Modifiche Variante
     formUpdateVariant?.addEventListener('submit', function(e) {
         e.preventDefault();
         let idVar = document.getElementById('edit-hidden-idVar').value;
@@ -217,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // Submit Creazione Nuova Variante
     formCreateVariant?.addEventListener('submit', function(e) {
         e.preventDefault();
         let idProd = document.getElementById('edit-hidden-idProd').value;
@@ -230,18 +256,20 @@ document.addEventListener("DOMContentLoaded", function() {
         fetchAjax('createVariant', params, function(res) {
             showFeedback(res.message);
             if (res.success) {
-                editProdSelect.dispatchEvent(new Event('change')); // Ricarica lista
+                editProdSelect.dispatchEvent(new Event('change')); // Ricarica la lista per mostrare la nuova variante
             }
         });
     });
 
-    // --- 4. LOGICA TAB ELIMINA ---
+    // ==========================================
+    // 5. LOGICA TAB ELIMINAZIONE / DISATTIVAZIONE
+    // ==========================================
     const delCatSelect = document.getElementById('del-cat-select');
     const delProdSelect = document.getElementById('del-prod-select');
     const delVarSelect = document.getElementById('del-var-select');
     const delWorkspace = document.getElementById('delete-workspace');
     
-    // Caching Elementi Eliminazione
+    // Elementi UI Eliminazione
     const actionBtns = document.getElementById('action-buttons-container');
     const confirmBox = document.getElementById('confirm-delete-container');
     const targetDesc = document.getElementById('target-desc');
@@ -273,8 +301,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     delProdSelect.innerHTML = '<option value="">Nessun prodotto trovato</option>';
                 }
                 
-                // MOSTRA SEMPRE L'AREA DI LAVORO PER LA CATEGORIA (anche se ha prodotti all'interno)
-                showDeleteWorkspace('categoria', delCatSelect.value, delCatSelect.selectedOptions[0].text, true, hasProducts);
+                // Mostra pannello anche se la categoria è vuota
+                showDeleteWorkspace('categoria', delCatSelect.value, delCatSelect.selectedOptions[0].text.replace(/&nbsp;|└|■/g, '').trim(), true, hasProducts);
             });
         });
     }
@@ -316,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function() {
         actionBtns.style.display = 'flex';
         confirmBox.style.display = 'none';
         
-        // La Categoria non ha uno stato attivo/inattivo, nascondiamo il pulsante
+        // Disabilita lo stato Toggle per le Categorie (non hanno colonna "attivo")
         if (type === 'categoria') {
             btnToggle.style.display = 'none';
         } else {
@@ -348,30 +376,46 @@ document.addEventListener("DOMContentLoaded", function() {
         actionBtns.style.display = 'flex';
     });
 
+    // Conferma Eliminazione Definitiva
     document.getElementById('btn-confirm-yes')?.addEventListener('click', () => {
         fetchAjax('hardDelete', `type=${currentSelection.type}&id=${currentSelection.id}`, function(res) {
             if(res.success) {
                 showFeedback("Elemento rimosso dal database.");
                 
-                // Nascondi area eliminazione
                 confirmBox.style.display = 'none';
                 actionBtns.style.display = 'flex';
                 delWorkspace.style.display = 'none';
 
-                // GESTIONE DEL RITORNO INDIETRO DINAMICO
+                // Aggiornamento DOM senza ricaricare la pagina
                 if (currentSelection.type === 'variante') {
-                    // Variante eliminata -> Riesegue il change del Prodotto per mostrare il Prodotto
                     delVarSelect.value = "";
                     delProdSelect.dispatchEvent(new Event('change'));
                 } 
                 else if (currentSelection.type === 'prodotto') {
-                    // Prodotto eliminato -> Riesegue il change della Categoria per mostrare la Categoria
                     delProdSelect.value = "";
                     delCatSelect.dispatchEvent(new Event('change'));
                 } 
                 else if (currentSelection.type === 'categoria') {
-					delCatSelect.value = ""
-					delCatSelect.dispatchEvent(new Event('change'))
+                    // Cerca l'opzione in TUTTE le select e la rimuove
+                    const categorySelects = [
+                        document.getElementById('idCategoria'),
+                        document.getElementById('edit-cat-select'),
+                        document.getElementById('edit-idCategoria'),
+                        document.getElementById('del-cat-select')
+                    ];
+                    
+                    categorySelects.forEach(select => {
+                        if (select) {
+                            const optionToRemove = select.querySelector(`option[value="${currentSelection.id}"]`);
+                            if (optionToRemove) {
+                                optionToRemove.remove();
+                            }
+                        }
+                    });
+
+                    // Resetta la select attuale
+                    delCatSelect.value = "";
+                    delCatSelect.dispatchEvent(new Event('change'));
                 }
             } else {
                 showFeedback(res.message);
@@ -381,6 +425,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // Cambio Stato (Attivo / Inattivo)
     btnToggle?.addEventListener('click', () => {
         let newStatus = !currentSelection.isActive;
         fetchAjax('toggleStatus', `type=${currentSelection.type}&id=${currentSelection.id}&status=${newStatus}`, function(res) {

@@ -104,16 +104,12 @@ public class CategoriaDAOImp implements CategoriaDAO {
                 bean.setNome(rs.getString("nome"));
                 
                 int idSuper = rs.getInt("id_supercategoria");
-                if (rs.wasNull()) {
-                    bean.setidSuper(0); 
-                } else {
-                    bean.setidSuper(idSuper);
-                }
-                
+                bean.setidSuper(rs.wasNull() ? 0 : idSuper);
                 bean.setNomeSuper(rs.getString("nome_super"));
                 tutteLeCategorie.add(bean);
             }
         }
+
         List<CategoriaBEAN> categorieOrdinate = new LinkedList<>();
         List<CategoriaBEAN> roots = new LinkedList<>();
         for (CategoriaBEAN c : tutteLeCategorie) {
@@ -123,19 +119,15 @@ public class CategoriaDAOImp implements CategoriaDAO {
         }
         roots.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
         for (CategoriaBEAN root : roots) {
-            aggiungiGerarchia(root, tutteLeCategorie, categorieOrdinate);
-        }
-        for (CategoriaBEAN c : tutteLeCategorie) {
-            if (!categorieOrdinate.contains(c)) {
-                categorieOrdinate.add(c);
-            }
+            aggiungiGerarchia(root, tutteLeCategorie, categorieOrdinate, 0);
         }
         
         return categorieOrdinate;
     }
-    
-    private void aggiungiGerarchia(CategoriaBEAN padre, List<CategoriaBEAN> tutte, List<CategoriaBEAN> ordinate) {
+    private void aggiungiGerarchia(CategoriaBEAN padre, List<CategoriaBEAN> tutte, List<CategoriaBEAN> ordinate, int livelloAttuale) {
+        padre.setLivello(livelloAttuale);
         ordinate.add(padre);
+        
         List<CategoriaBEAN> figli = new LinkedList<>();
         for (CategoriaBEAN c : tutte) {
             if (c.getIdSuper() == padre.getIdCategoria()) {
@@ -143,8 +135,9 @@ public class CategoriaDAOImp implements CategoriaDAO {
             }
         }
         figli.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
+        
         for (CategoriaBEAN figlio : figli) {
-            aggiungiGerarchia(figlio, tutte, ordinate);
+            aggiungiGerarchia(figlio, tutte, ordinate, livelloAttuale + 1); // Incrementa il livello per i nipoti
         }
     }
 

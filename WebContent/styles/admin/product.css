@@ -1,6 +1,6 @@
-/* =========================================
-   GESTIONE PRODOTTI (Stile allineato alla Dashboard)
-   ========================================= */
+/* =========================================================================
+   GESTIONE PRODOTTI (Stile Premium allineato a Profile.css e Dashboard)
+   ========================================================================= */
 
 /* Container Principale */
 .admin-products-container {
@@ -17,10 +17,6 @@
     border-bottom: 2px dashed var(--color-bg-footer, #eaeaea);
 }
 
-.admin-product-form {
-    display: none;
-}
-
 .admin-products-header h3 {
     font-size: 1.3rem;
     font-weight: 800;
@@ -28,7 +24,13 @@
     color: var(--color-text-main, #1e293b);
 }
 
-/* --- TABS MENU MODERNO --- */
+.admin-product-form {
+    display: none;
+}
+
+/* =========================================================================
+   TABS MENU MODERNO
+   ========================================================================= */
 .tabs-menu {
     display: flex;
     flex-wrap: wrap;
@@ -56,7 +58,7 @@
 }
 
 .tab-btn.active {
-    background-color: rgba(255, 102, 0, 0.06); /* Tint del colore primario */
+    background-color: rgba(255, 102, 0, 0.06);
     color: var(--color-primary, #ff6600);
     border-color: var(--color-primary, #ff6600);
     box-shadow: 0 4px 12px rgba(255, 102, 0, 0.15);
@@ -71,7 +73,25 @@
     display: block; 
 }
 
-/* --- FORM GRID & SECTIONS --- */
+/* =========================================================================
+   SISTEMA DI FEEDBACK VISIVO UNIFICATO (Stile Profile.css)
+   ========================================================================= */
+.feedback-div {
+    border-left: 6px solid var(--color-primary, #ff6600); 
+    padding: 12px 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #1e293b;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    animation: fadeInDown 0.4s ease-out forwards;
+}
+
+/* =========================================================================
+   LAYOUT STRUTTURALE DEI FORM & CONTENITORI
+   ========================================================================= */
 .form-section-title {
     font-size: 1.1rem;
     font-weight: 800;
@@ -87,7 +107,6 @@
     border-bottom: none;
 }
 
-/* Box in stile "Filter Section" di orders/coupons */
 .variant-box, .workspace-area {
     background-color: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -97,7 +116,6 @@
     margin-bottom: 20px;
 }
 
-/* Nasconde di default SOLO l'area di eliminazione (lasciando visibile il placeholder della Modifica) */
 #delete-workspace {
     display: none;
 }
@@ -113,7 +131,28 @@
     grid-column: 1 / -1; 
 }
 
-/* --- INPUT E LABEL --- */
+/* Gestione Layout Pannello Nuova Categoria inserito al volo */
+#new-cat-container {
+    display: none;
+    gap: 20px;
+    background: rgba(255, 102, 0, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px dashed var(--color-primary, #ff6600);
+    margin-top: -10px;
+}
+
+#new-cat-container .filter-group {
+    flex: 1;
+}
+
+#new-cat-container label {
+    color: var(--color-primary, #e65c00);
+}
+
+/* =========================================================================
+   ELEMENTI DI INPUT, UTILITY INPUT E SELEZIONI A CASCATA
+   ========================================================================= */
 .filter-group {
     display: flex;
     flex-direction: column;
@@ -171,13 +210,34 @@ select.filter-input:disabled {
     background-image: none;
 }
 
-/* --- TOGGLE SWITCH --- */
 .checkbox-group {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
+.cascading-selects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px dashed #cbd5e1;
+}
+
+.placeholder-text {
+    text-align: center;
+    color: #94a3b8;
+    font-weight: 500;
+    font-style: italic;
+    padding: 20px 0;
+}
+
+/* =========================================================================
+   INTERRUTTORI SWITCH FLUIDI
+   ========================================================================= */
 .switch {
     position: relative;
     display: inline-block;
@@ -215,7 +275,6 @@ select.filter-input:disabled {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Verde Smeraldo per indicare l'attivazione in modo moderno */
 input:checked + .slider { 
     background-color: #10b981; 
 }
@@ -231,27 +290,9 @@ input:checked + .slider:before {
     font-weight: 600;
 }
 
-/* --- SELEZIONI A CASCATA --- */
-.cascading-selects {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-    background-color: #f8fafc;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px dashed #cbd5e1;
-}
-
-.placeholder-text {
-    text-align: center;
-    color: #94a3b8;
-    font-weight: 500;
-    font-style: italic;
-    padding: 20px 0;
-}
-
-/* --- ACTION CARD (Eliminazione) --- */
+/* =========================================================================
+   STRUTTURE DI DIALOGO INTERNO (ELIMINAZIONE ED AZIONI HARD DELETE)
+   ========================================================================= */
 .action-card {
     text-align: center;
     padding: 10px;
@@ -278,23 +319,22 @@ input:checked + .slider:before {
     gap: 15px; 
 }
 
-/* --- BOX CONFERMA ELIMINAZIONE (In-Page) --- */
 #confirm-delete-container {
     display: none; 
     margin-top: 15px; 
     padding: 15px; 
-    border: 1px solid #d9534f; 
-    background-color: #fdf5f5; 
-    border-radius: 5px;
+    border: 1px solid #e74c3c; 
+    background-color: rgba(231, 76, 60, 0.03); 
+    border-radius: 8px;
 }
 
 #confirm-delete-container > div {
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin-top: 12px;
 }
 
-/* --- BOTTONI (Estendono quelli globali per adattarsi a questo layout) --- */
 .form-actions {
     margin-top: 25px;
     display: flex;
@@ -302,15 +342,38 @@ input:checked + .slider:before {
     flex-wrap: wrap;
 }
 
+/* =========================================================================
+   BOTTONI AZIONE (Estensioni da Profile.css)
+   ========================================================================= */
+.saveButton, .deleteButton, .warningButton {
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.saveButton {
+    background-color: var(--color-primary, #ff6600);
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
+}
+
+.saveButton:not(:disabled):hover {
+    box-shadow: 0 6px 15px rgba(255, 102, 0, 0.35);
+    background-color: #e65c00;
+    transform: translateY(-2px);
+    color: white;
+}
+
 .warningButton {
     background-color: transparent;
     color: #f59e0b;
     border: 1px solid #f59e0b;
     padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .warningButton:hover { 
@@ -320,48 +383,71 @@ input:checked + .slider:before {
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
+.deleteButton {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+
+.deleteButton:not(:disabled):hover {
+    background-color: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+}
+
 .btn-disabled {
     opacity: 0.5;
     cursor: not-allowed !important;
     pointer-events: none;
 }
 
-/* --- GERARCHIA VISIVA NELLE SELECT (admin-product.jsp) --- */
-
-/* Categorie principali (Senza nomeSuper) */
-select.filter-input option.top-level {
-    font-weight: 800;
-    color: var(--color-primary, #ff6600);
-    background-color: #f8fafc;
-}
-
-/* Sottocategorie (Con nomeSuper) */
-select.filter-input option.sub-level {
-    font-weight: 500;
-    color: #475569; /* Grigio scuro/bluastro */
-    font-size: 0.95rem;
-}
-
-/* --- GERARCHIA DINAMICA E SCALABILE PER LE SELECT --- */
-
-/* Stile di base per tutte le opzioni della select */
+/* =========================================================================
+   LOGICA DI STILE GERARCHICA AD ALBERO (UI/UX Friendly)
+   ========================================================================= */
 select.filter-input option {
     font-weight: 400;
-    color: #475569; /* Grigio scuro neutro per i figli */
+    color: #475569;
     font-size: 0.95rem;
+    background-color: #ffffff;
+    padding: 4px; /* Aggiunge respiro nei browser che lo supportano */
+}
+
+/* Livello Radice (Padri Assoluti - Livello 0) */
+select.filter-input option.cat-level-0 {
+    font-weight: 700;
+    color: #0f172a; /* Scurissimo per staccare */
+    background-color: #f1f5f9; /* Grigio chiaro per evidenziare i blocchi */
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Livello 1 (Figli Diretti) */
+select.filter-input option.cat-level-1 {
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Livello 2 e successivi (Nipoti) */
+select.filter-input option[class*="cat-level-"]:not(.cat-level-0):not(.cat-level-1) {
+    font-weight: 400;
+    color: #64748b;
+}
+
+/* Opzione speciale "Aggiungi nuova categoria" */
+select.filter-input option.new-cat-option {
+    font-weight: bold;
+    color: var(--color-primary, #ff6600);
     background-color: #ffffff;
 }
 
-/* Regola speciale SOLO per il livello 0 (Le categorie principali) */
-select.filter-input option.level-0 {
-    font-weight: 800; /* Molto evidente */
-    color: var(--color-primary, #ff6600); /* Colore Arancione Brand */
-    background-color: #f8fafc; /* Sfondo leggermente grigio per staccare */
-    font-size: 1rem;
-}
-
-/* Opzionale: se vuoi che più si vada in profondità, più il testo diventi leggero (fino al livello 3+) */
-select.filter-input option:not(.level-0):not(.level-1) {
-    color: #64748b; /* Grigio più chiaro per i livelli molto profondi (nipoti/bisnipoti) */
-    font-size: 0.9rem;
+/* =========================================================================
+   ANIMAZIONI FLUIDE INFRA-PAGE
+   ========================================================================= */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
 }

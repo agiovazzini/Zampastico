@@ -9,6 +9,7 @@ public class CategoriaBEAN implements Serializable {
     private String nome;
     private int idSuperCategoria;
     private String nomeSuper; 
+    private int livello;
 
     public CategoriaBEAN() {
     	super();
@@ -35,11 +36,18 @@ public class CategoriaBEAN implements Serializable {
     	this.idSuperCategoria = idSuperCategoria; 
     }
 
-    // Getter e Setter per il nome del padre
     public String getNomeSuper() {
         return nomeSuper;
     }
     public void setNomeSuper(String nomeSuper) {
         this.nomeSuper = nomeSuper;
+    }
+
+    public int getLivello() {
+        return livello;
+    }
+
+    public void setLivello(int livello) {
+        this.livello = livello;
     }
 }
