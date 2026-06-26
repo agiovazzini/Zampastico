@@ -31,9 +31,7 @@ body {
     line-height: 1.6;
 }
 
-/* ==============================================================
-   FORZATURA SPAZI LATERALI GLOBALI (EFFETTO LOCANDINA)
-   ============================================================== */
+/* --- FORZATURA SPAZI LATERALI GLOBALI (EFFETTO LOCANDINA) --- */
 .container,
 .top-section,
 .main-nav,
@@ -1140,6 +1138,105 @@ body {
     background-color: #f37925; /* Colore brand per la pagina attiva */
     color: white;
     border-color: #f37925;
+}
+
+/* ==============================================================
+   FORM AUTENTICAZIONE (Registrazione & Login)
+   ============================================================== */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eeeeee;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header h1 {
+    color: #333333;
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.auth-header p {
+    color: #666666;
+}
+
+/* Stili dei campi Form */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555555;
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #f37925; /* Arancione Zampastico */
+}
+
+/* Stili per gli errori */
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    display: none; /* Nascosto di default, lo mostra il JS */
+    margin-top: 5px;
+}
+
+.error-msg.server-error {
+    display: block; /* Gli errori del server sono subito visibili */
+}
+
+/* Bottone largo quanto tutta la card */
+.btn-block {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+/* Footer della card */
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.auth-link {
+    color: #4a7c59; /* Verde Zampastico */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
 }
 
 /* --- RESPONSIVE DESIGN (SITO ADATTATO PER SMARTPHONE E TABLET) --- */
