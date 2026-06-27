@@ -155,7 +155,7 @@ h4 {
 }
 
 .coupon-ticket {
-    display: inline-flex;
+    display: inline-block;
     align-items: center;
     gap: 6px;
     background-color: #fffbeb;

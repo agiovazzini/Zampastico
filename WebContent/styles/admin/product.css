@@ -1,8 +1,3 @@
-/* =========================================================================
-   GESTIONE PRODOTTI (Stile Premium allineato a Profile.css e Dashboard)
-   ========================================================================= */
-
-/* Container Principale */
 .admin-products-container {
     width: 100%;
     box-sizing: border-box;
@@ -10,8 +5,7 @@
 }
 
 .admin-products-header {
-    display: flex;
-    align-items: center;
+    display: block;
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px dashed var(--color-bg-footer, #eaeaea);
@@ -28,17 +22,17 @@
     display: none;
 }
 
-/* =========================================================================
-   TABS MENU MODERNO
-   ========================================================================= */
 .tabs-menu {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    display: block; 
     margin-bottom: 30px;
+    font-size: 0; 
 }
 
 .tab-btn {
+    display: inline-block; 
+    vertical-align: top;
+    margin-right: 12px;
+    margin-bottom: 12px;
     padding: 10px 20px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -73,10 +67,8 @@
     display: block; 
 }
 
-/* =========================================================================
-   SISTEMA DI FEEDBACK VISIVO UNIFICATO (Stile Profile.css)
-   ========================================================================= */
 .feedback-div {
+    display: block;
     border-left: 6px solid var(--color-primary, #ff6600); 
     padding: 12px 20px;
     margin-bottom: 25px;
@@ -89,10 +81,9 @@
     animation: fadeInDown 0.4s ease-out forwards;
 }
 
-/* =========================================================================
-   LAYOUT STRUTTURALE DEI FORM & CONTENITORI
-   ========================================================================= */
+
 .form-section-title {
+    display: block;
     font-size: 1.1rem;
     font-weight: 800;
     color: #1e293b;
@@ -108,6 +99,7 @@
 }
 
 .variant-box, .workspace-area {
+    display: block;
     background-color: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
@@ -131,9 +123,9 @@
     grid-column: 1 / -1; 
 }
 
-/* Gestione Layout Pannello Nuova Categoria inserito al volo */
 #new-cat-container {
     display: none;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     background: rgba(255, 102, 0, 0.05);
     padding: 15px;
@@ -142,23 +134,16 @@
     margin-top: -10px;
 }
 
-#new-cat-container .filter-group {
-    flex: 1;
-}
-
 #new-cat-container label {
     color: var(--color-primary, #e65c00);
 }
 
-/* =========================================================================
-   ELEMENTI DI INPUT, UTILITY INPUT E SELEZIONI A CASCATA
-   ========================================================================= */
 .filter-group {
-    display: flex;
-    flex-direction: column;
+    display: block;
 }
 
 .filter-group label {
+    display: block;
     font-size: 0.8rem;
     font-weight: 700;
     color: #475569;
@@ -168,6 +153,7 @@
 }
 
 .filter-input, .textarea-input {
+    display: block;
     height: 38px;
     width: 100%;
     padding: 6px 12px;
@@ -211,9 +197,7 @@ select.filter-input:disabled {
 }
 
 .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: block; 
 }
 
 .cascading-selects {
@@ -228,6 +212,7 @@ select.filter-input:disabled {
 }
 
 .placeholder-text {
+    display: block;
     text-align: center;
     color: #94a3b8;
     font-weight: 500;
@@ -235,12 +220,9 @@ select.filter-input:disabled {
     padding: 20px 0;
 }
 
-/* =========================================================================
-   INTERRUTTORI SWITCH FLUIDI
-   ========================================================================= */
 .switch {
     position: relative;
-    display: inline-block;
+    display: block;
     width: 48px;
     height: 24px;
     margin-top: 5px;
@@ -284,21 +266,21 @@ input:checked + .slider:before {
 }
 
 .toggle-label { 
+    display: block; /* Forza a capo */
     font-size: 0.8rem; 
     color: #64748b; 
     margin-top: 6px; 
     font-weight: 600;
 }
 
-/* =========================================================================
-   STRUTTURE DI DIALOGO INTERNO (ELIMINAZIONE ED AZIONI HARD DELETE)
-   ========================================================================= */
 .action-card {
+    display: block;
     text-align: center;
     padding: 10px;
 }
 
 .action-card h4 { 
+    display: block;
     margin-top: 0; 
     color: #ef4444; 
     font-size: 1.25rem;
@@ -307,16 +289,21 @@ input:checked + .slider:before {
 }
 
 #target-desc {
+    display: block;
     color: #64748b;
     font-size: 0.95rem;
     margin-bottom: 25px;
 }
 
 .action-buttons { 
+    display: block;
+    text-align: center;
     margin-top: 20px; 
-    display: flex; 
-    justify-content: center;
-    gap: 15px; 
+}
+
+.action-buttons button {
+    display: inline-block;
+    margin: 0 7.5px;
 }
 
 #confirm-delete-container {
@@ -329,22 +316,28 @@ input:checked + .slider:before {
 }
 
 #confirm-delete-container > div {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    display: block;
+    text-align: center;
     margin-top: 12px;
 }
 
-.form-actions {
-    margin-top: 25px;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+#confirm-delete-container > div button {
+    display: inline-block;
+    margin: 0 5px;
 }
 
-/* =========================================================================
-   BOTTONI AZIONE (Estensioni da Profile.css)
-   ========================================================================= */
+.form-actions {
+    display: block;
+    margin-top: 25px;
+}
+
+.form-actions button {
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+
 .saveButton, .deleteButton, .warningButton {
     border-radius: 8px;
     font-weight: 600;
@@ -404,50 +397,107 @@ input:checked + .slider:before {
     pointer-events: none;
 }
 
-/* =========================================================================
-   LOGICA DI STILE GERARCHICA AD ALBERO (UI/UX Friendly)
-   ========================================================================= */
 select.filter-input option {
     font-weight: 400;
     color: #475569;
     font-size: 0.95rem;
     background-color: #ffffff;
-    padding: 4px; /* Aggiunge respiro nei browser che lo supportano */
+    padding: 4px; 
 }
 
-/* Livello Radice (Padri Assoluti - Livello 0) */
 select.filter-input option.cat-level-0 {
     font-weight: 700;
-    color: #0f172a; /* Scurissimo per staccare */
-    background-color: #f1f5f9; /* Grigio chiaro per evidenziare i blocchi */
+    color: #0f172a; 
+    background-color: #f1f5f9; 
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
 }
 
-/* Livello 1 (Figli Diretti) */
 select.filter-input option.cat-level-1 {
     font-weight: 600;
     color: #334155;
 }
 
-/* Livello 2 e successivi (Nipoti) */
 select.filter-input option[class*="cat-level-"]:not(.cat-level-0):not(.cat-level-1) {
     font-weight: 400;
     color: #64748b;
 }
 
-/* Opzione speciale "Aggiungi nuova categoria" */
 select.filter-input option.new-cat-option {
     font-weight: bold;
     color: var(--color-primary, #ff6600);
     background-color: #ffffff;
 }
 
-/* =========================================================================
-   ANIMAZIONI FLUIDE INFRA-PAGE
-   ========================================================================= */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-15px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.image-upload-container {
+    display: block;
+    border: 1px dashed #ccc;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.previews-container {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    justify-content: center;
+    align-items: start; 
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.preview-box {
+    display: none; 
+    text-align: center;
+    margin-top: 10px;
+}
+
+.debug-info {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.8em;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.image-preview {
+    display: inline-block; 
+    width: 150px; 
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.preview-new {
+    border: 2px solid #4CAF50;
+}
+
+.preview-edit-current {
+    border: 2px solid #2196F3;
+}
+
+.preview-edit-new {
+    border: 2px dashed #4CAF50;
+}
+
+.btn-remove-img {
+    display: inline-block; 
+    margin-top: 10px;
+    padding: 6px 12px;
+}
+
+.action-buttons { 
+    display: block;
+    text-align: center;
+    margin-top: 20px; 
 }

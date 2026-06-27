@@ -9,7 +9,7 @@
 }
 
 .column-header {
-    display: flex;
+    display: block;
     align-items: center;
     gap: 10px;
     padding: 18px 20px;
@@ -103,13 +103,12 @@
     border: 1px dashed #cbd5e1;
 }
 
-/* FORSE COMUNE*/
 .column-pagination {
     margin: 0;
     padding: 15px 20px;
     background-color: #f8fafc;
     border-top: 1px solid #e2e8f0;
-    display: flex;
+    display: block;
     justify-content: center;
     gap: 8px;
 }
