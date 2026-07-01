@@ -1,16 +1,24 @@
-export function showFeedback(message) {
-    let feedbackDiv = document.querySelector('.feedback-div');
-    if (!feedbackDiv) {
-        feedbackDiv = document.createElement('div');
-        feedbackDiv.className = 'feedback-div';
-        const header = document.querySelector('.admin-products-header');
-        if (header) {
-            header.insertAdjacentElement('afterend', feedbackDiv);
-        }
-    }
-    feedbackDiv.textContent = message;
-    feedbackDiv.style.display = 'block';
+export function showFeedback(message){
+	let feedbackDiv = document.querySelector('.feedback-div');
+	if (!feedbackDiv){
+		feedbackDiv = document.createElement('div');
+		feedbackDiv.className = 'feedback-div';
+		const tabContent = document.querySelector('.tab-content');
+		if (tabContent){
+			tabContent.prepend(feedbackDiv);
+		}
+	}
+	feedbackDiv.textContent = message;
+	feedbackDiv.style.display = 'block';
 	window.scrollTo(0, 0);
+}
+
+export function hideFeedback(){
+	const feedbackDiv = document.querySelector('.feedback-div');
+	if (feedbackDiv){
+		feedbackDiv.style.display = 'none';
+		feedbackDiv.textContent = '';
+	}
 }
 
 export function initTabs() {
@@ -21,16 +29,12 @@ export function initTabs() {
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
             tabContents.forEach(c => c.style.display = 'none'); 
-            
             btn.classList.add('active');
             let targetTab = document.getElementById(btn.dataset.target);
             if (targetTab) {
                 targetTab.classList.add('active');
                 targetTab.style.display = 'block';
             }
-            
-            const feedback = document.querySelector('.feedback-div');
-            if (feedback) feedback.style.display = 'none';
         });
     });
 }
@@ -46,7 +50,6 @@ export function handleImagePreview(fileInput, previewImg, wrapperDiv, flagInput 
                 wrapperDiv.style.display = 'block'; 
             };
             reader.readAsDataURL(file);
-
             if (flagInput) {
                 flagInput.value = "false";
             }

@@ -11,7 +11,6 @@ export function initProductsDeleteLogic() {
     const targetDesc = document.getElementById('target-desc');
     const btnToggle = document.getElementById('btn-toggle-status');
     const btnDelete = document.getElementById('btn-hard-delete');
-    
     let currentSelection = { type: null, id: null, isActive: false };
 
     function showDeleteWorkspace(type, id, name, isActive, hasChildren) {
@@ -26,7 +25,11 @@ export function initProductsDeleteLogic() {
                 btnToggle.style.display = 'none';
             } else {
                 btnToggle.style.display = 'inline-block';
-                btnToggle.innerText = isActive ? "Disattiva/Nascondi" : "Riattiva/Mostra";
+                if (isActive) {
+                    btnToggle.innerText = "Disattiva/Nascondi";
+                } else {
+                    btnToggle.innerText = "Riattiva/Mostra";
+                }
             }
         }
         if (btnDelete) {
@@ -35,35 +38,44 @@ export function initProductsDeleteLogic() {
         }
         if (targetDesc) {
             if (hasChildren) {
-                targetDesc.innerHTML = type === 'categoria' 
-                    ? "Questa categoria contiene dei prodotti.<br><b>Sposta o elimina i prodotti</b> prima di poter rimuovere l'intera categoria dal database."
-                    : "Questo elemento contiene dei sotto-elementi dipendenti.<br><b>Svuotalo prima di procedere</b>, oppure limitati a disattivarne la visibilità.";
+                if (type === 'categoria') {
+                    targetDesc.innerHTML = "Questa categoria contiene dei prodotti.<br><b>Sposta o elimina i prodotti</b> prima di poter rimuovere l'intera categoria dal database.";
+                } else {
+                    targetDesc.innerHTML = "Questo elemento contiene dei sotto-elementi dipendenti.<br><b>Svuotalo prima di procedere</b>, oppure limitati a disattivarne la visibilità.";
+                }
             } else {
-                targetDesc.innerHTML = type === 'categoria'
-                    ? "La categoria è vuota e può essere <b>eliminata definitivamente</b>."
-                    : "Può essere eliminato dal database <b>solo se non è mai stato acquistato</b>.<br>Se associato a ordini, limitati a disattivarlo.";
+                if (type === 'categoria') {
+                    targetDesc.innerHTML = "La categoria è vuota e può essere <b>eliminata definitivamente</b>.";
+                } else {
+                    targetDesc.innerHTML = "Può essere eliminato dal database <b>solo se non è mai stato acquistato</b>.<br>Se associato a ordini, limitati a disattivarlo.";
+                }
             }
         }
     }
-
     if (delCatSelect) {
         delCatSelect.addEventListener('change', function() {
             if (delProdSelect) {
-                delProdSelect.innerHTML = '<option value="">Caricamento...</option>';
                 delProdSelect.disabled = true;
             }
             if (delVarSelect) {
-                delVarSelect.innerHTML = 'Scegli Variante</option>';
+                delVarSelect.innerHTML = '<option value="">Scegli Variante</option>';
                 delVarSelect.disabled = true;
             }
             if (delWorkspace) delWorkspace.style.display = 'none';
+            
             fetchAjax('getProductsByCategory', 'idCategoria=' + this.value, function(data) {
                 let hasProducts = data.success && data.prodotti.length > 0;
+                
                 if (delProdSelect) {
-                    delProdSelect.innerHTML = '<option value="" selected disabled>2. Scegli Prodotto</option>';
+                    delProdSelect.innerHTML = '<option value="" selected disabled>Scegli Prodotto</option>';
                     if (hasProducts) {
                         data.prodotti.forEach(p => {
-                            let optionText = p.marca ? `#${p.marca} - ${p.nome}` : p.nome;
+                            let optionText;
+                            if (p.marca) {
+                                optionText = `#${p.marca} - ${p.nome}`;
+                            } else {
+                                optionText = p.nome;
+                            }
                             delProdSelect.innerHTML += `<option value="${p.id}" data-attivo="${p.attivo}">${optionText}</option>`;
                         });
                         delProdSelect.disabled = false;
@@ -82,7 +94,6 @@ export function initProductsDeleteLogic() {
         delProdSelect.addEventListener('change', function() {
             let idProd = this.value;
             if (delVarSelect) {
-                delVarSelect.innerHTML = '<option value="">Caricamento...</option>';
                 delVarSelect.disabled = true;
             }
             fetchAjax('getVariantsByProduct', 'idProdotto=' + idProd, function(data) {
@@ -171,7 +182,15 @@ export function initProductsDeleteLogic() {
             if (res.success) {
                 showFeedback("Visibilità aggiornata correttamente.");
                 currentSelection.isActive = newStatus;
-                if (btnToggle) btnToggle.innerText = newStatus ? "Disattiva/Nascondi" : "Riattiva/Mostra";
+                
+                if (btnToggle) {
+                    if (newStatus) {
+                        btnToggle.innerText = "Disattiva/Nascondi";
+                    } else {
+                        btnToggle.innerText = "Riattiva/Mostra";
+                    }
+                }
+                
                 if (currentSelection.type === 'prodotto' && delProdSelect && delProdSelect.selectedOptions[0]) {
                     delProdSelect.selectedOptions[0].dataset.attivo = newStatus;
                 } else if (currentSelection.type === 'variante' && delVarSelect && delVarSelect.selectedOptions[0]) {

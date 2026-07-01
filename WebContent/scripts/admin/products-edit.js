@@ -76,7 +76,6 @@ export function initProductsEditLogic() {
                     if (fileInput) fileInput.value = ""; 
                     if (flagRemove) flagRemove.value = "false";
                     if (wrapperNew) wrapperNew.style.display = "none";
-                    
                     if (wrapperCurrent && imgCurrent) {
                         if (data.path) {
                             imgCurrent.src = "../image?action=show&code=" + data.id + "&t=" + new Date().getTime();
@@ -86,7 +85,6 @@ export function initProductsEditLogic() {
                             wrapperCurrent.style.display = "none";
                         }
                     }
-                    
                     if (formUpdateProduct) formUpdateProduct.style.display = 'block';
                 }
             });
@@ -99,7 +97,6 @@ export function initProductsEditLogic() {
             fetchAjax('getVariantDetails', 'idVariante=' + this.value, function(data) {
                 if (data.success) {
                     hideAllEditForms();
-                    
                     document.getElementById('edit-hidden-idVar').value = data.id;
                     document.getElementById('edit-formato').value = data.formato;
                     document.getElementById('edit-prezzo').value = data.prezzo;

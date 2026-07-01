@@ -1,7 +1,11 @@
+import { showFeedback, hideFeedback } from './ui.js';
+import { getOraEsatta} from './coupons.js';
+
+
 document.addEventListener('DOMContentLoaded', function() {
 	const container = document.querySelector('.admin-orders-container');
-	    if (!container) return;
-	    const contextPath = container.getAttribute('data-context-path');
+	if (!container) return;
+	const contextPath = container.getAttribute('data-context-path');
 	const dateFilterSelect = document.getElementById('dateFilter');
     const customDateRange = document.getElementById('custom-date-range');
     const dateFromInput = document.getElementById('dateFrom');
@@ -17,19 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (dateFromInput && dateToInput) {
-        const now = new Date();
-        const today = new Date(now - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-        dateFromInput.max = today;
-        dateToInput.max = today;
+        const dataIntera = getOraEsatta();
+		const dataSoloGiorno = dataIntera.split(' ')[0];
+		const parti = dataSoloGiorno.split('/');
+		const dataDiOggi = `${parti[2]}-${parti[1]}-${parti[0]}`;
+        dateFromInput.max = dataDiOggi;
+        dateToInput.max = dataDiOggi;
         dateFromInput.addEventListener('change', function() {
             dateToInput.min = this.value || '';
         });
         dateToInput.addEventListener('change', function() {
-            dateFromInput.max = this.value || today;
+            dateFromInput.max = this.value || dataDiOggi;
         });
     }
     const selects = document.querySelectorAll('.async-status-select');
-    
     selects.forEach(select => {
         select.dataset.previousValue = select.value;
         select.addEventListener('change', function() {
@@ -37,14 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const orderId = selectElement.getAttribute('data-order-id');
             const newState = selectElement.value;
             const previousValue = selectElement.dataset.previousValue;
-            selectElement.style.opacity = '0.6';
             selectElement.disabled = true;
             const xhr = new XMLHttpRequest();
             xhr.open('POST', contextPath + '/admin/updateStatus', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
-                    selectElement.style.opacity = '1';
                     selectElement.disabled = false;
                     if (xhr.status >= 200 && xhr.status < 300) {
                         try {
@@ -53,50 +56,36 @@ document.addEventListener('DOMContentLoaded', function() {
                                 selectElement.classList.remove('status-' + previousValue);
                                 selectElement.classList.add('status-' + newState);
                                 selectElement.dataset.previousValue = newState;
-                                showDynamicFeedback('Stato dell\'ordine aggiornato con successo.', 'success');
+                                gestisciMessaggio('Stato dell\'ordine aggiornato con successo.');
                             } else {
                                 revertSelect();
-                                showDynamicFeedback('Operazione negata o fallita.', 'error');
+                                gestisciMessaggio('Operazione negata o fallita.');
                             }
                         } catch (e) {
                             revertSelect();
-                            showDynamicFeedback('Errore di comunicazione col server.', 'error');
+                            gestisciMessaggio('Errore di comunicazione col server.');
                         }
                     } else {
                         revertSelect();
-                        showDynamicFeedback('Errore di connessione (' + xhr.status + ').', 'error');
+                        gestisciMessaggio('Errore di connessione (' + xhr.status + ').');
                     }
                 }
             };
             xhr.onerror = function() {
-                selectElement.style.opacity = '1';
                 selectElement.disabled = false;
                 revertSelect();
-                showDynamicFeedback('Errore di rete.', 'error');
+                gestisciMessaggio('Errore di rete.');
             };
             
             function revertSelect() {
                 selectElement.value = previousValue;
             }
+			
+			function gestisciMessaggio(testo) {
+				showFeedback(testo);
+				setTimeout(hideFeedback, 3500);
+			}
             xhr.send('idOrdine=' + orderId + '&stato=' + encodeURIComponent(newState));
         });
     });
-    function showDynamicFeedback(message, type) {
-        const tabContent = document.querySelector('.tab-content');
-        if (!tabContent) return; 
-        let existingFeedback = tabContent.querySelector('.feedback-div');
-        if (existingFeedback) {
-            existingFeedback.remove();
-        }
-        const feedbackDiv = document.createElement('div');
-        feedbackDiv.className = 'feedback-div';
-        feedbackDiv.textContent = message;
-        if (type === 'error') {
-            feedbackDiv.style.borderLeftColor = '#e74c3c';
-        } else {
-            feedbackDiv.style.borderLeftColor = 'var(--color-primary)';
-        }
-
-        tabContent.insertBefore(feedbackDiv, tabContent.firstChild);
-    }
 });

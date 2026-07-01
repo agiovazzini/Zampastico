@@ -8,12 +8,9 @@ export function initCategoriesLogic() {
             if (this.value === 'new') {
                 newCatContainer.style.display = 'grid'; 
                 nuovaCategoriaInput.required = true;       
-                nuovaSupercategoriaInput.required = false; 
-                nuovaCategoriaInput.focus();
             } else {
                 newCatContainer.style.display = 'none';
                 nuovaCategoriaInput.required = false;
-                nuovaSupercategoriaInput.required = false;
                 nuovaCategoriaInput.value = '';
                 nuovaSupercategoriaInput.value = '';
             }

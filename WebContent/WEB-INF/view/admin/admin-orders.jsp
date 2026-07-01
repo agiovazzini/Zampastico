@@ -119,6 +119,6 @@
                 </div>
             </c:if>
         </div>
-        <script src="${pageContext.request.contextPath}/scripts/admin/orders.js"></script>
+        <script type="module" src="${pageContext.request.contextPath}/scripts/admin/orders.js"></script>
     </body>
 </html>
