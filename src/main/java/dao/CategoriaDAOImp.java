@@ -91,7 +91,6 @@ public class CategoriaDAOImp implements CategoriaDAO {
 
     @Override
     public List<CategoriaBEAN> doRetrieveAll() throws SQLException {
-        // Passaggio da LinkedList ad ArrayList
         List<CategoriaBEAN> tutteLeCategorie = new ArrayList<>();
         
         String selectSQL = "SELECT c1.id_categoria, c1.nome, c1.id_supercategoria, c2.nome AS nome_super " +
@@ -115,22 +114,17 @@ public class CategoriaDAOImp implements CategoriaDAO {
             }
         }
         
-        // Passaggio da LinkedList ad ArrayList
         List<CategoriaBEAN> categorieOrdinate = new ArrayList<>();
         List<CategoriaBEAN> roots = new ArrayList<>();
-        
         for (CategoriaBEAN c : tutteLeCategorie) {
             if (c.getIdSuper() == 0) {
                 roots.add(c);
             }
         }
-        
         roots.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
-        
         for (CategoriaBEAN root : roots) {
             aggiungiGerarchia(root, tutteLeCategorie, categorieOrdinate, 0);
         }
-        
         return categorieOrdinate;
     }
     
@@ -138,15 +132,12 @@ public class CategoriaDAOImp implements CategoriaDAO {
         padre.setLivello(livelloAttuale);
         ordinate.add(padre);
         List<CategoriaBEAN> figli = new ArrayList<>();
-        
         for (CategoriaBEAN c : tutte) {
             if (c.getIdSuper() == padre.getIdCategoria()) {
                 figli.add(c);
             }
         }
-        
         figli.sort((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()));
-        
         for (CategoriaBEAN figlio : figli) {
             aggiungiGerarchia(figlio, tutte, ordinate, livelloAttuale + 1);
         }
@@ -184,7 +175,6 @@ public class CategoriaDAOImp implements CategoriaDAO {
         String sql = (idSuper == 0) 
             ? "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND (id_supercategoria IS NULL OR id_supercategoria = 0)"
             : "SELECT * FROM Categoria WHERE LOWER(nome) = LOWER(?) AND id_supercategoria = ?";
-            
         try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nome.trim());
             if (idSuper != 0) {

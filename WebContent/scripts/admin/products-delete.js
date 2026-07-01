@@ -72,7 +72,7 @@ export function initProductsDeleteLogic() {
                         data.prodotti.forEach(p => {
                             let optionText;
                             if (p.marca) {
-                                optionText = `#${p.marca} - ${p.nome}`;
+                                optionText = `${p.marca} - ${p.nome}`;
                             } else {
                                 optionText = p.nome;
                             }

@@ -30,7 +30,7 @@ export function initProductsEditLogic() {
                     if (data.success && data.prodotti.length > 0) {
                         editProdSelect.innerHTML = '<option value="" selected>Scegli Prodotto</option>';
                         data.prodotti.forEach(p => {
-                            let optionText = p.marca ? `#${p.marca} - ${p.nome}` : p.nome;
+                            let optionText = p.marca ? `${p.marca} - ${p.nome}` : p.nome;
                             editProdSelect.innerHTML += `<option value="${p.id}" data-marca="${p.marca}">${optionText}</option>`;
                         });
                         editProdSelect.disabled = false;
