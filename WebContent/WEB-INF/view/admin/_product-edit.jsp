@@ -1,4 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ taglib uri="jakarta.tags.core" prefix="c" %> <div id="tab-edit" class="product-tab-content" style="display:none;">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ taglib uri="jakarta.tags.core" prefix="c" %> 
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/_product-edit.css">
+    </head>
+    <body>
+<div id="tab-edit" class="product-tab-content" style="display:none;">
     <div class="cascading-selects">
         <select id="edit-cat-select" class="filter-input">
             <option value="" selected disabled>Scegli Categoria</option>
@@ -159,3 +166,5 @@
         </form>
     </div>
 </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+/* ==========================================================================
+LOGICA DI MODIFICA PRODOTTO/VARIANTI (_product-edit.jsp)
+========================================================================== */
+
+/* Menu dei tre filtri a cascata (Categoria -> Prodotto -> Variante) */
+.cascading-selects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+  background: #f1f5f9;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Area bianca dinamica in cui compaiono i form dopo la selezione */
+.workspace-area {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 22px;
+  min-height: 200px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+/* Scritta di avviso "Seleziona un elemento..." */
+.placeholder-text {
+  color: #94a3b8;
+  text-align: center;
+  font-style: italic;
+  margin-top: 50px;
+  font-size: 1rem;
+}
+
+/* Nasconde i form di update di default prima della scelta */
+.admin-product-form {
+  display: none;
+  animation: fadeInSoft 0.3s ease-out;
+}
+
+@keyframes fadeInSoft {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Griglia per affiancare più immagini di anteprima (es: Vecchia Immagine VS Nuova) */
+.previews-container {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: center;
+  align-items: start;
+  gap: 40px;
+  margin-top: 20px;
+}

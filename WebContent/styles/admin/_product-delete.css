@@ -1,0 +1,71 @@
+/* ==========================================================================
+LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
+========================================================================== */
+/* Nota: Questo tab riutilizza anche le classi .cascading-selects e .workspace-area */
+
+/* Card informativa rossa dell'elemento puntato per la rimozione */
+.action-card {
+  border: 1px solid #fee2e2;
+  background-color: #fff9f9;
+  border-radius: 10px;
+  padding: 22px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(153, 27, 27, 0.06);
+  transition: box-shadow 0.25s ease;
+}
+
+.action-card:hover {
+  box-shadow: 0 4px 14px rgba(153, 27, 27, 0.1);
+}
+
+.action-card h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.action-card p {
+  color: #7f1d1d;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Allineamento dei pulsanti di eliminazione soft/hard */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Contenitore popup di seconda conferma ("Sei sicuro? L'azione è irreversibile") */
+#confirm-delete-container {
+  border-top: 1.5px dashed #f87171;
+  padding-top: 20px;
+  margin-top: 20px;
+  animation: fadeInSoft 0.3s ease-out;
+}
+
+@keyframes fadeInSoft {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#confirm-delete-container p {
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+/* Classi opzionali per evidenziare se un prodotto è Attivo/Disattivato (usato in JS/Select) */
+.status-active {
+  border-left: 4px solid #10b981;
+  padding-left: 10px;
+}
+
+.status-inactive {
+  border-left: 4px solid #ef4444;
+  padding-left: 10px;
+}

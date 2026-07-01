@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/_product-delete.css">
+    </head>
+    <body>
 <div id="tab-delete" class="product-tab-content" style="display:none;">
         <div class="cascading-selects">
           <select id="del-cat-select" class="filter-input">
@@ -40,4 +45,5 @@
           </div>
         </div>
       </div>
-    </div>
+    </body>
+    </html>

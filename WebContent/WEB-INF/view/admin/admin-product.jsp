@@ -5,7 +5,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Gestione Prodotti - Admin Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/product.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/admin-product.css">
   </head>
   <body>
     <div class="admin-products-container">

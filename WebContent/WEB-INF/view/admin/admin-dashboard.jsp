@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ taglib uri="jakarta.tags.core" prefix="c" %><% String feedback = (String) session.getAttribute("feedback"); %>
 <!DOCTYPE html>
 <html>
-    <head><%@ include file="../common/common-head.jsp" %> <title>Admin Dashboard</title>
+    <head>
+    	<%@ include file="../common/common-head.jsp" %> 
+    	<title>Admin Dashboard</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/profile/profile.css">
     </head>
-    <body><%@ include file="../common/header.jsp" %> <div class="profile-container">
+    <body>
+    	<%@ include file="../common/header.jsp" %> <div class="profile-container">
             <section class="side-page">
                 <div class="tabs">
                     <div class="header">

@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %> <div id="tab-add" class="product-tab-content active">
+<%@ taglib uri="jakarta.tags.core" prefix="c" %> 
 
+<!DOCTYPE html>
+<html>
+    <head>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/_product-add.css">
+    </head>
+    <body>
+<div id="tab-add" class="product-tab-content active">
     <form action="${pageContext.request.contextPath}/admin/manageProducts" method="POST" id="form-add-product" enctype="multipart/form-data">
         <input type="hidden" name="action" value="create">
         <div class="form-section-title">Dati Generali Prodotto</div>
@@ -91,3 +98,5 @@
         </div>
     </form>
 </div>
+</body>
+</html>

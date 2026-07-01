@@ -236,7 +236,7 @@ public class AdminProductServlet extends HttpServlet {
                 response.setContentType("application/json");
                 JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put("success", false);
-                jsonResponse.put("message", "Errore interno del server.");
+                jsonResponse.put("message", "Non è stato possibile effettuare l'operazione per integrità del database.");
                 PrintWriter out = response.getWriter();
                 out.print(jsonResponse);
             }

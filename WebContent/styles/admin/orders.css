@@ -168,6 +168,7 @@
 .order-date-cell {
     color: #64748b;
     font-size: 0.9rem;
+    padding: 0px 15px;
 }
 
 .order-price-cell {
