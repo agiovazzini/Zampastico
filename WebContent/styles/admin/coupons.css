@@ -293,7 +293,7 @@ h4 {
   .deleteButton {
     display: block;
     width: 100% ;
-    max-width: 100% ;
+    max-width: max-content ;
     text-align: center;
   }
 }
