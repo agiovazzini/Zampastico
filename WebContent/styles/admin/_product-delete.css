@@ -1,6 +1,6 @@
 .cascading-selects {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 15px;
   margin-bottom: 25px;
   background: #f1f5f9;
@@ -8,6 +8,8 @@
   border-radius: 10px;
   border: 1px solid #e2e8f0;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 100%; 
 }
 
 .filter-input {
@@ -34,6 +36,17 @@
   box-shadow: 0 2px 8px rgba(153, 27, 27, 0.06);
   transition: box-shadow 0.25s ease;
   box-sizing: border-box;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.action-card h4, 
+.action-card p, 
+#confirm-delete-container p {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%; 
 }
 
 .action-card:hover {
@@ -111,6 +124,24 @@ table {
   border-collapse: collapse;
 }
 
+.action-buttons button,
+#confirm-delete-container button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 15px;
+  margin-bottom: 12px;
+  max-width: 100%;
+  white-space: normal;
+  height: auto;
+}
+
+@media screen and (max-width: 850px) {
+  .cascading-selects {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+  
 @media screen and (max-width: 768px) {
   .cascading-selects {
     grid-template-columns: 1fr;
@@ -137,4 +168,5 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+	}
 }
