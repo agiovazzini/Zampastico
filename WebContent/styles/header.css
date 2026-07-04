@@ -1,11 +1,14 @@
-.top-section{
-	display: grid;
-	grid-template-columns: auto 1fr auto;
-	align-items: center;
-	gap: 40px;
-	padding: 20px 40px;
-	background-color: var(--color-bg-section);
+.top-section {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 40px;
+    padding: 20px 5%;              /* <--- MODIFICATO: padding percentuale per adattarsi allo schermo */
+    width: 100% !important;        /* <--- AGGIUNTO: occupa tutto lo schermo da destra a sinistra */
+    max-width: 100% !important;    /* <--- AGGIUNTO: annulla qualsiasi limite a 1200px */
+    background-color: var(--color-bg-section);
     border-bottom: 3px solid var(--color-primary);
+    box-sizing: border-box !important;
 }
 
 .div-search{
