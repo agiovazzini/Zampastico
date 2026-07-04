@@ -1,92 +1,90 @@
 h4 {
-	margin-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.admin-orders-container {
+	overflow-wrap: anywhere;
 }
 
 .coupons-layout {
-	display: grid;
-	grid-template-columns: 320px 1fr;
-	gap: 30px;
-	margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .filter-section {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  max-height: max-content;
 }
 
 .admin-filter-bar {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
 }
 
-.itemslist, .reviews-list, .order-payment-details, .admin-filter-bar {
-    display: grid;
-    gap: 8px;
-}
-
-.vertical-form-group .saveButton { 
-	width: 100%; 
-	justify-content: center; 
+.itemslist, .reviews-list, .order-payment-details {
+  display: grid;
+  gap: 8px;
 }
 
 .filter-input, .filter-select {
-    height: 38px;
-    width: 100%;
-    padding: 6px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    color: #1e293b;
-    transition: all 0.3s ease;
+  height: 38px;
+  width: 100%;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  transition: all 0.3s ease;
 }
 
 .filter-input:focus, .filter-select:focus {
-    border-color: var(--color-primary, #ff6600);
-    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
-    outline: none;
-}
-
-.filter-group {
-    min-width: 180px;
+  border-color: var(--color-primary, #ff6600);
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+  outline: none;
 }
 
 .filter-group label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .filter-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px;
-    align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); 
 }
 
 .filter-actions .filter-btn,
 .filter-actions .reset-btn {
-    padding: 0 10px; 
-    font-size: 0.9rem;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    height: 38px;
-    text-decoration: none;
+  padding: 0 10px; 
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 38px;
+  border-radius: 6px;
+  height: 38px;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .saveButton, .deleteButton, .editButton, .defaultButton, .detailsButton {
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .saveButton:not(:disabled):hover,
@@ -94,128 +92,208 @@ h4 {
 .editButton:not(:disabled):hover,
 .defaultButton:not(:disabled):hover,
 .detailsButton:hover {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .saveButton {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 12px 24px;
-    font-size: 1rem;
-    box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
+  background-color: var(--color-primary, #ff6600);
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
 }
 
 .saveButton:not(:disabled):hover {
-    box-shadow: 0 6px 15px rgba(255, 102, 0, 0.35);
-    background-color: #e65c00;
+  box-shadow: 0 6px 15px rgba(255, 102, 0, 0.35);
+  background-color: #e65c00;
 }
 
 .admin-orders-table {
-    border-spacing: 0;
+  width: 100%;
+  max-width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .admin-orders-table th {
-    background-color: #f8fafc;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    padding: 5px;
-    border-bottom: 2px solid #e2e8f0;
+  background-color: #f8fafc;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  padding: 10px 8px;
+  border-bottom: 2px solid #e2e8f0;
+  text-align: left;
+}
+
+.admin-orders-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .admin-orders-table tr:hover td {
-    background-color: #f8fafc;
+  background-color: #f8fafc;
 }
 
 .order-id-cell {
-    font-weight: 700;
-    color: var(--color-primary, #ff6600);
-}
-
-.order-email-cell {
-    font-weight: 600;
-}
-
-.order-date-cell {
-    color: #64748b;
-    font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary, #ff6600);
 }
 
 .order-price-cell {
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
-.order-address-cell {
-    color: #64748b;
-    text-align: center;
-    min-width: 200px;
-    max-width: 300px;
+.order-date-cell {
+  color: #64748b;
+  font-size: 0.85rem;
 }
 
 .coupon-ticket {
-    display: inline-block;
-    align-items: center;
-    gap: 6px;
-    background-color: #fffbeb;
-    color: #b45309;
-    border: 1px dashed #fde68a;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-weight: 700;
+  display: inline-block;
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px dashed #fde68a;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  word-break: break-all;
 }
 
 .coupon-icon {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .coupon-text {
-	min-width: 65px;
-	word-break: break-all;  
-	font-family: 'Courier New', Courier, monospace; 
-	line-height: 1.3;
+  word-break: break-all;  
+  font-family: 'Courier New', Courier, monospace; 
+  line-height: 1.3;
+  display: inline-block;
 }
 
 .expired-row {
-	opacity: 0.55;
-	background-color: #fdfdfd;
+  opacity: 0.55;
+  background-color: #fdfdfd;
 }
 
 .expired-ticket {
-	background-color: #f1f5f9; 
-	border-color: #e2e8f0;
-	color: #94a3b8; 
+  background-color: #f1f5f9; 
+  border-color: #e2e8f0;
+  color: #94a3b8; 
 }
 
 .expired-badge {
-	background-color: #fee2e2; 
-	color: #ef4444;
-	font-size: 0.65rem;
-	padding: 3px 6px;
-	border-radius: 4px;
-	font-weight: 800;
-	text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #fee2e2; 
+  color: #ef4444;
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  margin-top: 4px;
+  border-radius: 4px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .deleteButton {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  padding: 8px 14px;
 }
 
 .deleteButton:not(:disabled):hover {
-    background-color: #e74c3c;
-    color: white;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+  background-color: #e74c3c;
+  color: white;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
 }
 
 .no-orders-alert { 
-    background-color: #f8fafc;
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 50px;
+  background-color: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 50px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.pagination-container {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 3px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #1e293b;
+}
+
+.page-link.active {
+  background: var(--color-primary, #ff6600);
+  color: #fff;
+  border-color: var(--color-primary, #ff6600);
+}
+
+@media screen and (max-width: 1024px) {
+  .coupons-layout {
+    grid-template-columns: minmax(0, 1fr) ;
+    gap: 15px;
+  }
+}
+
+@media screen and (max-width: 880px) {
+  .admin-orders-table, 
+  .admin-orders-table thead, 
+  .admin-orders-table tbody, 
+  .admin-orders-table th, 
+  .admin-orders-table td, 
+  .admin-orders-table tr {
+    display: block ;
+    min-width: 0 ;
+  }
+  
+  .admin-orders-table thead {
+    display: none ;
+  }
+  
+  .admin-orders-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 14px;
+    background: #ffffff;
+    width: 100% ;
+    overflow: hidden;
+  }
+  
+  .admin-orders-table td {
+    text-align: left;
+    padding: 8px 0;
+    border-bottom: 1px dashed #f1f5f9;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  
+  .admin-orders-table td:last-child {
+    border-bottom: none;
+    padding-top: 12px;
+  }
+
+  .deleteButton {
+    display: block;
+    width: 100% ;
+    max-width: 100% ;
     text-align: center;
-    color: #64748b;
-    font-weight: 500;
+  }
 }
