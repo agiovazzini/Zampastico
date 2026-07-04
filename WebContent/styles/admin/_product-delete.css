@@ -1,9 +1,30 @@
-/* ==========================================================================
-LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
-========================================================================== */
-/* Nota: Questo tab riutilizza anche le classi .cascading-selects e .workspace-area */
+.cascading-selects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+  background: #f1f5f9;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-sizing: border-box;
+}
 
-/* Card informativa rossa dell'elemento puntato per la rimozione */
+.filter-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.workspace-area {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 22px;
+  min-height: 200px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+}
+
 .action-card {
   border: 1px solid #fee2e2;
   background-color: #fff9f9;
@@ -12,6 +33,7 @@ LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
   text-align: left;
   box-shadow: 0 2px 8px rgba(153, 27, 27, 0.06);
   transition: box-shadow 0.25s ease;
+  box-sizing: border-box;
 }
 
 .action-card:hover {
@@ -33,20 +55,35 @@ LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
   line-height: 1.5;
 }
 
-/* Allineamento dei pulsanti di eliminazione soft/hard */
 .action-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
+  display: block;
   margin-bottom: 20px;
 }
 
-/* Contenitore popup di seconda conferma ("Sei sicuro? L'azione è irreversibile") */
+.action-buttons button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 15px;
+  margin-bottom: 12px;
+}
+
 #confirm-delete-container {
   border-top: 1.5px dashed #f87171;
   padding-top: 20px;
   margin-top: 20px;
   animation: fadeInSoft 0.3s ease-out;
+}
+
+#confirm-delete-container div {
+  display: block;
+  margin-top: 12px;
+}
+
+#confirm-delete-container button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 12px;
+  margin-bottom: 10px;
 }
 
 @keyframes fadeInSoft {
@@ -59,7 +96,6 @@ LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
   color: #b91c1c;
 }
 
-/* Classi opzionali per evidenziare se un prodotto è Attivo/Disattivato (usato in JS/Select) */
 .status-active {
   border-left: 4px solid #10b981;
   padding-left: 10px;
@@ -68,4 +104,37 @@ LOGICA DI ELIMINAZIONE / DISATTIVAZIONE (_product-delete.jsp)
 .status-inactive {
   border-left: 4px solid #ef4444;
   padding-left: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media screen and (max-width: 768px) {
+  .cascading-selects {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .workspace-area,
+  .action-card {
+    padding: 16px;
+  }
+
+  .action-buttons button,
+  #confirm-delete-container button {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
