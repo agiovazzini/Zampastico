@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS Prodotto(
     brand VARCHAR(255),
     descrizione TEXT,
     data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mime_type VARCHAR(50) DEFAULT NULL,
+    path VARCHAR(255) DEFAULT NULL,
     attivo BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria) ON DELETE SET NULL
 );
@@ -60,6 +62,8 @@ CREATE TABLE IF NOT EXISTS VarianteProdotto(
     id_sconto INT  DEFAULT NULL,
     formato VARCHAR(255),
     prezzo_listino DECIMAL(10,2) NOT NULL,
+    mime_type VARCHAR(50) DEFAULT NULL,
+    path VARCHAR(255) DEFAULT NULL,
     disponibile BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_prodotto) REFERENCES Prodotto(id_prodotto) ON DELETE CASCADE,
     FOREIGN KEY (id_sconto) REFERENCES Sconto(id_sconto) ON DELETE SET NULL
