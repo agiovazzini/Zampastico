@@ -104,6 +104,6 @@
                 </div>
             </div>
         </div>
-        <script src="${pageContext.request.contextPath}/scripts/admin/coupons.js"></script>
+        <script type="module" src="${pageContext.request.contextPath}/scripts/admin/coupons.js"></script>
     </body>
 </html>
