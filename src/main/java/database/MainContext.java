@@ -28,11 +28,7 @@ public class MainContext implements ServletContextListener {
         } catch (NamingException e) {
             System.out.println("Error DataSource: " + e.getMessage());
         }
-        
-        // 1. Salviamo il DataSource nel contesto globale
         context.setAttribute("DataSource", ds);
-
-        // 2. Carichiamo le categorie di LIVELLO 0 per la navigazione nell'Header
         if (ds != null) {
             CategoriaDAOImp categoriaDAO = new CategoriaDAOImp(ds);
             try {
@@ -40,7 +36,6 @@ public class MainContext implements ServletContextListener {
                 List<CategoriaBEAN> categorieLivelloZero = new ArrayList<>();
                 
                 for (CategoriaBEAN cat : tutteLeCategorie) {
-                    // Filtriamo solo le categorie principali (livello 0)
                     if (cat.getLivello() == 0) {
                         categorieLivelloZero.add(cat);
                     }
