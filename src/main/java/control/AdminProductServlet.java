@@ -11,6 +11,8 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -216,8 +218,11 @@ public class AdminProductServlet extends HttpServlet {
                     success = varianteDAO.doDelete(idDel);
                 } else if ("prodotto".equals(typeDel)) {
                     success = deleteProdottoEVarianti(idDel);
-                } else if ("categoria".equals(typeDel)) {
+                 } else if ("categoria".equals(typeDel)) {
                     success = categoriaDAO.doDelete(idDel);
+                    if (success) {
+                        refreshCategorieHeader();
+                    }
                 }
                 jsonResponse.put("success", success);
                 if (!success) jsonResponse.put("message", "Impossibile eliminare l'elemento.");
@@ -267,6 +272,7 @@ public class AdminProductServlet extends HttpServlet {
                     superCat.setidSuper(0);
                     categoriaDAO.doSave(superCat);
                     idSuper = superCat.getIdCategoria();
+                    refreshCategorieHeader();
                 }
             }
             CategoriaBEAN subCat = categoriaDAO.doRetrieveByNameAndIdSuper(nomeSottocategoria, idSuper);
@@ -342,5 +348,16 @@ public class AdminProductServlet extends HttpServlet {
             extension = originalName.substring(originalName.lastIndexOf("."));
         }
         return UUID.randomUUID() + extension;
+    }
+    
+    private void refreshCategorieHeader() throws SQLException {
+        List<CategoriaBEAN> tutteLeCategorie = categoriaDAO.doRetrieveAll();
+        List<CategoriaBEAN> categorieLivelloZero = new ArrayList<>();
+        for (CategoriaBEAN cat : tutteLeCategorie) {
+            if (cat.getLivello() == 0) {
+                categorieLivelloZero.add(cat);
+            }
+        }
+        getServletContext().setAttribute("categorieHeader", categorieLivelloZero);
     }
 }
