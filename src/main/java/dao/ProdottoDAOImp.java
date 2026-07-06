@@ -159,6 +159,8 @@ public class ProdottoDAOImp implements ProdottoDAO {
                     } else {
                         variante.setIdSconto(idSconto);
                     }
+                    variante.setPath(rs.getString("var_path"));
+                    variante.setMimeType(rs.getString("var_mime"));
                     p.getVarianti().add(variante);
                 }
             }
