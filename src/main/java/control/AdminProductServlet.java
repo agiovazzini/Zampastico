@@ -115,30 +115,32 @@ public class AdminProductServlet extends HttpServlet {
                 }
                 break;
             case "updateProduct":
-                ProdottoBEAN pUpdate = prodottoDAO.doRetrieveByKey(Integer.parseInt(request.getParameter("idProdotto")));
-                if (pUpdate != null) {
-                    pUpdate.setNome(request.getParameter("nome"));
-                    pUpdate.setMarca(request.getParameter("marca"));
-                    pUpdate.setDescrizione(request.getParameter("descrizione"));
-                    pUpdate.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
-                    pUpdate.setAttivo(request.getParameter("prodottoAttivo") != null);
-                    boolean removeImgProd = "true".equals(request.getParameter("removeImmagineProdotto"));
-                    String[] newImgData = processImageUpload(request.getPart("immagineProdotto"));
-                    if (newImgData != null) {
-                        pUpdate.setPath(newImgData[0]);
-                        pUpdate.setMimeType(newImgData[1]);
-                        prodottoDAO.doUpdateImage(pUpdate.getId(), newImgData[0], newImgData[1]);
-                    } else if (removeImgProd) {
-                        pUpdate.setPath(null);
-                        pUpdate.setMimeType(null);
-                        prodottoDAO.doUpdateImage(pUpdate.getId(), null, null);
-                    }
-
-                    success = prodottoDAO.doUpdate(pUpdate);
-                    jsonResponse.put("success", success);
-                    if (!success) jsonResponse.put("message", "Errore del database.");
-                }
-                break;
+            	ProdottoBEAN pUpdate = prodottoDAO.doRetrieveByKey(Integer.parseInt(request.getParameter("idProdotto")));
+            	if (pUpdate != null) {
+            	    String vecchioPathProd = pUpdate.getPath();
+            	    pUpdate.setNome(request.getParameter("nome"));
+            	    pUpdate.setMarca(request.getParameter("marca"));
+            	    pUpdate.setDescrizione(request.getParameter("descrizione"));
+            	    pUpdate.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
+            	    pUpdate.setAttivo(request.getParameter("prodottoAttivo") != null);
+            	    boolean removeImgProd = "true".equals(request.getParameter("removeImmagineProdotto"));
+            	    String[] newImgData = processImageUpload(request.getPart("immagineProdotto"));
+            	    if (newImgData != null) {
+            	        pUpdate.setPath(newImgData[0]);
+            	        pUpdate.setMimeType(newImgData[1]);
+            	        prodottoDAO.doUpdateImage(pUpdate.getId(), newImgData[0], newImgData[1]);
+            	        deleteFileIfExists(vecchioPathProd);
+            	    } else if (removeImgProd) {
+            	        pUpdate.setPath(null);
+            	        pUpdate.setMimeType(null);
+            	        prodottoDAO.doUpdateImage(pUpdate.getId(), null, null);
+            	        deleteFileIfExists(vecchioPathProd);
+            	    }
+            	    success = prodottoDAO.doUpdate(pUpdate);
+            	    jsonResponse.put("success", success);
+            	    if (!success) jsonResponse.put("message", "Errore del database.");
+            	}
+            	break;
             case "getVariantDetails":
                 VarianteProdottoBEAN vInfo = varianteDAO.doRetrieveByKey(Integer.parseInt(request.getParameter("idVariante")));
                 if (vInfo != null) {
@@ -151,30 +153,30 @@ public class AdminProductServlet extends HttpServlet {
                 }
                 break;
             case "updateVariant":
-                VarianteProdottoBEAN vUpdate = varianteDAO.doRetrieveByKey(Integer.parseInt(request.getParameter("idVariante")));
-                if (vUpdate != null) {
-                    vUpdate.setFormato(request.getParameter("formato"));
-                    vUpdate.setPrezzoListino(Double.parseDouble(request.getParameter("prezzo")));
-                    vUpdate.setDisponibile(request.getParameter("varianteDisponibile") != null);
-                    
-                    boolean removeImgVar = "true".equals(request.getParameter("removeImmagineVariante"));
-                    String[] newVarImgData = processImageUpload(request.getPart("immagineVariante"));
-                    
-                    if (newVarImgData != null) {
-                        vUpdate.setPath(newVarImgData[0]);
-                        vUpdate.setMimeType(newVarImgData[1]);
-                        varianteDAO.doUpdateImage(vUpdate.getIdVarianteProdotto(), newVarImgData[0], newVarImgData[1]);
-                    } else if (removeImgVar) {
-                        vUpdate.setPath(null);
-                        vUpdate.setMimeType(null);
-                        varianteDAO.doUpdateImage(vUpdate.getIdVarianteProdotto(), null, null);
-                    }
-                    
-                    success = varianteDAO.doUpdate(vUpdate);
-                    jsonResponse.put("success", success);
-                    if (!success) jsonResponse.put("message", "Errore aggiornamento variante.");
-                }
-                break;
+            	VarianteProdottoBEAN vUpdate = varianteDAO.doRetrieveByKey(Integer.parseInt(request.getParameter("idVariante")));
+            	if (vUpdate != null) {
+            	    String vecchioPathVar = vUpdate.getPath();
+            	    vUpdate.setFormato(request.getParameter("formato"));
+            	    vUpdate.setPrezzoListino(Double.parseDouble(request.getParameter("prezzo")));
+            	    vUpdate.setDisponibile(request.getParameter("varianteDisponibile") != null);
+            	    boolean removeImgVar = "true".equals(request.getParameter("removeImmagineVariante"));
+            	    String[] newVarImgData = processImageUpload(request.getPart("immagineVariante"));
+            	    if (newVarImgData != null) {
+            	        vUpdate.setPath(newVarImgData[0]);
+            	        vUpdate.setMimeType(newVarImgData[1]);
+            	        varianteDAO.doUpdateImage(vUpdate.getIdVarianteProdotto(), newVarImgData[0], newVarImgData[1]);
+            	        deleteFileIfExists(vecchioPathVar);
+            	    } else if (removeImgVar) {
+            	        vUpdate.setPath(null);
+            	        vUpdate.setMimeType(null);
+            	        varianteDAO.doUpdateImage(vUpdate.getIdVarianteProdotto(), null, null);
+            	        deleteFileIfExists(vecchioPathVar);
+            	    }
+            	    success = varianteDAO.doUpdate(vUpdate);
+            	    jsonResponse.put("success", success);
+            	    if (!success) jsonResponse.put("message", "Errore aggiornamento variante.");
+            	}
+            	break;
             case "createVariant":
                 VarianteProdottoBEAN nuovaVariante = new VarianteProdottoBEAN();
                 nuovaVariante.setIdProdotto(Integer.parseInt(request.getParameter("idProdotto")));
@@ -212,21 +214,25 @@ public class AdminProductServlet extends HttpServlet {
                 jsonResponse.put("success", success);
                 break;
             case "hardDelete":
-                String typeDel = request.getParameter("type");
-                int idDel = Integer.parseInt(request.getParameter("id"));
-                if ("variante".equals(typeDel)) {
-                    success = varianteDAO.doDelete(idDel);
-                } else if ("prodotto".equals(typeDel)) {
-                    success = deleteProdottoEVarianti(idDel);
-                 } else if ("categoria".equals(typeDel)) {
-                    success = categoriaDAO.doDelete(idDel);
-                    if (success) {
-                        refreshCategorieHeader();
-                    }
-                }
-                jsonResponse.put("success", success);
-                if (!success) jsonResponse.put("message", "Impossibile eliminare l'elemento.");
-                break;
+            	String typeDel = request.getParameter("type");
+            	int idDel = Integer.parseInt(request.getParameter("id"));
+            	if ("variante".equals(typeDel)) {
+            	    VarianteProdottoBEAN varDaElim = varianteDAO.doRetrieveByKey(idDel);
+            	    success = varianteDAO.doDelete(idDel);
+            	    if (success && varDaElim != null) {
+            	        deleteFileIfExists(varDaElim.getPath());
+            	    }
+            	} else if ("prodotto".equals(typeDel)) {
+            	    success = deleteProdottoEVarianti(idDel);
+            	} else if ("categoria".equals(typeDel)) {
+            	    success = categoriaDAO.doDelete(idDel);
+            	    if (success) {
+            	        refreshCategorieHeader();
+            	    }
+            	}
+            	jsonResponse.put("success", success);
+            	if (!success) jsonResponse.put("message", "Impossibile eliminare l'elemento.");
+            	break;
             default:
                 jsonResponse.put("success", false);
                 jsonResponse.put("message", "Azione non riconosciuta.");
@@ -338,11 +344,19 @@ public class AdminProductServlet extends HttpServlet {
     }
 
     private boolean deleteProdottoEVarianti(int idProdotto) throws Exception {
-        List < VarianteProdottoBEAN > varianti = varianteDAO.doRetrieveByProdotto(idProdotto);
-        for (VarianteProdottoBEAN v: varianti) {
+        ProdottoBEAN prodotto = prodottoDAO.doRetrieveByKey(idProdotto);
+        List<VarianteProdottoBEAN> varianti = varianteDAO.doRetrieveByProdotto(idProdotto);
+        
+        for (VarianteProdottoBEAN v : varianti) {
             if (!varianteDAO.doDelete(v.getIdVarianteProdotto())) return false;
+            deleteFileIfExists(v.getPath());
         }
-        return prodottoDAO.doDelete(idProdotto);
+        
+        boolean success = prodottoDAO.doDelete(idProdotto);
+        if (success && prodotto != null) {
+            deleteFileIfExists(prodotto.getPath());
+        }
+        return success;
     }
     
     private String buildUniqueFileName(Part part) {
@@ -363,5 +377,16 @@ public class AdminProductServlet extends HttpServlet {
             }
         }
         getServletContext().setAttribute("categorieHeader", categorieLivelloZero);
+    }
+    
+    private void deleteFileIfExists(String path) {
+        if (path != null && !path.trim().isEmpty()) {
+            File file = new File(path);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.err.println("ATTENZIONE: impossibile eliminare il file -> " + path);
+                }
+            }
+        }
     }
 }
