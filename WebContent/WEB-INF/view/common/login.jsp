@@ -7,6 +7,7 @@
     <title>Accedi - Zampastico</title>
     <%@ include file="common-head.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/login.css">
 </head>
 <body>
 
