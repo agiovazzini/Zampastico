@@ -10,13 +10,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = {
-		"/checkout", 
+	    "/checkout", 
 	    "/wishlist",
 	    "/profile/*",
 	    "/updateData",
 	    "/updatePassword",
 	    "/deleteAccount"
-})
+	})
 public class AuthFilter extends HttpFilter {
 	private static final long serialVersionUID = 1L;
 

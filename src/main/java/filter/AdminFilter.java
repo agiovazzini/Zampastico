@@ -12,9 +12,13 @@ import model.UtenteBEAN.Ruolo;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = {
-    "/admin-home", "/admin-catalog", "/admin-orders", 
-    "/admin-product", "/coupons"
-})
+	    "/admin/*",
+	    "/admin-home", 
+	    "/admin-catalog", 
+	    "/admin-orders", 
+	    "/admin-product", 
+	    "/coupons"
+	})
 public class AdminFilter extends HttpFilter{
 
     /**
