@@ -10,6 +10,7 @@ public class CategoriaBEAN implements Serializable {
     private int idSuperCategoria;
     private String nomeSuper; 
     private int livello;
+    private Integer idProdottoImmagine;
 
     public CategoriaBEAN() {
     	super();
@@ -49,5 +50,13 @@ public class CategoriaBEAN implements Serializable {
 
     public void setLivello(int livello) {
         this.livello = livello;
+    }
+    
+    public Integer getIdProdottoImmagine() {
+        return idProdottoImmagine;
+    }
+
+    public void setIdProdottoImmagine(Integer idProdottoImmagine) {
+        this.idProdottoImmagine = idProdottoImmagine;
     }
 }

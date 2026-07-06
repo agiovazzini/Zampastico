@@ -44,8 +44,12 @@ public class HomeServlet extends HttpServlet {
         }
         
         try {
-            List<CategoriaBEAN> tutteLeCategorie = categoriaDAO.doRetrieveAll();
-            request.setAttribute("categorieHome", tutteLeCategorie);
+        	List<CategoriaBEAN> tutteLeCategorie = categoriaDAO.doRetrieveAll();
+        	for (CategoriaBEAN cat : tutteLeCategorie) {
+        	    Integer idProdImg = categoriaDAO.doRetrievePrimoProdottoId(cat.getIdCategoria());
+        	    cat.setIdProdottoImmagine(idProdImg);
+        	}
+        	request.setAttribute("categorieHome", tutteLeCategorie);
             List<ProdottoBEAN> tuttiProdotti = prodottoDAO.doRetrieveAll("");
             List<ProdottoBEAN> prodottiInEvidenza = tuttiProdotti.size() > 4 
                     ? tuttiProdotti.subList(0, 4) 

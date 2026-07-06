@@ -188,4 +188,20 @@ public class CategoriaDAOImp implements CategoriaDAO {
         }
         return null;
     }
+    
+    public Integer doRetrievePrimoProdottoId(int idCategoria) throws SQLException {
+        String sql = "SELECT p.id_prodotto FROM Prodotto p " +
+                     "WHERE p.id_categoria = ? AND p.path IS NOT NULL " +
+                     "ORDER BY p.id_prodotto ASC LIMIT 1";
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idCategoria);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_prodotto");
+                }
+            }
+        }
+        return null;
+    }
 }

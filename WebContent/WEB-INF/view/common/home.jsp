@@ -99,7 +99,6 @@
                 String[] bgColors = {"bg-light-green", "bg-light-orange", "bg-light-purple", "bg-light-orange", "bg-light-green", "bg-light-purple"};
                 String[] textColors = {"text-green", "text-orange", "text-purple", "text-orange", "text-green", "text-purple"};
                 String[] defaultIcons = {"fa-paw", "fa-cat", "fa-dog", "fa-bowl-food", "fa-ring", "fa-bone"};
-                
                 int idx = 0;
                 for (CategoriaBEAN cat : categorieHome) {
                     String bg = bgColors[idx % bgColors.length];
@@ -107,32 +106,34 @@
                     String icon = defaultIcons[idx % defaultIcons.length];
                     
                     String nomeCat = cat.getNome() != null ? cat.getNome() : "";
-                    String imgCat = "images/assets/placeholder_0.png";
+                    String imgCat;
                     
+                    // Verifica dinamica dell'immagine associata alla categoria tramite il backend
+                    if (cat.getIdProdottoImmagine() != null && cat.getIdProdottoImmagine() > 0) {
+                        imgCat = request.getContextPath() + "/image?action=show&code=" + cat.getIdProdottoImmagine();
+                    } else {
+                        imgCat = request.getContextPath() + "/images/assets/placeholder_0.png";
+                    }
+                    
+                    // Assegnazione dell'icona estetica in base al nome (se corrispondente)
                     if (nomeCat.equalsIgnoreCase("Cani")) {
                         icon = "fa-dog";
-                        imgCat = "images/assets/cane_new.png";
                     } else if (nomeCat.equalsIgnoreCase("Gatti")) {
                         icon = "fa-cat";
-                        imgCat = "images/assets/gattino_new.png";
                     } else if (nomeCat.equalsIgnoreCase("Cibo")) {
                         icon = "fa-bowl-food";
-                        imgCat = "images/assets/cibo_new.png";
                     } else if (nomeCat.equalsIgnoreCase("Accessori")) {
                         icon = "fa-ring";
-                        imgCat = "images/assets/accessori_new.png";
                     } else if (nomeCat.equalsIgnoreCase("Giochi")) {
                         icon = "fa-bone";
-                        imgCat = "images/assets/giochi.png";
                     } else if (nomeCat.equalsIgnoreCase("Altri Animali")) {
                         icon = "fa-paw";
-                        imgCat = "images/assets/altro.png";
                     }
                     idx++;
         %>
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
+            <a href="${pageContext.request.contextPath}/catalog?categoria=<%= cat.getIdCategoria() %>" class="category-card">
                 <div class="category-img-wrap <%= bg %>">
-                    <img src="${pageContext.request.contextPath}/<%= imgCat %>" alt="<%= nomeCat %>" onerror="this.style.display='none'">
+                    <img src="<%= imgCat %>" alt="<%= nomeCat %>" style="object-fit: cover; width: 100%; height: 100%;" onerror="this.src='${pageContext.request.contextPath}/images/assets/placeholder_0.png'">
                     <div class="cat-icon <%= txt %>"><i class="fa-solid <%= icon %>"></i></div>
                 </div>
                 <span class="category-name <%= txt %>"><%= nomeCat %></span>
@@ -199,7 +200,7 @@
         </div>
         <div class="products-grid">
         <% 
-            if (prodottiHome != null && !prodottiHome.isEmpty()) {
+           if (prodottiHome != null && !prodottiHome.isEmpty()) {
                 for (ProdottoBEAN p : prodottiHome) { 
                     String prezzoForm = String.format("%.2f", p.getPrezzo()).replace(".", ",");
                     String nomeSafe = p.getNome() != null ? p.getNome().replace("'", "\\'") : "Prodotto";
@@ -210,15 +211,15 @@
                     <div class="product-card">
                         <% if (isLoggato) { %>
                             <button class="btn-wishlist-top" onclick="aggiungiPreferito('<%= nomeSafe %>', <%= p.getPrezzo() %>, '<%= imgUrl %>')" title="Aggiungi ai preferiti">
-                                <i class="fa-regular fa-heart"></i>
+                               <i class="fa-regular fa-heart"></i>
                             </button>
                         <% } else { %>  
-                            <button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
+                           <button class="btn-wishlist-top" onclick="alert('Devi effettuare l\'accesso!'); window.location.href='${pageContext.request.contextPath}/login';" title="Aggiungi ai preferiti">
                                 <i class="fa-regular fa-heart"></i>
                             </button>
                         <% } %>
 
-                        <div class="product-image">
+                       <div class="product-image">
                             <img src="<%= imgUrl %>" alt="<%= p.getNome() %>" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/assets/placeholder_0.png'">
                         </div>
                         <div class="product-info">
@@ -232,7 +233,7 @@
                                 <button class="btn-add-cart" onclick="aggiungiAlCarrello('<%= nomeSafe %>', <%= p.getPrezzo() %>, '<%= imgUrl %>')" title="Aggiungi al carrello">
                                     <i class="fa-solid fa-cart-shopping"></i>
                                 </button>
-                            </div>
+                          </div>
                         </div>
                     </div>
         <% 
