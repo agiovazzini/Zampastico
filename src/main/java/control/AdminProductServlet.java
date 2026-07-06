@@ -317,18 +317,22 @@ public class AdminProductServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/admin/product");
     }
 
+    private static final String UPLOAD_DIR = "C:/Users/utente/TSW2026/ZampasticoTSW/WebContent/images/assets/uploads";
+
     private String[] processImageUpload(Part filePart) throws IOException {
-        if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty() || filePart.getSize() == 0) {
+        if (filePart == null || filePart.getSubmittedFileName() == null 
+            || filePart.getSubmittedFileName().isEmpty() || filePart.getSize() == 0) {
             return null;
         }
         String mimeType = filePart.getContentType();
         String uniqueFileName = buildUniqueFileName(filePart);
-        String uploadDirStr = getServletContext().getRealPath("/uploads");
-        File uploadDir = new File(uploadDirStr);
+        
+        File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
-        String uploadPath = uploadDirStr + File.separator + uniqueFileName;
+        
+        String uploadPath = UPLOAD_DIR + File.separator + uniqueFileName;
         filePart.write(uploadPath);
         return new String[]{uploadPath, mimeType};
     }
