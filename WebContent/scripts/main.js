@@ -291,3 +291,68 @@ function mostraToast(messaggio) {
         toast.remove();
     }, 3500);
 }
+
+const btnApplyCoupon = document.getElementById('btn-apply-coupon');
+let scontoApplicato = 0; // Memorizza la percentuale di sconto
+
+if (btnApplyCoupon) {
+    btnApplyCoupon.addEventListener('click', function() {
+        const inputCoupon = document.getElementById('couponCode');
+        const couponMsg = document.getElementById('coupon-msg');
+        const codice = inputCoupon.value.trim().toUpperCase();
+        
+        // Mock di codici sconto (In un'app vera questo va chiesto al Backend via Fetch/AJAX!)
+        const codiciValidi = {
+            'ZAMPA10': 0.10, // 10% di sconto
+            'WELCOME20': 0.20 // 20% di sconto
+        };
+
+        if (codice === '') {
+            mostraMessaggioCoupon('Inserisci un codice', 'error');
+            return;
+        }
+
+        if (codiciValidi[codice]) {
+            scontoApplicato = codiciValidi[codice];
+            mostraMessaggioCoupon('Codice applicato con successo!', 'success');
+            mostraToast("Sconto " + (scontoApplicato*100) + "% applicato! 💸");
+            inputCoupon.disabled = true; // Disabilita l'input dopo l'uso
+            this.disabled = true;
+            
+            // Ricalcola il totale
+            ricalcolaTotaleConSconto();
+        } else {
+            mostraMessaggioCoupon('Codice non valido o scaduto', 'error');
+            scontoApplicato = 0;
+            ricalcolaTotaleConSconto(); // Resetta se mettono un codice errato
+        }
+    });
+}
+
+function mostraMessaggioCoupon(msg, type) {
+    const couponMsg = document.getElementById('coupon-msg');
+    couponMsg.textContent = msg;
+    couponMsg.className = 'coupon-message ' + (type === 'success' ? 'coupon-success' : 'coupon-error');
+    couponMsg.style.display = 'block';
+}
+
+function ricalcolaTotaleConSconto() {
+    let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
+    let totaleOriginale = 0;
+
+    carrello.forEach(item => {
+        totaleOriginale += (item.prezzo * item.quantita);
+    });
+
+    let totaleScontato = totaleOriginale - (totaleOriginale * scontoApplicato);
+    let scontoValore = totaleOriginale * scontoApplicato;
+
+    // Aggiorna il testo del totale nel DOM
+    const totalElement = document.getElementById('checkout-total-price');
+    if (totalElement) {
+        totalElement.innerHTML = `
+            ${scontoApplicato > 0 ? `<span style="font-size: 1rem; color: #777; text-decoration: line-through; margin-right: 10px;">${totaleOriginale.toFixed(2).replace('.', ',')}€</span>` : ''}
+            ${totaleScontato.toFixed(2).replace('.', ',')}€
+        `;
+    }
+}

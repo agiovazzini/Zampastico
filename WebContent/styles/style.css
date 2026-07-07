@@ -49,6 +49,51 @@ body {
 	margin-right: auto !important;
 }
 
+/* ==========================================================================
+   CART & WISHLIST CONTROLS (Aggiungi in style.css)
+   ========================================================================== */
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+    display: grid;
+    place-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.qty-btn:hover {
+    background-color: #f1f5f9;
+}
+
+.remove-btn,
+.btn-remove-wishlist {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.remove-btn:hover,
+.btn-remove-wishlist:hover {
+    color: #c0392b;
+    transform: scale(1.1);
+}
+
 /* Evita il doppio restringimento all'interno di home-container */
 .home-container .hero-section,
 .home-container .features-banner,
@@ -816,6 +861,272 @@ body {
 	line-height: 1.6;
 }
 
+/* ==========================================================================
+   CHECKOUT PAGE
+   ========================================================================== */
+.checkout-header {
+    margin: 35px 0 25px 0;
+}
+
+.checkout-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+}
+
+.checkout-header h1 i {
+    color: var(--color-primary);
+}
+
+/* --- LAYOUT A DUE COLONNE --- */
+.checkout-layout, 
+.checkout-container > div:not(.checkout-header):not(.auth-lock-card) {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 70px;
+}
+
+/* Colonna di Sinistra: Form di Spedizione/Pagamento */
+.checkout-layout > div:first-child,
+.checkout-container form {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius-card);
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* Colonna di Destra: Riepilogo Ordine */
+.checkout-summary-section {
+    width: 380px;
+    flex-shrink: 0;
+}
+
+.checkout-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius-card);
+    padding: 25px;
+}
+
+.checkout-box h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+/* --- ELEMENTI DEL CARRELLO GENERATI DA JS --- */
+.checkout-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
+.checkout-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.checkout-item-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout-item-details .item-name {
+    font-weight: 700;
+    color: var(--color-text-main);
+    font-size: 1.05rem;
+}
+
+.checkout-item-details .item-qty {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-top: 4px;
+}
+
+.checkout-item-price {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+}
+
+.checkout-divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+}
+
+/* --- OPZIONI DI PAGAMENTO --- */
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-section);
+}
+
+.payment-option input[type="radio"] {
+    accent-color: var(--color-primary);
+    transform: scale(1.2);
+}
+
+.payment-option span {
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-option span i {
+    font-size: 1.4rem;
+    color: #3b82f6; 
+}
+
+/* Pulsante finale Checkout */
+.btn-checkout {
+    width: 100%;
+    margin-top: 25px;
+    font-size: 1.15rem;
+    padding: 16px;
+}
+
+/* Messaggio di carrello vuoto */
+.checkout-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--color-text-light);
+    gap: 10px;
+    padding: 20px 0;
+}
+
+.checkout-empty-state i {
+    font-size: 2.5rem;
+    color: #cbd5e1;
+}
+
+/* ==========================================================================
+   COUPON SECTION (Aggiungi in style.css)
+   ========================================================================== */
+.coupon-section {
+    margin: 20px 0;
+    padding: 15px 0;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.coupon-section label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-text-main);
+}
+
+.coupon-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.coupon-input-group input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    text-transform: uppercase; /* Ottima UX: i codici sembrano sempre maiuscoli */
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.coupon-input-group input:focus {
+    border-color: var(--color-primary);
+}
+
+.btn-secondary {
+    background-color: var(--color-text-main);
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #555555;
+}
+
+.coupon-message {
+    display: block;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    font-weight: 600;
+    display: none; /* Nascosto di default */
+}
+
+.coupon-success {
+    color: var(--color-accent-green);
+}
+
+.coupon-error {
+    color: #e74c3c;
+}
+
+.summary-row.discount-row {
+    color: var(--color-accent-green);
+    font-weight: 700;
+}
+/* Messaggio di blocco se l'utente non è loggato */
+.auth-lock-card {
+    text-align: center;
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 50px;
+    border: 2px dashed #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.auth-lock-card .lock-icon {
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.btn-login-prompt {
+    margin-top: 20px;
+}
+
+/* --- RESPONSIVE CHECKOUT (Inserisci in fondo insieme alle altre media query se preferisci) --- */
+@media (max-width: 992px) {
+    .checkout-layout,
+    .checkout-container > div:not(.checkout-header):not(.auth-lock-card) {
+        flex-direction: column;
+    }
+    .checkout-summary-section {
+        width: 100%;
+    }
+}
+
 /* AUTH FORM */
 .auth-container {
 	display: flex;
@@ -902,6 +1213,45 @@ body {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS (Aggiungi in style.css)
+   ========================================================================== */
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toast-msg {
+    background-color: var(--color-text-main);
+    color: #ffffff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    animation: slideInBottom 0.3s ease-out forwards;
+}
+
+.toast-msg i {
+    color: var(--color-accent-green);
+    font-size: 1.2rem;
+}
+
+@keyframes slideInBottom {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+
 
 /* SMARTPHONE E SCHERMI PICCOLI (<= 600px) */
 @media (max-width: 600px) {

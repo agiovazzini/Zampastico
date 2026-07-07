@@ -18,9 +18,8 @@
         </div>
 
         <!-- Griglia dove JavaScript inserirà i prodotti salvati -->
-        <div id="wishlist-content" class="products-grid">
-            <!-- I preferiti appariranno qui -->
-        </div>
+        <div id="wishlist-content" class="wishlist-grid">
+    	</div>
 
         <!-- Messaggio che appare solo se la wishlist è vuota -->
         <div id="empty-wishlist" class="empty-cart-message" style="display: none;">

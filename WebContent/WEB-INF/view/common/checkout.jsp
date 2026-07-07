@@ -83,6 +83,14 @@
                             <p class="loading-cart-msg">Caricamento carrello...</p>
                         </div>
                         
+                        <div class="coupon-section">
+    <label for="couponCode">Hai un codice sconto?</label>
+    <div class="coupon-input-group">
+        <input type="text" id="couponCode" placeholder="ES. ZAMPA10" autocomplete="off">
+        <button type="button" id="btn-apply-coupon" class="btn-secondary">Applica</button>
+    </div>
+    <span id="coupon-msg" class="coupon-message"></span>
+</div>
                         <hr class="checkout-divider">
                         
                         <div class="summary-row total-row">

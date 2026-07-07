@@ -134,7 +134,6 @@
             <a href="${pageContext.request.contextPath}/catalog?categoria=<%= cat.getIdCategoria() %>" class="category-card">
                 <div class="category-img-wrap <%= bg %>">
                     <img src="<%= imgCat %>" alt="<%= nomeCat %>" style="object-fit: cover; width: 100%; height: 100%;" onerror="this.src='${pageContext.request.contextPath}/images/assets/placeholder_0.png'">
-                    <div class="cat-icon <%= txt %>"><i class="fa-solid <%= icon %>"></i></div>
                 </div>
                 <span class="category-name <%= txt %>"><%= nomeCat %></span>
             </a>
@@ -142,53 +141,6 @@
                 }
             } else { 
         %>
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-green">
-                    <img src="${pageContext.request.contextPath}/images/assets/cane_new.png" alt="Cani">
-                    <div class="cat-icon text-green"><i class="fa-solid fa-dog"></i></div>
-                </div>
-                <span class="category-name text-green">Cani</span>
-            </a>
-            
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-orange">
-                    <img src="${pageContext.request.contextPath}/images/assets/gattino_new.png" alt="Gatti">
-                    <div class="cat-icon text-green"><i class="fa-solid fa-cat"></i></div>
-                </div>
-                <span class="category-name text-green">Gatti</span>
-            </a>
-            
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-purple">
-                    <img src="${pageContext.request.contextPath}/images/assets/altro.png" alt="Altri Animali">
-                    <div class="cat-icon text-purple"><i class="fa-solid fa-paw"></i></div>
-                </div>
-                <span class="category-name text-purple">Altri Animali</span>
-            </a>
-            
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-orange">
-                    <img src="${pageContext.request.contextPath}/images/assets/cibo_new.png" alt="Cibo">
-                    <div class="cat-icon text-orange"><i class="fa-solid fa-bowl-food"></i></div>
-                </div>
-                <span class="category-name text-orange">Cibo</span>
-            </a>
-            
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-green">
-                    <img src="${pageContext.request.contextPath}/images/assets/accessori_new.png" alt="Accessori">
-                    <div class="cat-icon text-green"><i class="fa-solid fa-ring"></i></div>
-                </div>
-                <span class="category-name text-green">Accessori</span>
-            </a>
-            
-            <a href="${pageContext.request.contextPath}/catalog" class="category-card">
-                <div class="category-img-wrap bg-light-orange">
-                    <img src="${pageContext.request.contextPath}/images/assets/giochi.png" alt="Giochi">
-                    <div class="cat-icon text-orange"><i class="fa-solid fa-bone"></i></div>
-                </div>
-                <span class="category-name text-orange">Giochi</span>
-            </a>
         <% } %>
         </div>
     </section>

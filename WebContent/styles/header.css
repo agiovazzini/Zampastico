@@ -176,7 +176,6 @@
 
 /* --- MENU DI NAVIGAZIONE INFERIORE --- */
 .main-nav {
-    background-color: var(--color-bg-section, #fdfbf7);
     padding: 14px 5%;
     width: 100%;
     border-bottom: 1px solid #eaeaea;
