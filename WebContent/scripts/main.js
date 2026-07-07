@@ -292,67 +292,135 @@ function mostraToast(messaggio) {
     }, 3500);
 }
 
-const btnApplyCoupon = document.getElementById('btn-apply-coupon');
-let scontoApplicato = 0; // Memorizza la percentuale di sconto
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const btnApplyCoupon = document.getElementById('btn-apply-coupon');
+    const inputCoupon = document.getElementById('couponCode');
+    const hiddenInputCoupon = document.getElementById('codiceCouponApplicato');
+    
+    let scontoApplicato = 0; 
+    let couponApplicatoFlag = false; 
 
-if (btnApplyCoupon) {
-    btnApplyCoupon.addEventListener('click', function() {
-        const inputCoupon = document.getElementById('couponCode');
-        const couponMsg = document.getElementById('coupon-msg');
-        const codice = inputCoupon.value.trim().toUpperCase();
-        
-        // Mock di codici sconto (In un'app vera questo va chiesto al Backend via Fetch/AJAX!)
-        const codiciValidi = {
-            'ZAMPA10': 0.10, // 10% di sconto
-            'WELCOME20': 0.20 // 20% di sconto
-        };
-
-        if (codice === '') {
-            mostraMessaggioCoupon('Inserisci un codice', 'error');
-            return;
-        }
-
-        if (codiciValidi[codice]) {
-            scontoApplicato = codiciValidi[codice];
-            mostraMessaggioCoupon('Codice applicato con successo!', 'success');
-            mostraToast("Sconto " + (scontoApplicato*100) + "% applicato! 💸");
-            inputCoupon.disabled = true; // Disabilita l'input dopo l'uso
-            this.disabled = true;
+    if (btnApplyCoupon) {
+        btnApplyCoupon.addEventListener('click', function() {
             
-            // Ricalcola il totale
-            ricalcolaTotaleConSconto();
-        } else {
-            mostraMessaggioCoupon('Codice non valido o scaduto', 'error');
-            scontoApplicato = 0;
-            ricalcolaTotaleConSconto(); // Resetta se mettono un codice errato
-        }
-    });
-}
+            if (couponApplicatoFlag) {
+                scontoApplicato = 0;
+                couponApplicatoFlag = false;
+                
+                inputCoupon.value = ''; 
+                inputCoupon.disabled = false; 
+                
+                if (hiddenInputCoupon) {
+                    hiddenInputCoupon.value = ''; 
+                }
+                
+                btnApplyCoupon.textContent = "Applica";
+                btnApplyCoupon.classList.remove('btn-danger-coupon');
+                
+                mostraMessaggioCoupon('', '');
+                document.getElementById('coupon-msg').style.display = 'none';
+                
+                ricalcolaTotaleConSconto(0);
+                if (typeof mostraToast === 'function') mostraToast("Coupon rimosso. 🗑️");
+                
+                return; 
+            }
 
-function mostraMessaggioCoupon(msg, type) {
-    const couponMsg = document.getElementById('coupon-msg');
-    couponMsg.textContent = msg;
-    couponMsg.className = 'coupon-message ' + (type === 'success' ? 'coupon-success' : 'coupon-error');
-    couponMsg.style.display = 'block';
-}
+            const codice = inputCoupon.value.trim().toUpperCase();
 
-function ricalcolaTotaleConSconto() {
-    let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
-    let totaleOriginale = 0;
+            if (codice === '') {
+                mostraMessaggioCoupon('Inserisci un codice coupon', 'error');
+                return;
+            }
 
-    carrello.forEach(item => {
-        totaleOriginale += (item.prezzo * item.quantita);
-    });
-
-    let totaleScontato = totaleOriginale - (totaleOriginale * scontoApplicato);
-    let scontoValore = totaleOriginale * scontoApplicato;
-
-    // Aggiorna il testo del totale nel DOM
-    const totalElement = document.getElementById('checkout-total-price');
-    if (totalElement) {
-        totalElement.innerHTML = `
-            ${scontoApplicato > 0 ? `<span style="font-size: 1rem; color: #777; text-decoration: line-through; margin-right: 10px;">${totaleOriginale.toFixed(2).replace('.', ',')}€</span>` : ''}
-            ${totaleScontato.toFixed(2).replace('.', ',')}€
-        `;
+            btnApplyCoupon.disabled = true;
+            btnApplyCoupon.textContent = "Verifica...";
+            const contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf("/", 2));
+            const urlRichiesta = contextPath + '/verificaCoupon?codice=' + encodeURIComponent(codice);
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', urlRichiesta, true);
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.valido) {
+                            scontoApplicato = data.sconto;
+                            couponApplicatoFlag = true; 
+                            
+                            mostraMessaggioCoupon(data.messaggio, 'success');
+                            if (typeof mostraToast === 'function') mostraToast(`Sconto applicato! 💸`);
+                            
+                            if (hiddenInputCoupon) hiddenInputCoupon.value = codice;
+                            inputCoupon.disabled = true; 
+                            btnApplyCoupon.disabled = false;
+                            btnApplyCoupon.textContent = "Rimuovi";
+                            btnApplyCoupon.classList.add('btn-danger-coupon'); 
+                            
+                            ricalcolaTotaleConSconto(scontoApplicato);
+                        } else {
+                            mostraMessaggioCoupon(data.messaggio, 'error');
+                            scontoApplicato = 0;
+                            if (hiddenInputCoupon) hiddenInputCoupon.value = '';
+                            btnApplyCoupon.disabled = false;
+                            btnApplyCoupon.textContent = "Applica";
+                            ricalcolaTotaleConSconto(0);
+                        }
+                    } catch (e) {
+                        console.error("Errore nel parsing JSON:", e);
+                        mostraMessaggioCoupon("Risposta del server non valida.", 'error');
+                        btnApplyCoupon.disabled = false;
+                        btnApplyCoupon.textContent = "Applica";
+                    }
+                } else {
+                    console.error("Errore Server. Codice HTTP:", xhr.status);
+                    mostraMessaggioCoupon("Errore del server: " + xhr.status, 'error');
+                    btnApplyCoupon.disabled = false;
+                    btnApplyCoupon.textContent = "Applica";
+                }
+            };
+            xhr.onerror = function() {
+                console.error("Errore di rete durante la chiamata AJAX.");
+                mostraMessaggioCoupon("Errore di comunicazione col server.", 'error');
+                btnApplyCoupon.disabled = false;
+                btnApplyCoupon.textContent = "Applica";
+            };
+            xhr.send();
+        });
     }
-}
+
+    function mostraMessaggioCoupon(msg, type) {
+        const couponMsg = document.getElementById('coupon-msg');
+        if (couponMsg) {
+            couponMsg.textContent = msg;
+            couponMsg.className = 'coupon-message ' + (type === 'success' ? 'coupon-success' : 'coupon-error');
+            if(msg !== '') couponMsg.style.display = 'block';
+        }
+    }
+
+    function ricalcolaTotaleConSconto(sconto) {
+        let carrello = JSON.parse(localStorage.getItem('zampastico_cart')) || [];
+        let totaleOriginale = 0;
+
+        carrello.forEach(item => { totaleOriginale += (item.prezzo * item.quantita); });
+
+        let totaleScontato = totaleOriginale - (totaleOriginale * sconto);
+        const totalElement = document.getElementById('checkout-total-price');
+        
+        if (totalElement) {
+            if (sconto > 0) {
+                totalElement.innerHTML = `
+                    <span style="font-size: 1rem; color: #777; text-decoration: line-through; margin-right: 10px;">
+                        ${totaleOriginale.toFixed(2).replace('.', ',')}€
+                    </span>
+                    <span style="color: var(--color-accent-green); font-weight: 800;">
+                        ${totaleScontato.toFixed(2).replace('.', ',')}€
+                    </span>
+                `;
+            } else {
+                totalElement.innerHTML = totaleOriginale.toFixed(2).replace('.', ',') + "€";
+            }
+        }
+    }
+});

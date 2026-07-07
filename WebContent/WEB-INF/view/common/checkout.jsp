@@ -84,13 +84,13 @@
                         </div>
                         
                         <div class="coupon-section">
-    <label for="couponCode">Hai un codice sconto?</label>
-    <div class="coupon-input-group">
-        <input type="text" id="couponCode" placeholder="ES. ZAMPA10" autocomplete="off">
-        <button type="button" id="btn-apply-coupon" class="btn-secondary">Applica</button>
-    </div>
-    <span id="coupon-msg" class="coupon-message"></span>
-</div>
+							    <label for="couponCode">Hai un codice sconto?</label>
+							    <div class="coupon-input-group">
+							        <input type="text" id="couponCode" placeholder="ES. ZAMPA10" autocomplete="off">
+							        <button type="button" id="btn-apply-coupon" class="btn-secondary">Applica</button>
+							    </div>
+							    <span id="coupon-msg" class="coupon-message"></span>
+							</div>
                         <hr class="checkout-divider">
                         
                         <div class="summary-row total-row">
@@ -104,6 +104,6 @@
     </main>
 
     <jsp:include page="footer.jsp" />
-    <script src="${pageContext.request.contextPath}/scripts/main.js?v=5"></script>
+    <script src="${pageContext.request.contextPath}/scripts/main.js"></script>
 </body>
 </html>
