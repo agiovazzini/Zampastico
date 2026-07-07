@@ -10,4 +10,5 @@ public interface CouponDAO {
     List<CouponBEAN> doRetrieveAll() throws SQLException;
     List<CouponBEAN> doRetrieveAllPaginated(int offset, int limit) throws SQLException;
     int countAllCoupons() throws SQLException;
+    public CouponBEAN doRetrieveByCodice(String codice) throws SQLException;
 }

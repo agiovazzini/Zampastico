@@ -32,6 +32,33 @@ public class CouponDAOImp implements CouponDAO {
             ps.executeUpdate();
         }
     }
+    
+    @Override
+    public CouponBEAN doRetrieveByCodice(String codice) throws SQLException {
+        String query = "SELECT * FROM Coupon WHERE codice = ?";
+        
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
+            ps.setString(1, codice.toUpperCase());
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CouponBEAN coupon = new CouponBEAN();
+                    coupon.setIdCoupon(rs.getInt("id_coupon"));
+                    coupon.setCodice(rs.getString("codice"));
+                    coupon.setPercentualeSconto(rs.getDouble("percentuale_sconto"));
+                    
+                    Timestamp ts = rs.getTimestamp("data_scadenza");
+                    if (ts != null) {
+                        coupon.setDataScadenza(ts.toLocalDateTime());
+                    }
+                    return coupon;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public boolean doDelete(int idCoupon) throws SQLException {
